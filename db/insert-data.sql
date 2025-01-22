@@ -10,11 +10,11 @@ VALUES (3, '123-456-7890');
 INSERT INTO forum_schema.admins (user_id)
 VALUES (4);
 
-INSERT INTO forum_schema.posts (title, content, likes, user_id)
-VALUES ('Welcome Post', 'This is the first post in the forum!', 10, 1),
-       ('Second Post', 'Another interesting post in the forum.', 5, 2);
+INSERT INTO forum_schema.posts (title, content, user_id)
+VALUES ('Welcome Post', 'This is the first post in the forum!', 1),
+       ('Second Post', 'Another interesting post in the forum.', 2);
 
-INSERT INTO forum_schema.comments (content, post_id)
-VALUES ('This is a comment on the first post.', 1),
-       ('Another comment on the first post.', 1),
-       ('Comment on the second post.', 2);
+INSERT INTO forum_schema.comments (content, post_id, user_id)
+VALUES ('This is a comment on the first post.', 1, 3),
+       ('Another comment on the first post.', 1, 2),
+       ('Comment on the second post.', 2, 4);

@@ -29,7 +29,7 @@ CREATE TABLE forum_schema.posts(
     post_id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(70) NOT NULL,
     content TEXT NOT NULL,
-    likes INT NOT NULL,
+    likes INT DEFAULT 0 NOT NULL,
     user_id INT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES forum_schema.users(user_id) ON DELETE CASCADE
 );

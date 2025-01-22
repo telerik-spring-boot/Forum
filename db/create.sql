@@ -35,11 +35,14 @@ CREATE TABLE forum_schema.posts(
 );
 
 
-CREATE TABLE forum_schema.comments(
-  comment_id INT AUTO_INCREMENT PRIMARY KEY,
-  content TEXT NOT NULL,
-  post_id INT NOT NULL,
-  FOREIGN KEY (post_id) references  forum_schema.posts(post_id) ON DELETE CASCADE
+CREATE TABLE forum_schema.comments
+(
+    comment_id INT AUTO_INCREMENT PRIMARY KEY,
+    content    TEXT NOT NULL,
+    post_id    INT  NOT NULL,
+    user_id    INT  NOT NULL,
+    FOREIGN KEY (post_id) references forum_schema.posts (post_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) references forum_schema.users (user_id) ON DELETE CASCADE
 );
 
 

@@ -1,0 +1,43 @@
+# Maven / Gradle build directories
+/target/
+/build/
+
+# IDE-specific files
+*.iml
+.idea/
+/*.ipr
+/*.iws
+/.project
+/.classpath
+/.settings/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*.swo
+*.orig
+
+# Spring Boot files
+/config/application-*.yml
+/config/application-*.properties
+
+# Ignore sensitive files
+.env
+*.key
+*.pem
+
+# Dependencies
+/.mvn/wrapper/maven-wrapper.jar
+/.mvn/wrapper/maven-wrapper.properties
+!/.mvn/wrapper/maven-wrapper.jar
+/.gradle/

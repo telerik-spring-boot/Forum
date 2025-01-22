@@ -1,15 +1,6 @@
-# Maven / Gradle build directories
+# Build directories
 /target/
 /build/
-
-# IDE-specific files
-*.iml
-.idea/
-/*.ipr
-/*.iws
-/.project
-/.classpath
-/.settings/
 
 # OS-specific files
 .DS_Store
@@ -18,7 +9,6 @@ Thumbs.db
 # Logs
 logs/
 *.log
-*.log.*
 
 # Temporary files
 *.tmp
@@ -27,17 +17,49 @@ logs/
 *.swo
 *.orig
 
-# Spring Boot files
-/config/application-*.yml
-/config/application-*.properties
-
-# Ignore sensitive files
+# Spring Boot configuration (exclude sensitive files)
+application-*.yml
+application-*.properties
 .env
 *.key
 *.pem
 
-# Dependencies
-/.mvn/wrapper/maven-wrapper.jar
-/.mvn/wrapper/maven-wrapper.properties
-!/.mvn/wrapper/maven-wrapper.jar
+# Maven and Gradle dependencies
+/.mvn/
 /.gradle/
+/.gradle-cache/
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+
+# IDE-specific files
+### IntelliJ IDEA ###
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+### Eclipse ###
+.classpath
+.project
+.settings/
+.springBeans
+
+### VS Code ###
+.vscode/
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# STS (Spring Tool Suite)
+.apt_generated
+.sts4-cache
+.factorypath
+bin/
+
+# Ignore generated help file
+HELP.md

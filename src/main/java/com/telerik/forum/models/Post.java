@@ -2,6 +2,9 @@ package com.telerik.forum.models;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "posts")
 public class Post {
@@ -22,6 +25,9 @@ public class Post {
     @ManyToOne
     @JoinColumn(name="user_id", nullable=false)
     private User user;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
 
     public Post() {
     }
@@ -73,4 +79,13 @@ public class Post {
     public void setUser(User user) {
         this.user = user;
     }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
 }

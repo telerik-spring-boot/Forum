@@ -32,7 +32,13 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public Admin getByUserId(int id) {
-        return adminRepository.getByUserId(id);
+        Admin byUserId = adminRepository.getByUserId(id);
+
+        if (byUserId == null) {
+            throw new EntityNotFoundException("Admin", "user.id", id);
+        }
+
+        return byUserId;
     }
 
     @Override

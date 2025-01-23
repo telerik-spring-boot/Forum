@@ -1,6 +1,7 @@
 package com.telerik.forum.services;
 
 import com.telerik.forum.exceptions.DuplicateEntityException;
+import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.models.User;
 import com.telerik.forum.repositories.AdminRepository;
@@ -30,22 +31,46 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getById(int id) {
-        return userRepository.getById(id);
+        User user = userRepository.getById(id);
+
+        if (user == null) {
+            throw new EntityNotFoundException("User", "id", id);
+        }
+
+        return user;
     }
 
     @Override
     public User getByEmail(String email) {
-        return userRepository.getByEmail(email);
+        User user = userRepository.getByEmail(email);
+
+        if (user == null) {
+            throw new EntityNotFoundException("User", "email", email);
+        }
+
+        return user;
     }
 
     @Override
     public User getByUsername(String username) {
-        return userRepository.getByUsername(username);
+        User user = userRepository.getByUsername(username);
+
+        if (user == null) {
+            throw new EntityNotFoundException("User", "username", username);
+        }
+
+        return user;
     }
 
     @Override
     public User getByFirstName(String firstName) {
-        return userRepository.getByFirstName(firstName);
+        User user = userRepository.getByFirstName(firstName);
+
+        if (user == null) {
+            throw new EntityNotFoundException("User", "firstName", firstName);
+        }
+
+        return user;
     }
 
     @Override

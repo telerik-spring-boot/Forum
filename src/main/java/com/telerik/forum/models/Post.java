@@ -26,6 +26,7 @@ public class Post {
     @JoinColumn(name="user_id", nullable=false)
     private User user;
 
+    // TODO Do we need JsonIgnore and do we need add and removeComment methods here?
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 

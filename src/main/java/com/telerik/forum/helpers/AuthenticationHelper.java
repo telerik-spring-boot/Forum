@@ -37,7 +37,7 @@ public class AuthenticationHelper {
 
             String[] authenticationCredentials = new String(Base64.getDecoder().decode(authentication[1])).split(":");
 
-            User user = userService.getByEmail(authenticationCredentials[0]);
+            User user = userService.getByUsername(authenticationCredentials[0]);
 
             if (!user.getPassword().equals(authenticationCredentials[1])) {
                 throw new UnauthorizedOperationException("Invalid password.");
@@ -46,7 +46,7 @@ public class AuthenticationHelper {
             return user;
 
         } catch (EntityNotFoundException e) {
-            throw new UnauthorizedOperationException("Invalid email");
+            throw new UnauthorizedOperationException("Invalid username");
         }
 
     }

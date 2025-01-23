@@ -32,7 +32,7 @@ public class AdminRepositoryImpl implements AdminRepository {
     @Override
     public Admin getByUserId(int id) {
         try (Session session = sessionFactory.openSession()) {
-            Query<Admin> query = session.createQuery("from Admin where User.id = :id", Admin.class);
+            Query<Admin> query = session.createQuery("from Admin where user.id = :id", Admin.class);
 
             query.setParameter("id", id);
 
@@ -93,7 +93,7 @@ public class AdminRepositoryImpl implements AdminRepository {
         try(Session session = sessionFactory.openSession()) {
             session.beginTransaction();
 
-            Query<Admin> query = session.createQuery("from Admin where User.id = :id", Admin.class);
+            Query<Admin> query = session.createQuery("from Admin where user.id = :id", Admin.class);
 
             query.setParameter("id", userId);
 

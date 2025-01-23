@@ -29,18 +29,31 @@ public class AdminRepositoryImpl implements AdminRepository {
 
     @Override
     public Admin getByUserId(int id) {
-        try(Session session = sessionFactory.openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             Query<Admin> query = session.createQuery("from Admin where User.id = :id", Admin.class);
 
             query.setParameter("id", id);
 
             Admin admin = query.uniqueResult();
 
-            if(admin == null){
+            if (admin == null) {
                 throw new EntityNotFoundException("Admin", "user.id", id);
             }
 
             return admin;
+        }
+    }
+
+    @Override
+    public boolean existsById(int id) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<Long> query = session.createQuery("select count(1) from Admin where User.id = :id", Long.class);
+
+            query.setParameter("id", id);
+
+            Long count = query.uniqueResult();
+
+            return count != null && count > 0;
         }
     }
 

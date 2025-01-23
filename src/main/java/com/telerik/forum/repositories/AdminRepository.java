@@ -10,6 +10,8 @@ public interface AdminRepository {
 
     Admin getByUserId(int id);
 
+    boolean existsById(int id);
+
     void create(Admin admin);
 
     void update(Admin admin);

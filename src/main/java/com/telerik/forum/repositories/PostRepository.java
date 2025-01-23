@@ -10,6 +10,8 @@ public interface PostRepository {
 
     Post getById(int id);
 
+    List<Post> getbyUserId(int userId);
+
     void create(Post post);
 
     void update(Post post);

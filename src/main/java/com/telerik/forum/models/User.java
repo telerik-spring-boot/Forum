@@ -27,16 +27,20 @@ public class User {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "blocked")
+    private boolean blocked;
+
     // TODO connection with the posts / comments
 
     public User() {}
 
-    public User(String firstName, String lastName, String emailAddress, String username, String password) {
+    public User(String firstName, String lastName, String emailAddress, String username, String password, boolean blocked) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.emailAddress = emailAddress;
         this.username = username;
         this.password = password;
+        this.blocked = blocked;
     }
 
     public int getId() {
@@ -85,5 +89,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public boolean isBlocked() {
+        return blocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
     }
 }

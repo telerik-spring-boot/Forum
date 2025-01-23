@@ -30,7 +30,7 @@ public class HibernateConfiguration {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
 
         sessionFactory.setDataSource(dataSource());
-        sessionFactory.setPackagesToScan("com.example.telerik.forum");
+        sessionFactory.setPackagesToScan("com.telerik.forum");
         sessionFactory.setHibernateProperties(hibernateProperties());
 
         return sessionFactory;

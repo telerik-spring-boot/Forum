@@ -46,7 +46,7 @@ public class AuthenticationHelper {
             return user;
 
         } catch (EntityNotFoundException e) {
-            throw new UnauthorizedOperationException("Invalid username");
+            throw new UnauthorizedOperationException("Invalid email");
         }
 
     }

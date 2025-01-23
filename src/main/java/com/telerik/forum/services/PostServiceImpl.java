@@ -44,12 +44,26 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post addComment(Post post, Comment comment, User user) {
+    public void addComment(Post post, Comment comment, User user) {
         comment.setPost(post);
         comment.setUser(user);
         commentRepository.create(comment);
         postRepository.update(post);
-        return post;
+
+    }
+
+    @Override
+    public void updateComment(Post post, Comment comment, User user) {
+        checkCommentUpdatePermission(comment.getId(), user);
+        commentRepository.update(comment);
+        postRepository.update(post);// Do we need this with CascadeType.ALL?
+    }
+
+    @Override
+    public void deleteComment(Post post, Comment comment, User user) {
+        checkCommentDeletePermission(comment.getId(), user);
+        commentRepository.delete(comment);
+        postRepository.update(post);
     }
 
     @Override
@@ -60,30 +74,48 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void updatePost(Post post, User user) {
-        checkUpdatePermission(post.getId(), user);
+        checkPostUpdatePermission(post.getId(), user);
         postRepository.update(post);
     }
 
     @Override
     public void deletePost(int postId, User user) {
-        checkDeletePermission(postId, user);
+        checkPostDeletePermission(postId, user);
         postRepository.delete(postId);
     }
 
-    private void checkUpdatePermission(int postId, User user) {
+    private void checkPostUpdatePermission(int postId, User user) {
         Post post = postRepository.getById(postId);
         if (!post.getUser().equals(user)) {
             throw new UnauthorizedOperationException("You do not have permission to update this post!");
         }
     }
 
-    private void checkDeletePermission(int postId, User user) {
+    private void checkPostDeletePermission(int postId, User user) {
         Post post = postRepository.getById(postId);
         try {
             adminRepository.getByUserId(user.getId());
         } catch (EntityNotFoundException e) {
             if (!post.getUser().equals(user)) {
-                throw new UnauthorizedOperationException("You do not have permission to update this post!");
+                throw new UnauthorizedOperationException("You do not have permission to delete this post!");
+            }
+        }
+    }
+
+    private void checkCommentUpdatePermission(int commentId, User user) {
+        Comment comment = commentRepository.getById(commentId);
+        if (!comment.getUser().equals(user)) {
+            throw new UnauthorizedOperationException("You do not have permission to update this comment!");
+        }
+    }
+
+    private void checkCommentDeletePermission(int commentId, User user) {
+        Comment comment = commentRepository.getById(commentId);
+        try {
+            adminRepository.getByUserId(user.getId());
+        } catch (EntityNotFoundException e) {
+            if (!comment.getUser().equals(user)) {
+                throw new UnauthorizedOperationException("You do not have permission to delete this comment!");
             }
         }
     }

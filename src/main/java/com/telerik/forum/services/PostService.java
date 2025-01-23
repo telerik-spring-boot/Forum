@@ -14,7 +14,11 @@ public interface PostService {
 
     Post getPost(int id);
 
-    Post addComment(Post post, Comment comment, User user);
+    void addComment(Post post, Comment comment, User user);
+
+    void updateComment(Post post, Comment comment, User user);
+
+    void deleteComment(Post post, Comment comment, User user);
 
     void createPost(Post post, User user);
 

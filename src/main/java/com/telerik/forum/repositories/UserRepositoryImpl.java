@@ -1,10 +1,10 @@
 package com.telerik.forum.repositories;
 
-import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.models.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -16,6 +16,7 @@ public class UserRepositoryImpl implements UserRepository {
     private final SessionFactory sessionFactory;
 
 
+    @Autowired
     public UserRepositoryImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
@@ -33,13 +34,9 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User getById(int id) {
         try(Session session = sessionFactory.openSession()) {
-            User user = session.get(User.class, id);
 
-            if(user == null){
-                throw new EntityNotFoundException("User", "id", id);
-            }
+            return session.get(User.class, id);
 
-            return user;
         }
     }
 
@@ -50,13 +47,7 @@ public class UserRepositoryImpl implements UserRepository {
 
             query.setParameter("email", email);
 
-            User user = query.uniqueResult();
-
-            if(user == null){
-                throw new EntityNotFoundException("User", "email", email);
-            }
-
-            return user;
+            return query.uniqueResult();
         }
     }
 
@@ -67,13 +58,7 @@ public class UserRepositoryImpl implements UserRepository {
 
             query.setParameter("username", username);
 
-            User user = query.uniqueResult();
-
-            if(user == null){
-                throw new EntityNotFoundException("User", "username", username);
-            }
-
-            return user;
+            return query.uniqueResult();
         }
     }
 
@@ -84,13 +69,7 @@ public class UserRepositoryImpl implements UserRepository {
 
             query.setParameter("firstName", firstName);
 
-            User user = query.uniqueResult();
-
-            if(user == null){
-                throw new EntityNotFoundException("User", "firstName", firstName);
-            }
-
-            return user;
+            return query.uniqueResult();
         }
     }
 
@@ -122,10 +101,6 @@ public class UserRepositoryImpl implements UserRepository {
             session.beginTransaction();
 
             User user = session.get(User.class, id);
-
-            if(user == null){
-                throw new EntityNotFoundException("User", "id", id);
-            }
 
             session.remove(user);
 

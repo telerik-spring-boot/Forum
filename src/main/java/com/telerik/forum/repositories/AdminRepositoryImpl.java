@@ -2,7 +2,6 @@ package com.telerik.forum.repositories;
 
 import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.models.Admin;
-import com.telerik.forum.models.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;

@@ -19,3 +19,18 @@ VALUES ('This is a comment on the first post.', 1, 3),
        ('Another comment on the first post.', 1, 2),
        ('Comment on the second post.', 2, 4);
 
+INSERT INTO forum_schema.roles(name)
+VALUES('USER'),('ADMIN');
+
+INSERT INTO forum_schema.user_roles(user_id, role_id)
+VALUES(1,1),
+      (2,1),
+      (3,1),
+      (3,2),
+      (4,1),
+      (4,2);
+
+INSERT INTO forum_schema.admin_details(user_id, phone_number)
+VALUES (3, '123-456-7890');
+
+

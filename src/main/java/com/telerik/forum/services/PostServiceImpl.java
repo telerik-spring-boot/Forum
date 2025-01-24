@@ -14,7 +14,7 @@ import java.util.List;
 @Service
 public class PostServiceImpl implements PostService {
 
-    private static final String BLOCKED_ACCOUNT_MESSAGE = "Your account is blocked!";
+    public static final String BLOCKED_ACCOUNT_MESSAGE = "Your account is blocked!";
     private static final String UNAUTHORIZED_DELETE_MESSAGE = "You do not have permission to delete this post!";
     private static final String UNAUTHORIZED_UPDATE_MESSAGE = "You do not have permission to update this post!";
 

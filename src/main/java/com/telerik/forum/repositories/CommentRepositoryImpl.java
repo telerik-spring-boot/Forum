@@ -66,11 +66,11 @@ public class CommentRepositoryImpl implements CommentRepository {
     }
 
     @Override
-    public void delete(Comment id) {
+    public void delete(int commentId) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
 
-            Comment comment = session.get(Comment.class, id);
+            Comment comment = session.get(Comment.class, commentId);
             session.remove(comment);
 
             session.getTransaction().commit();

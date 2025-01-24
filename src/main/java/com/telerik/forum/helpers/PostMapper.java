@@ -2,9 +2,11 @@ package com.telerik.forum.helpers;
 
 import com.telerik.forum.models.Comment;
 import com.telerik.forum.models.Post;
+import com.telerik.forum.models.dtos.commentDTOs.CommentCreateDTO;
 import com.telerik.forum.models.dtos.commentDTOs.CommentDisplayDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostCreateDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO;
+import com.telerik.forum.services.CommentService;
 import com.telerik.forum.services.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,10 +18,12 @@ import java.util.List;
 public class PostMapper {
 
     private final PostService postService;
+    private final CommentService commentService;
 
     @Autowired
-    public PostMapper(PostService postService) {
+    public PostMapper(PostService postService, CommentService commentService) {
         this.postService = postService;
+        this.commentService = commentService;
     }
 
     public PostDisplayDTO postToPostDisplayDTO(Post post) {
@@ -68,6 +72,24 @@ public class PostMapper {
         }
 
         return post;
+    }
+
+    public Comment dtoToComment(CommentCreateDTO dto) {
+        Comment comment = new Comment();
+
+        comment.setContent(dto.getContent());
+
+        return comment;
+    }
+
+    public Comment dtoToComment(int commentID, CommentCreateDTO dto) {
+        Comment comment = commentService.getComment(commentID);
+
+        if (dto.getContent() != null) {
+            comment.setContent(dto.getContent());
+        }
+
+        return comment;
     }
 
 }

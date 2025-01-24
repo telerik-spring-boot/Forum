@@ -4,11 +4,15 @@ import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.helpers.AuthenticationHelper;
 import com.telerik.forum.helpers.PostMapper;
+import com.telerik.forum.models.Comment;
 import com.telerik.forum.models.Post;
 import com.telerik.forum.models.User;
+import com.telerik.forum.models.dtos.commentDTOs.CommentCreateDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostCreateDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO;
+import com.telerik.forum.services.CommentService;
 import com.telerik.forum.services.PostService;
+import com.telerik.forum.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -23,12 +27,15 @@ public class PostController {
     private final PostService postService;
     private final AuthenticationHelper authenticationHelper;
     private final PostMapper postMapper;
+    private final CommentService commentService;
 
     @Autowired
-    public PostController(PostService postService, AuthenticationHelper authenticationHelper, PostMapper postMapper) {
+    public PostController(PostService postService, AuthenticationHelper authenticationHelper,
+                          PostMapper postMapper, CommentService commentService) {
         this.postService = postService;
         this.authenticationHelper = authenticationHelper;
         this.postMapper = postMapper;
+        this.commentService = commentService;
     }
 
     @GetMapping
@@ -49,7 +56,7 @@ public class PostController {
 
     @PostMapping
     public PostDisplayDTO createPost(@RequestHeader HttpHeaders headers,
-                           @RequestBody PostCreateDTO userInput) {
+                                     @RequestBody PostCreateDTO userInput) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
             Post post = postMapper.dtoToPost(userInput);
@@ -61,14 +68,49 @@ public class PostController {
         }
     }
 
-    @PutMapping("/{postId}")
-    public PostDisplayDTO updatePost(@RequestHeader HttpHeaders headers,
-                           @PathVariable int postId,
-                           @RequestBody PostCreateDTO userInput) {
+    @PostMapping("/{postId}/comments")
+    public PostDisplayDTO addCommentToPost(@RequestHeader HttpHeaders headers,
+                                           @PathVariable int postId,
+                                           @RequestBody CommentCreateDTO userInput) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
-            Post post= postMapper.dtoToPost(postId, userInput);
+            Post post = postService.getPost(postId);
+            Comment comment = postMapper.dtoToComment(userInput);
+            commentService.addComment(post, comment, userRequest);
+            return postMapper.postToPostDisplayDTO(post);
+        } catch (UnauthorizedOperationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+    @PutMapping("/{postId}")
+    public PostDisplayDTO updatePost(@RequestHeader HttpHeaders headers,
+                                     @PathVariable int postId,
+                                     @RequestBody PostCreateDTO userInput) {
+        try {
+            User userRequest = authenticationHelper.tryGetUser(headers);
+            Post post = postMapper.dtoToPost(postId, userInput);
             postService.updatePost(post, userRequest);
+            return postMapper.postToPostDisplayDTO(post);
+        } catch (UnauthorizedOperationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+    @PutMapping("/{postId}/comments/{commentId}")
+    public PostDisplayDTO updateComment(@RequestHeader HttpHeaders headers,
+                                        @PathVariable int postId,
+                                        @PathVariable int commentId,
+                                        @RequestBody CommentCreateDTO userInput) {
+        try {
+            User userRequest = authenticationHelper.tryGetUser(headers);
+            Post post = postService.getPost(postId);
+            Comment comment = postMapper.dtoToComment(commentId, userInput);
+            commentService.updateComment(post, comment, userRequest);
             return postMapper.postToPostDisplayDTO(post);
         } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
@@ -80,12 +122,27 @@ public class PostController {
     @DeleteMapping("/{postId}")
     public void deletePost(@RequestHeader HttpHeaders headers,
                            @PathVariable int postId) {
-        try{
+        try {
             User userRequest = authenticationHelper.tryGetUser(headers);
             postService.deletePost(postId, userRequest);
-        }catch (UnauthorizedOperationException e) {
+        } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        }catch (EntityNotFoundException e) {
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{postId}/comments/{commentId}")
+    public void deleteComment(@RequestHeader HttpHeaders headers,
+                              @PathVariable int postId,
+                              @PathVariable int commentId) {
+        try {
+            User userRequest = authenticationHelper.tryGetUser(headers);
+            Post post = postService.getPost(postId);
+            commentService.deleteComment(post, commentId, userRequest);
+        } catch (UnauthorizedOperationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }

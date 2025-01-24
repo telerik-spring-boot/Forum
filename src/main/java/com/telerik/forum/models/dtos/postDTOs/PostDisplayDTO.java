@@ -1,4 +1,6 @@
-package com.telerik.forum.models.dtos;
+package com.telerik.forum.models.dtos.postDTOs;
+
+import com.telerik.forum.models.dtos.commentDTOs.CommentDisplayDTO;
 
 import java.util.List;
 

@@ -2,9 +2,9 @@ package com.telerik.forum.helpers;
 
 import com.telerik.forum.models.Comment;
 import com.telerik.forum.models.Post;
-import com.telerik.forum.models.dtos.CommentDisplayDTO;
-import com.telerik.forum.models.dtos.PostCreateDTO;
-import com.telerik.forum.models.dtos.PostDisplayDTO;
+import com.telerik.forum.models.dtos.commentDTOs.CommentDisplayDTO;
+import com.telerik.forum.models.dtos.postDTOs.PostCreateDTO;
+import com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

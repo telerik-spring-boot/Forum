@@ -1,4 +1,4 @@
-package com.telerik.forum.models.dtos.userdtos;
+package com.telerik.forum.models.dtos.userDTOs;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

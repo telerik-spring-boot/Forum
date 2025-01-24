@@ -6,14 +6,13 @@ import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.helpers.AuthenticationHelper;
 import com.telerik.forum.helpers.UserMapper;
-import com.telerik.forum.models.Comment;
-import com.telerik.forum.models.Post;
 import com.telerik.forum.models.User;
-import com.telerik.forum.models.dtos.userdtos.UserCommentsDisplayDTO;
-import com.telerik.forum.models.dtos.userdtos.UserCreateDTO;
-import com.telerik.forum.models.dtos.userdtos.UserDisplayDTO;
-import com.telerik.forum.models.dtos.userdtos.UserPostsDisplayDTO;
+import com.telerik.forum.models.dtos.userDTOs.UserCommentsDisplayDTO;
+import com.telerik.forum.models.dtos.userDTOs.UserCreateDTO;
+import com.telerik.forum.models.dtos.userDTOs.UserDisplayDTO;
+import com.telerik.forum.models.dtos.userDTOs.UserPostsDisplayDTO;
 import com.telerik.forum.services.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -77,7 +76,7 @@ public class UserController {
     }
 
     @PostMapping
-    public UserDisplayDTO createUser(@RequestHeader HttpHeaders headers, @RequestBody UserCreateDTO userInput) {
+    public UserDisplayDTO createUser(@RequestHeader HttpHeaders headers,@Valid @RequestBody UserCreateDTO userInput) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
 

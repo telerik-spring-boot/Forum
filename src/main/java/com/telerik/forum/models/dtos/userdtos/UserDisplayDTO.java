@@ -1,4 +1,4 @@
-package com.telerik.forum.models.dtos.userdtos;
+package com.telerik.forum.models.dtos.userDTOs;
 
 public class UserDisplayDTO {
 

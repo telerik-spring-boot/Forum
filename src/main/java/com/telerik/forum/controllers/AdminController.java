@@ -5,11 +5,15 @@ import com.telerik.forum.exceptions.DuplicateEntityException;
 import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.helpers.AuthenticationHelper;
+import com.telerik.forum.helpers.UserMapper;
 import com.telerik.forum.models.Admin;
 import com.telerik.forum.models.User;
-import com.telerik.forum.models.dtos.AdminCreateDTO;
+import com.telerik.forum.models.dtos.adminDTOs.AdminCreateDTO;
+import com.telerik.forum.models.dtos.adminDTOs.AdminDisplayDTO;
+import com.telerik.forum.models.dtos.userDTOs.UserDisplayDTO;
 import com.telerik.forum.services.AdminService;
 import com.telerik.forum.services.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,36 +29,40 @@ public class AdminController {
     private final AdminService adminService;
     private final UserService userService;
     private final AuthenticationHelper authenticationHelper;
+    private final UserMapper userMapper;
 
     @Autowired
-    public AdminController(AdminService adminService, UserService userService, AuthenticationHelper authenticationHelper) {
+    public AdminController(AdminService adminService, UserService userService, AuthenticationHelper authenticationHelper, UserMapper userMapper) {
         this.adminService = adminService;
         this.userService = userService;
         this.authenticationHelper = authenticationHelper;
+        this.userMapper = userMapper;
     }
 
     @GetMapping
-    public List<Admin> getAllAdmins() {
-        return adminService.getAll();
+    public List<AdminDisplayDTO> getAllAdmins() {
+        return adminService.getAll().stream()
+                .map(userMapper::AdminToAdminDisplayDTO)
+                .toList();
     }
 
     @GetMapping("/{userId}")
-    public Admin getAdminByUserId(@PathVariable int userId) {
+    public AdminDisplayDTO getAdminByUserId(@PathVariable int userId) {
         try {
-            return adminService.getByUserId(userId);
+            return userMapper.AdminToAdminDisplayDTO(adminService.getByUserId(userId));
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 
     @PostMapping
-    public Admin createAdmin(@RequestHeader HttpHeaders headers, @RequestBody AdminCreateDTO adminDTO) {
+    public AdminDisplayDTO createAdmin(@RequestHeader HttpHeaders headers,@Valid @RequestBody AdminCreateDTO adminDTO) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
 
             adminService.create(userService.getById(adminDTO.getUser_id()), adminDTO.getPhone_number(), userRequest.getId());
 
-            return adminService.getByUserId(adminDTO.getUser_id());
+            return userMapper.AdminToAdminDisplayDTO(adminService.getByUserId(adminDTO.getUser_id()));
 
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
@@ -86,11 +94,15 @@ public class AdminController {
     }
 
     @PutMapping("/block/{userId}")
-    public void blockUser(@RequestHeader HttpHeaders headers, @PathVariable int userId) {
+    public UserDisplayDTO blockUser(@RequestHeader HttpHeaders headers, @PathVariable int userId) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
 
-            adminService.blockUser(userService.getById(userId), userRequest.getId());
+            User userToBlock = userService.getById(userId);
+            adminService.blockUser(userToBlock, userRequest.getId());
+
+            return userMapper.userToUserDisplayDTO(userToBlock);
+
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (UnauthorizedOperationException e) {
@@ -98,12 +110,15 @@ public class AdminController {
         }
     }
 
-    @PutMapping("/unlock/{userId}")
-    public void unlockUser(@RequestHeader HttpHeaders headers, @PathVariable int userId) {
+    @PutMapping("/unblock/{userId}")
+    public UserDisplayDTO unblockUser(@RequestHeader HttpHeaders headers, @PathVariable int userId) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
 
-            adminService.unblockUser(userService.getById(userId), userRequest.getId());
+            User userToUnblock = userService.getById(userId);
+            adminService.unblockUser(userToUnblock, userRequest.getId());
+
+            return userMapper.userToUserDisplayDTO(userToUnblock);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (UnauthorizedOperationException e) {

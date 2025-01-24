@@ -1,13 +1,13 @@
-package com.telerik.forum.models.dtos;
+package com.telerik.forum.models.dtos.adminDTOs;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 public class AdminCreateDTO {
 
-    @NotNull
+    @Pattern(regexp = "^[0-9]+$", message = "The field must be numeric.")
     private int user_id;
 
-    @NotNull
+    @Pattern(regexp = "^(\\+\\d{1,3}[-\\s]?)?\\(?\\d{1,4}\\)?[-\\s]?\\d{0,4}[-\\s]?\\d{1,4}[-\\s]?\\d{1,4}$", message = "Invalid phone number format.")
     private String phone_number;
 
     public AdminCreateDTO() {}

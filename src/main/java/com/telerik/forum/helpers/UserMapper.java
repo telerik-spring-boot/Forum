@@ -1,16 +1,16 @@
 package com.telerik.forum.helpers;
 
 
-import com.telerik.forum.models.Post;
+import com.telerik.forum.models.Admin;
 import com.telerik.forum.models.User;
-import com.telerik.forum.models.dtos.userdtos.UserCommentsDisplayDTO;
-import com.telerik.forum.models.dtos.userdtos.UserCreateDTO;
-import com.telerik.forum.models.dtos.userdtos.UserDisplayDTO;
-import com.telerik.forum.models.dtos.userdtos.UserPostsDisplayDTO;
+import com.telerik.forum.models.dtos.adminDTOs.AdminCreateDTO;
+import com.telerik.forum.models.dtos.adminDTOs.AdminDisplayDTO;
+import com.telerik.forum.models.dtos.userDTOs.UserCommentsDisplayDTO;
+import com.telerik.forum.models.dtos.userDTOs.UserCreateDTO;
+import com.telerik.forum.models.dtos.userDTOs.UserDisplayDTO;
+import com.telerik.forum.models.dtos.userDTOs.UserPostsDisplayDTO;
 import com.telerik.forum.services.UserService;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public class UserMapper {
@@ -62,6 +62,20 @@ public class UserMapper {
         userPostsDisplayDTO.setPosts(user.getPosts());
 
         return userPostsDisplayDTO;
+    }
+
+    public AdminDisplayDTO AdminToAdminDisplayDTO(Admin admin) {
+        AdminDisplayDTO adminDisplayDTO = new AdminDisplayDTO();
+        User userPartOfAdmin = admin.getUser();
+
+        adminDisplayDTO.setUsername(userPartOfAdmin.getUsername());
+        adminDisplayDTO.setFirstName(userPartOfAdmin.getFirstName());
+        adminDisplayDTO.setLastName(userPartOfAdmin.getLastName());
+        adminDisplayDTO.setBlocked(userPartOfAdmin.isBlocked());
+        adminDisplayDTO.setPhoneNumber(admin.getPhoneNumber());
+
+        return adminDisplayDTO;
+
     }
 
 }

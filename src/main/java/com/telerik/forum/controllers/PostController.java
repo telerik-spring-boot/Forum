@@ -3,8 +3,11 @@ package com.telerik.forum.controllers;
 import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.helpers.AuthenticationHelper;
+import com.telerik.forum.helpers.PostMapper;
 import com.telerik.forum.models.Post;
 import com.telerik.forum.models.User;
+import com.telerik.forum.models.dtos.postDTOs.PostCreateDTO;
+import com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO;
 import com.telerik.forum.services.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -19,34 +22,39 @@ import java.util.List;
 public class PostController {
     private final PostService postService;
     private final AuthenticationHelper authenticationHelper;
+    private final PostMapper postMapper;
 
     @Autowired
-    public PostController(PostService postService, AuthenticationHelper authenticationHelper) {
+    public PostController(PostService postService, AuthenticationHelper authenticationHelper, PostMapper postMapper) {
         this.postService = postService;
         this.authenticationHelper = authenticationHelper;
+        this.postMapper = postMapper;
     }
 
     @GetMapping
-    public List<Post> getAllPosts() {
-        return postService.getPosts();
+    public List<PostDisplayDTO> getAllPosts() {
+        return postService.getPosts().stream()
+                .map(postMapper::postToPostDisplayDTO)
+                .toList();
     }
 
     @GetMapping("/{postId}")
-    public Post getPostById(@PathVariable int postId) {
+    public PostDisplayDTO getPostById(@PathVariable int postId) {
         try {
-            return postService.getPost(postId);
+            return postMapper.postToPostDisplayDTO(postService.getPost(postId));
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 
     @PostMapping
-    public Post createPost(@RequestHeader HttpHeaders headers,
-                           @RequestBody Post post) {
+    public PostDisplayDTO createPost(@RequestHeader HttpHeaders headers,
+                           @RequestBody PostCreateDTO userInput) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
+            Post post = postMapper.dtoToPost(userInput);
             postService.createPost(post, userRequest);
-            return post;
+            return postMapper.postToPostDisplayDTO(post);
 
         } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());

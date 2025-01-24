@@ -1,4 +1,4 @@
-package com.telerik.forum.models.dtos;
+package com.telerik.forum.models.dtos.postDTOs;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

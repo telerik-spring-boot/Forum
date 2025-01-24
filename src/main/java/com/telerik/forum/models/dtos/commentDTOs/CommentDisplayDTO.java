@@ -1,4 +1,4 @@
-package com.telerik.forum.models.dtos;
+package com.telerik.forum.models.dtos.commentDTOs;
 
 public class CommentDisplayDTO {
 

@@ -69,7 +69,7 @@ public class CommentServiceImpl implements CommentService {
         }
         Comment commentToDelete = comments.get(commentId - 1);
         checkCommentDeletePermission(commentToDelete.getId(), user);
-        commentRepository.delete(commentId);
+        commentRepository.delete(commentToDelete.getId());
         //postRepository.update(post);
     }
 

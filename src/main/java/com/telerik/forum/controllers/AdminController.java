@@ -10,6 +10,7 @@ import com.telerik.forum.models.Admin;
 import com.telerik.forum.models.User;
 import com.telerik.forum.models.dtos.adminDTOs.AdminCreateDTO;
 import com.telerik.forum.models.dtos.adminDTOs.AdminDisplayDTO;
+import com.telerik.forum.models.dtos.adminDTOs.AdminUpdateDTO;
 import com.telerik.forum.models.dtos.userDTOs.UserDisplayDTO;
 import com.telerik.forum.services.AdminService;
 import com.telerik.forum.services.UserService;
@@ -74,17 +75,15 @@ public class AdminController {
     }
 
     @PutMapping("/{userId}")
-    public Admin updateAdmin(@RequestHeader HttpHeaders headers, @PathVariable int userId, @RequestBody AdminCreateDTO adminDTO) {
+    public AdminDisplayDTO updateAdmin(@RequestHeader HttpHeaders headers, @PathVariable int userId, @Valid @RequestBody AdminUpdateDTO adminDTO) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
 
-            Admin admin = adminService.getByUserId(userId);
-            admin.setPhoneNumber(adminDTO.getPhone_number());
+            Admin admin = userMapper.dtoToAdmin(userId, adminDTO);
+
             adminService.update(admin, userRequest.getId());
 
-            //TODO adjust with DTO later on
-
-            return admin;
+            return userMapper.AdminToAdminDisplayDTO(admin);
 
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());

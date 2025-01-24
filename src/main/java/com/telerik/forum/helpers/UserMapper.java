@@ -5,20 +5,27 @@ import com.telerik.forum.models.Admin;
 import com.telerik.forum.models.User;
 import com.telerik.forum.models.dtos.adminDTOs.AdminCreateDTO;
 import com.telerik.forum.models.dtos.adminDTOs.AdminDisplayDTO;
+import com.telerik.forum.models.dtos.adminDTOs.AdminUpdateDTO;
 import com.telerik.forum.models.dtos.userDTOs.UserCommentsDisplayDTO;
 import com.telerik.forum.models.dtos.userDTOs.UserCreateDTO;
 import com.telerik.forum.models.dtos.userDTOs.UserDisplayDTO;
 import com.telerik.forum.models.dtos.userDTOs.UserPostsDisplayDTO;
+import com.telerik.forum.services.AdminService;
 import com.telerik.forum.services.UserService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserMapper {
 
     private final UserService userService;
+    private final AdminService adminService;
 
-    public UserMapper(UserService userService) {
+    @Autowired
+    public UserMapper(UserService userService, AdminService adminService) {
         this.userService = userService;
+        this.adminService = adminService;
     }
 
     public User dtoToUser(UserCreateDTO dto) {
@@ -78,4 +85,11 @@ public class UserMapper {
 
     }
 
+    public Admin dtoToAdmin(int userId, AdminUpdateDTO adminDTO) {
+        Admin admin = adminService.getByUserId(userId);
+
+        admin.setPhoneNumber(adminDTO.getPhoneNumber());
+
+        return admin;
+    }
 }

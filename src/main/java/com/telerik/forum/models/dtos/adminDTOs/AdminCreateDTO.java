@@ -1,10 +1,11 @@
 package com.telerik.forum.models.dtos.adminDTOs;
 
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
 
 public class AdminCreateDTO {
 
-    @Pattern(regexp = "^[0-9]+$", message = "The field must be numeric.")
+    @Positive(message = "User ID must be a positive number")
     private int user_id;
 
     @Pattern(regexp = "^(\\+\\d{1,3}[-\\s]?)?\\(?\\d{1,4}\\)?[-\\s]?\\d{0,4}[-\\s]?\\d{1,4}[-\\s]?\\d{1,4}$", message = "Invalid phone number format.")

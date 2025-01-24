@@ -9,6 +9,7 @@ import com.telerik.forum.helpers.UserMapper;
 import com.telerik.forum.models.Comment;
 import com.telerik.forum.models.Post;
 import com.telerik.forum.models.User;
+import com.telerik.forum.models.dtos.userdtos.UserCommentsDisplayDTO;
 import com.telerik.forum.models.dtos.userdtos.UserCreateDTO;
 import com.telerik.forum.models.dtos.userdtos.UserDisplayDTO;
 import com.telerik.forum.services.UserService;
@@ -37,14 +38,16 @@ public class UserController {
 
 
     @GetMapping
-    public List<User> getAllUsers() {
-        return userService.getAll();
+    public List<UserDisplayDTO> getAllUsers() {
+        return userService.getAll().stream()
+                .map(userMapper::userToUserDisplayDTO)
+                .toList();
     }
 
     @GetMapping("/{id}")
-    public User getUserById(@PathVariable int id) {
+    public UserDisplayDTO getUserById(@PathVariable int id) {
         try {
-            return userService.getById(id);
+            return userMapper.userToUserDisplayDTO(userService.getById(id));
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
@@ -62,11 +65,11 @@ public class UserController {
     }
 
     @GetMapping("/{id}/comments")
-    public List<Comment> getUserComments(@PathVariable int id) {
+    public UserCommentsDisplayDTO getUserComments(@PathVariable int id) {
         try {
-            User userEntity =  userService.getByIdWithComments(id);
+            User userEntity = userService.getByIdWithComments(id);
 
-            return userEntity.getComments();
+            return userMapper.userToUserCommentsDisplayDTO(userEntity);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }

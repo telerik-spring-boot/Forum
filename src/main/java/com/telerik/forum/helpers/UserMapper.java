@@ -2,6 +2,7 @@ package com.telerik.forum.helpers;
 
 
 import com.telerik.forum.models.User;
+import com.telerik.forum.models.dtos.userdtos.UserCommentsDisplayDTO;
 import com.telerik.forum.models.dtos.userdtos.UserCreateDTO;
 import com.telerik.forum.models.dtos.userdtos.UserDisplayDTO;
 import com.telerik.forum.services.UserService;
@@ -37,6 +38,16 @@ public class UserMapper {
         userDisplayDTO.setBlocked(user.isBlocked());
 
         return userDisplayDTO;
+    }
+
+    public UserCommentsDisplayDTO userToUserCommentsDisplayDTO(User user) {
+        UserCommentsDisplayDTO userCommentsDisplayDTO = new UserCommentsDisplayDTO();
+
+        userCommentsDisplayDTO.setComments(user.getComments());
+        userCommentsDisplayDTO.setFirstName(user.getFirstName());
+        userCommentsDisplayDTO.setLastName(user.getLastName());
+
+        return userCommentsDisplayDTO;
     }
 
 }

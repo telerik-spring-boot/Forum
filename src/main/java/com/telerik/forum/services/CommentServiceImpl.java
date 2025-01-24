@@ -10,19 +10,24 @@ import com.telerik.forum.repositories.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static com.telerik.forum.services.PostServiceImpl.BLOCKED_ACCOUNT_MESSAGE;
 
 @Service
 public class CommentServiceImpl implements CommentService {
     private static final String UNAUTHORIZED_UPDATE_MESSAGE = "You do not have permission to update this comment!";
     private static final String UNAUTHORIZED_DELETE_MESSAGE = "You do not have permission to delete this comment!";
+
     private final CommentRepository commentRepository;
     private final AdminRepository adminRepository;
+
 
     @Autowired
     public CommentServiceImpl(CommentRepository commentRepository, AdminRepository adminRepository) {
         this.commentRepository = commentRepository;
         this.adminRepository = adminRepository;
+
     }
 
     @Override
@@ -35,16 +40,22 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    public List<Comment> getByPostId(int postId) {
+        return commentRepository.getByPostId(postId);
+    }
+
+    @Override
     public void addComment(Post post, Comment comment, User user) {
         comment.setPost(post);
         comment.setUser(user);
         commentRepository.create(comment);
-        //postRepository.update(post);
+//        postRepository.update(post);
 
     }
 
     @Override
     public void updateComment(Post post, Comment comment, User user) {
+
         checkCommentUpdatePermission(comment.getId(), user);
         commentRepository.update(comment);
         //postRepository.update(post);// Do we need this with CascadeType.ALL?
@@ -52,7 +63,12 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void deleteComment(Post post, int commentId, User user) {
-        checkCommentDeletePermission(commentId, user);
+        List<Comment> comments = commentRepository.getByPostId(post.getId());
+        if (commentId - 1 >= comments.size()) {
+            throw new EntityNotFoundException("Comment", "id", commentId);
+        }
+        Comment commentToDelete = comments.get(commentId - 1);
+        checkCommentDeletePermission(commentToDelete.getId(), user);
         commentRepository.delete(commentId);
         //postRepository.update(post);
     }

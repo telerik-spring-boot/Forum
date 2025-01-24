@@ -10,7 +10,7 @@ public interface CommentRepository {
 //
     Comment getById(int id);
 //
-//    List<Comment> getbyPostId(int postId);
+    List<Comment> getByPostId(int postId);
 
     void create(Comment comment);
 

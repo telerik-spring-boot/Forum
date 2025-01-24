@@ -12,7 +12,6 @@ import com.telerik.forum.models.dtos.postDTOs.PostCreateDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO;
 import com.telerik.forum.services.CommentService;
 import com.telerik.forum.services.PostService;
-import com.telerik.forum.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -77,7 +76,8 @@ public class PostController {
             Post post = postService.getPost(postId);
             Comment comment = postMapper.dtoToComment(userInput);
             commentService.addComment(post, comment, userRequest);
-            return postMapper.postToPostDisplayDTO(post);
+            Post updatedPost = postService.getPost(postId);
+            return postMapper.postToPostDisplayDTO(updatedPost);
         } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
@@ -109,9 +109,10 @@ public class PostController {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
             Post post = postService.getPost(postId);
-            Comment comment = postMapper.dtoToComment(commentId, userInput);
+            Comment comment = postMapper.dtoToComment(commentId, userInput, postId);
             commentService.updateComment(post, comment, userRequest);
-            return postMapper.postToPostDisplayDTO(post);
+            Post updatedPost = postService.getPost(postId);
+            return postMapper.postToPostDisplayDTO(updatedPost);
         } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
@@ -133,13 +134,15 @@ public class PostController {
     }
 
     @DeleteMapping("/{postId}/comments/{commentId}")
-    public void deleteComment(@RequestHeader HttpHeaders headers,
+    public PostDisplayDTO deleteComment(@RequestHeader HttpHeaders headers,
                               @PathVariable int postId,
                               @PathVariable int commentId) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
             Post post = postService.getPost(postId);
             commentService.deleteComment(post, commentId, userRequest);
+            Post updatedPost = postService.getPost(postId);
+            return postMapper.postToPostDisplayDTO(updatedPost);
         } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {

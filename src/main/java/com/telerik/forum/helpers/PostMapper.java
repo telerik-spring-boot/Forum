@@ -1,5 +1,6 @@
 package com.telerik.forum.helpers;
 
+import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.models.Comment;
 import com.telerik.forum.models.Post;
 import com.telerik.forum.models.dtos.commentDTOs.CommentCreateDTO;
@@ -60,8 +61,8 @@ public class PostMapper {
         return post;
     }
 
-    public Post dtoToPost(int postID, PostCreateDTO dto) {
-        Post post = postService.getPost(postID);
+    public Post dtoToPost(int postId, PostCreateDTO dto) {
+        Post post = postService.getPost(postId);
 
         if (dto.getTitle() != null) {
             post.setTitle(dto.getTitle());
@@ -82,14 +83,19 @@ public class PostMapper {
         return comment;
     }
 
-    public Comment dtoToComment(int commentID, CommentCreateDTO dto) {
-        Comment comment = commentService.getComment(commentID);
+    public Comment dtoToComment(int commentId, CommentCreateDTO dto, int postId) {
+        List<Comment> comments = commentService.getByPostId(postId);
+
+        if (commentId - 1 >= comments.size()) {
+            throw new EntityNotFoundException("Comment", "id", commentId);
+        }
+        Comment commentToUpdate = comments.get(commentId - 1);
 
         if (dto.getContent() != null) {
-            comment.setContent(dto.getContent());
+            commentToUpdate.setContent(dto.getContent());
         }
 
-        return comment;
+        return commentToUpdate;
     }
 
 }

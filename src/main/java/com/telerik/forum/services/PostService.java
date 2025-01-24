@@ -10,7 +10,7 @@ public interface PostService {
 
     List<Post> getPosts();
 
-    List<Post> getPostsByAuthor(User user);
+    //List<Post> getPostsByAuthor(User user);
 
     Post getPost(int id);
 

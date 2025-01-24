@@ -8,9 +8,11 @@ public interface PostRepository {
 
     List<Post> getAll();
 
-    Post getById(int id);
+    Post getPostById(int id);
 
-    List<Post> getbyUserId(int userId);
+    //Post getPostAndCommnetsById(int id);
+
+   // List<Post> getPostsAndCommentsbyUserId(int userId);
 
     void create(Post post);
 

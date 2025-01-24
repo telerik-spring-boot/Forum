@@ -1,6 +1,5 @@
 package com.telerik.forum.repositories;
 
-import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.models.Post;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -29,21 +28,21 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public Post getById(int id) {
+    public Post getPostById(int postId) {
         try (Session session = sessionFactory.openSession()) {
 
-            return session.get(Post.class, id);
+            return session.get(Post.class, postId);
         }
     }
 
-    @Override
-    public List<Post> getbyUserId(int userId) {
-        try (Session session = sessionFactory.openSession()) {
-            Query<Post> query = session.createQuery("from Post where user.id = :userId  ", Post.class);
-            query.setParameter("userId", userId);
-            return query.list();
-        }
-    }
+//    @Override
+//    public List<Post> getPostsAndCommentsbyUserId(int userId) {
+//        try (Session session = sessionFactory.openSession()) {
+//            Query<Post> query = session.createQuery("SELECT DISTINCT p FROM Post p LEFT JOIN FETCH p.comments WHERE p.user.id = :userId  ", Post.class);
+//            query.setParameter("userId", userId);
+//            return query.list();
+//        }
+//    }
 
     @Override
     public void create(Post post) {

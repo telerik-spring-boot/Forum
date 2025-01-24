@@ -33,14 +33,14 @@ public class PostServiceImpl implements PostService {
         return postRepository.getAll();
     }
 
-    @Override
-    public List<Post> getPostsByAuthor(User user) {
-        return postRepository.getbyUserId(user.getId());
-    }
+//    @Override
+//    public List<Post> getPostsByAuthor(User user) {
+//        return postRepository.getPostsAndCommentsbyUserId(user.getId());
+//    }
 
     @Override
     public Post getPost(int id) {
-        Post post = postRepository.getById(id);
+        Post post = postRepository.getPostById(id);
         if (post == null) {
             throw new EntityNotFoundException("Post", "id", id);
         }
@@ -89,7 +89,7 @@ public class PostServiceImpl implements PostService {
     }
 
     private void checkPostUpdatePermission(int postId, User user) {
-        Post post = postRepository.getById(postId);
+        Post post = postRepository.getPostById(postId);
 
         if (!post.getUser().equals(user)) {
             throw new UnauthorizedOperationException("You do not have permission to update this post!");
@@ -97,7 +97,7 @@ public class PostServiceImpl implements PostService {
     }
 
     private void checkPostDeletePermission(int postId, User user) {
-        Post post = postRepository.getById(postId);
+        Post post = postRepository.getPostById(postId);
         if (post == null) {
             throw new EntityNotFoundException("Post", "id", postId);
         }

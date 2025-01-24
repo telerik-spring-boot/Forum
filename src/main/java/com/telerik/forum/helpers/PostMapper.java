@@ -5,10 +5,11 @@ import com.telerik.forum.models.Post;
 import com.telerik.forum.models.dtos.CommentDisplayDTO;
 import com.telerik.forum.models.dtos.PostCreateDTO;
 import com.telerik.forum.models.dtos.PostDisplayDTO;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@Component
 public class PostMapper {
 
     public PostDisplayDTO postToPostDisplayDTO(Post post) {

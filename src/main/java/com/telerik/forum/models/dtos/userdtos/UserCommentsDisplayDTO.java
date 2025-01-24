@@ -1,6 +1,6 @@
 package com.telerik.forum.models.dtos.userDTOs;
 
-import com.telerik.forum.models.Comment;
+import com.telerik.forum.models.dtos.commentDTOs.CommentDisplayDTO;
 
 import java.util.List;
 
@@ -10,12 +10,12 @@ public class UserCommentsDisplayDTO {
 
     public String lastName;
 
-    public List<Comment> comments;
+    public List<CommentDisplayDTO> comments;
 
     public UserCommentsDisplayDTO() {
     }
 
-    public UserCommentsDisplayDTO(String firstName, String lastName, List<Comment> comments) {
+    public UserCommentsDisplayDTO(String firstName, String lastName, List<CommentDisplayDTO> comments) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.comments = comments;
@@ -29,11 +29,11 @@ public class UserCommentsDisplayDTO {
         this.firstName = firstName;
     }
 
-    public List<Comment> getComments() {
+    public List<CommentDisplayDTO> getComments() {
         return comments;
     }
 
-    public void setComments(List<Comment> comments) {
+    public void setComments(List<CommentDisplayDTO> comments) {
         this.comments = comments;
     }
 

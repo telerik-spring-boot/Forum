@@ -6,6 +6,8 @@ import com.telerik.forum.models.User;
 import com.telerik.forum.models.dtos.adminDTOs.AdminCreateDTO;
 import com.telerik.forum.models.dtos.adminDTOs.AdminDisplayDTO;
 import com.telerik.forum.models.dtos.adminDTOs.AdminUpdateDTO;
+import com.telerik.forum.models.dtos.commentDTOs.CommentDisplayDTO;
+import com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO;
 import com.telerik.forum.models.dtos.userDTOs.*;
 import com.telerik.forum.services.AdminService;
 import com.telerik.forum.services.UserService;
@@ -13,16 +15,20 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class UserMapper {
 
     private final UserService userService;
     private final AdminService adminService;
+    private final PostMapper postMapper;
 
     @Autowired
-    public UserMapper(UserService userService, AdminService adminService) {
+    public UserMapper(UserService userService, AdminService adminService, PostMapper postMapper) {
         this.userService = userService;
         this.adminService = adminService;
+        this.postMapper = postMapper;
     }
 
     public User dtoToUser(UserCreateDTO dto) {
@@ -73,7 +79,11 @@ public class UserMapper {
     public UserCommentsDisplayDTO userToUserCommentsDisplayDTO(User user) {
         UserCommentsDisplayDTO userCommentsDisplayDTO = new UserCommentsDisplayDTO();
 
-        userCommentsDisplayDTO.setComments(user.getComments());
+        List<CommentDisplayDTO> comments = user.getComments().stream()
+                .map(postMapper::commentToCommentDisplayDTO)
+                .toList();
+
+        userCommentsDisplayDTO.setComments(comments);
         userCommentsDisplayDTO.setFirstName(user.getFirstName());
         userCommentsDisplayDTO.setLastName(user.getLastName());
 
@@ -85,7 +95,11 @@ public class UserMapper {
 
         userPostsDisplayDTO.setFirstName(user.getFirstName());
         userPostsDisplayDTO.setLastName(user.getLastName());
-        userPostsDisplayDTO.setPosts(user.getPosts());
+
+        List<PostDisplayDTO> posts = user.getPosts().stream()
+                        .map(postMapper::postToPostDisplayDTO)
+                                .toList();
+        userPostsDisplayDTO.setPosts(posts);
 
         return userPostsDisplayDTO;
     }

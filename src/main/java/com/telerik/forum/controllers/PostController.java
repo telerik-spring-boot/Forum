@@ -62,13 +62,14 @@ public class PostController {
     }
 
     @PutMapping("/{postId}")
-    public Post updatePost(@RequestHeader HttpHeaders headers,
+    public PostDisplayDTO updatePost(@RequestHeader HttpHeaders headers,
                            @PathVariable int postId,
-                           @RequestBody Post post) {
+                           @RequestBody PostCreateDTO userInput) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
+            Post post= postMapper.dtoToPost(postId, userInput);
             postService.updatePost(post, userRequest);
-            return post;
+            return postMapper.postToPostDisplayDTO(post);
         } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {

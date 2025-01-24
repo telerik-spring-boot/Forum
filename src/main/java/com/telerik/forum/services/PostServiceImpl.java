@@ -14,6 +14,10 @@ import java.util.List;
 @Service
 public class PostServiceImpl implements PostService {
 
+    private static final String BLOCKED_ACCOUNT_MESSAGE = "Your account is blocked!";
+    private static final String UNAUTHORIZED_DELETE_MESSAGE = "You do not have permission to delete this post!";
+    private static final String UNAUTHORIZED_UPDATE_MESSAGE = "You do not have permission to update this post!";
+
     private final PostRepository postRepository;
     private final AdminRepository adminRepository;
 
@@ -29,10 +33,6 @@ public class PostServiceImpl implements PostService {
         return postRepository.getAll();
     }
 
-//    @Override
-//    public List<Post> getPostsByAuthor(User user) {
-//        return postRepository.getPostsAndCommentsbyUserId(user.getId());
-//    }
 
     @Override
     public Post getPost(int id) {
@@ -62,24 +62,28 @@ public class PostServiceImpl implements PostService {
     }
 
     private void checkPostUpdatePermission(int postId, User user) {
-        Post post = postRepository.getPostById(postId);
+        Post post = getPost(postId);
 
         if (!post.getUser().equals(user)) {
-            throw new UnauthorizedOperationException("You do not have permission to update this post!");
+            throw new UnauthorizedOperationException(UNAUTHORIZED_UPDATE_MESSAGE);
+        }
+        if (user.isBlocked()) {
+            throw new UnauthorizedOperationException(BLOCKED_ACCOUNT_MESSAGE);
         }
     }
 
     private void checkPostDeletePermission(int postId, User user) {
-        Post post = postRepository.getPostById(postId);
-        if (post == null) {
-            throw new EntityNotFoundException("Post", "id", postId);
-        }
+        Post post = getPost(postId);
+
         boolean isAdmin = adminRepository.getByUserId(user.getId()) != null;
         if (!(post.getUser().equals(user) || isAdmin)) {
-            throw new UnauthorizedOperationException("You do not have permission to delete this post!");
+            throw new UnauthorizedOperationException(UNAUTHORIZED_DELETE_MESSAGE);
+        }
+        if (user.isBlocked()) {
+            throw new UnauthorizedOperationException(BLOCKED_ACCOUNT_MESSAGE);
         }
 
     }
 
-    // TODO restrict the capabilities of a blocked user
+
 }

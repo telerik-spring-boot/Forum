@@ -21,17 +21,30 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public List<Post> getAll() {
+//        try (Session session = sessionFactory.openSession()) {
+//            Query<Post> query = session.createQuery("from Post", Post.class);
+//            return query.list();
+//        }
+
         try (Session session = sessionFactory.openSession()) {
-            Query<Post> query = session.createQuery("from Post", Post.class);
+            Query<Post> query = session.createQuery("SELECT DISTINCT p FROM Post p LEFT JOIN FETCH p.comments ", Post.class);
+
             return query.list();
         }
     }
 
     @Override
     public Post getPostById(int postId) {
-        try (Session session = sessionFactory.openSession()) {
+//        try (Session session = sessionFactory.openSession()) {
+//
+//            return session.get(Post.class, postId);
+//        }
 
-            return session.get(Post.class, postId);
+        try (Session session = sessionFactory.openSession()) {
+            Query<Post> query = session.createQuery("SELECT DISTINCT p FROM Post p LEFT JOIN FETCH p.comments WHERE p.id=:postId ",
+                    Post.class);
+            query.setParameter("postId", postId);
+            return query.uniqueResult();
         }
     }
 

@@ -1,12 +1,16 @@
 package com.telerik.forum.helpers;
 
 
+import com.telerik.forum.models.Post;
 import com.telerik.forum.models.User;
 import com.telerik.forum.models.dtos.userdtos.UserCommentsDisplayDTO;
 import com.telerik.forum.models.dtos.userdtos.UserCreateDTO;
 import com.telerik.forum.models.dtos.userdtos.UserDisplayDTO;
+import com.telerik.forum.models.dtos.userdtos.UserPostsDisplayDTO;
 import com.telerik.forum.services.UserService;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class UserMapper {
@@ -48,6 +52,16 @@ public class UserMapper {
         userCommentsDisplayDTO.setLastName(user.getLastName());
 
         return userCommentsDisplayDTO;
+    }
+
+    public UserPostsDisplayDTO userToUserPostsDisplayDTO(User user) {
+        UserPostsDisplayDTO userPostsDisplayDTO = new UserPostsDisplayDTO();
+
+        userPostsDisplayDTO.setFirstName(user.getFirstName());
+        userPostsDisplayDTO.setLastName(user.getLastName());
+        userPostsDisplayDTO.setPosts(user.getPosts());
+
+        return userPostsDisplayDTO;
     }
 
 }

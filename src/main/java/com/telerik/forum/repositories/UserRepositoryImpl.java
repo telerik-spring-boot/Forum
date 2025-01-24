@@ -1,5 +1,6 @@
 package com.telerik.forum.repositories;
 
+import com.telerik.forum.models.Post;
 import com.telerik.forum.models.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -33,12 +34,21 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User getByIdWithPosts(int id) {
-        try(Session session = sessionFactory.openSession()) {
-            Query<User> query = session.createQuery("SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.posts WHERE u.id = :id", User.class);
+        try (Session session = sessionFactory.openSession()) {
+            User user = session.createQuery("SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.posts WHERE u.id = :id", User.class)
+                    .setParameter("id", id)
+                    .uniqueResult();
 
-            query.setParameter("id", id);
 
-            return query.uniqueResult();
+            if (user != null) {
+                for (Post post : user.getPosts()) {
+                    session.createQuery("SELECT DISTINCT p FROM Post p LEFT JOIN FETCH p.comments WHERE p.id = :postId", Post.class)
+                            .setParameter("postId", post.getId())
+                            .uniqueResult();
+                }
+            }
+
+            return user;
         }
     }
 

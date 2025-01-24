@@ -12,6 +12,7 @@ import com.telerik.forum.models.User;
 import com.telerik.forum.models.dtos.userdtos.UserCommentsDisplayDTO;
 import com.telerik.forum.models.dtos.userdtos.UserCreateDTO;
 import com.telerik.forum.models.dtos.userdtos.UserDisplayDTO;
+import com.telerik.forum.models.dtos.userdtos.UserPostsDisplayDTO;
 import com.telerik.forum.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -54,11 +55,11 @@ public class UserController {
     }
 
     @GetMapping("/{id}/posts")
-    public List<Post> getUserPosts(@PathVariable int id) {
+    public UserPostsDisplayDTO getUserPosts(@PathVariable int id) {
         try {
             User userEntity =  userService.getByIdWithPosts(id);
 
-            return userEntity.getPosts();
+            return userMapper.userToUserPostsDisplayDTO(userEntity);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }

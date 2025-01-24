@@ -3,6 +3,7 @@ package com.telerik.forum.helpers;
 import com.telerik.forum.models.Comment;
 import com.telerik.forum.models.Post;
 import com.telerik.forum.models.dtos.CommentDisplayDTO;
+import com.telerik.forum.models.dtos.PostCreateDTO;
 import com.telerik.forum.models.dtos.PostDisplayDTO;
 
 import java.util.ArrayList;
@@ -34,4 +35,14 @@ public class PostMapper {
 
         return commentDTO;
     }
+
+    public Post dtoToPost(PostCreateDTO dto){
+        Post post = new Post();
+
+        post.setTitle(dto.getTitle());
+        post.setContent(dto.getContent());
+
+        return post;
+    }
+
 }

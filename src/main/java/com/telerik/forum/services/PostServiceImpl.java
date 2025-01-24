@@ -40,7 +40,11 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post getPost(int id) {
-        return postRepository.getById(id);
+        Post post = postRepository.getById(id);
+        if (post == null) {
+            throw new EntityNotFoundException("Post", "id", id);
+        }
+        return post;
     }
 
     @Override
@@ -86,6 +90,7 @@ public class PostServiceImpl implements PostService {
 
     private void checkPostUpdatePermission(int postId, User user) {
         Post post = postRepository.getById(postId);
+
         if (!post.getUser().equals(user)) {
             throw new UnauthorizedOperationException("You do not have permission to update this post!");
         }
@@ -93,13 +98,14 @@ public class PostServiceImpl implements PostService {
 
     private void checkPostDeletePermission(int postId, User user) {
         Post post = postRepository.getById(postId);
-        try {
-            adminRepository.getByUserId(user.getId());
-        } catch (EntityNotFoundException e) {
-            if (!post.getUser().equals(user)) {
-                throw new UnauthorizedOperationException("You do not have permission to delete this post!");
-            }
+        if (post == null) {
+            throw new EntityNotFoundException("Post", "id", postId);
         }
+        boolean isAdmin = adminRepository.getByUserId(user.getId()) != null;
+        if (!(post.getUser().equals(user) || isAdmin)) {
+            throw new UnauthorizedOperationException("You do not have permission to delete this post!");
+        }
+
     }
 
     private void checkCommentUpdatePermission(int commentId, User user) {
@@ -111,13 +117,14 @@ public class PostServiceImpl implements PostService {
 
     private void checkCommentDeletePermission(int commentId, User user) {
         Comment comment = commentRepository.getById(commentId);
-        try {
-            adminRepository.getByUserId(user.getId());
-        } catch (EntityNotFoundException e) {
-            if (!comment.getUser().equals(user)) {
-                throw new UnauthorizedOperationException("You do not have permission to delete this comment!");
-            }
+        if (comment == null) {
+            throw new EntityNotFoundException("Comment", "id", commentId);
         }
+        boolean isAdmin = adminRepository.getByUserId(user.getId()) != null;
+        if (!(comment.getUser().equals(user) || isAdmin)) {
+            throw new UnauthorizedOperationException("You do not have permission to delete this comment!");
+        }
+
     }
 
     // TODO restrict the capabilities of a blocked user

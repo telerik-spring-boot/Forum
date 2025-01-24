@@ -101,6 +101,36 @@ public class PostController {
         }
     }
 
+    @PutMapping("/{postId}/like")
+    public PostDisplayDTO likePost(@RequestHeader HttpHeaders headers,
+                                   @PathVariable int postId) {
+        try {
+            authenticationHelper.tryGetUser(headers);
+            Post post = postService.getPost(postId);
+            postService.likePost(post);
+            return postMapper.postToPostDisplayDTO(post);
+        } catch (UnauthorizedOperationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+    @PutMapping("/{postId}/dislike")
+    public PostDisplayDTO dislikePost(@RequestHeader HttpHeaders headers,
+                                      @PathVariable int postId) {
+        try {
+            authenticationHelper.tryGetUser(headers);
+            Post post = postService.getPost(postId);
+            postService.dislikePost(post);
+            return postMapper.postToPostDisplayDTO(post);
+        } catch (UnauthorizedOperationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
     @PutMapping("/{postId}/comments/{commentId}")
     public PostDisplayDTO updateComment(@RequestHeader HttpHeaders headers,
                                         @PathVariable int postId,
@@ -135,8 +165,8 @@ public class PostController {
 
     @DeleteMapping("/{postId}/comments/{commentId}")
     public PostDisplayDTO deleteComment(@RequestHeader HttpHeaders headers,
-                              @PathVariable int postId,
-                              @PathVariable int commentId) {
+                                        @PathVariable int postId,
+                                        @PathVariable int commentId) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
             Post post = postService.getPost(postId);

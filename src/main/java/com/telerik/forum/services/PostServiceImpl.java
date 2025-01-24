@@ -61,6 +61,18 @@ public class PostServiceImpl implements PostService {
         postRepository.delete(postId);
     }
 
+    @Override
+    public void likePost(Post post) {
+        post.setLikes(post.getLikes() + 1);
+        postRepository.update(post);
+    }
+
+    @Override
+    public void dislikePost(Post post) {
+        post.setLikes(post.getLikes() - 1);
+        postRepository.update(post);
+    }
+
     private void checkPostUpdatePermission(int postId, User user) {
         Post post = getPost(postId);
 

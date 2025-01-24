@@ -33,6 +33,7 @@ public class PostMapper {
         postDTO.setTitle(post.getTitle());
         postDTO.setContent(post.getContent());
         postDTO.setCreatorUsername(post.getUser().getUsername());
+        postDTO.setLikes(post.getLikes());
         List<CommentDisplayDTO> commentDTOS = new ArrayList<>();
         for (Comment comment : post.getComments()) {
             commentDTOS.add(commentToCommentDisplayDTO(comment));

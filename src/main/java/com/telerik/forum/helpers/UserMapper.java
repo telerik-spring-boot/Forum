@@ -6,10 +6,7 @@ import com.telerik.forum.models.User;
 import com.telerik.forum.models.dtos.adminDTOs.AdminCreateDTO;
 import com.telerik.forum.models.dtos.adminDTOs.AdminDisplayDTO;
 import com.telerik.forum.models.dtos.adminDTOs.AdminUpdateDTO;
-import com.telerik.forum.models.dtos.userDTOs.UserCommentsDisplayDTO;
-import com.telerik.forum.models.dtos.userDTOs.UserCreateDTO;
-import com.telerik.forum.models.dtos.userDTOs.UserDisplayDTO;
-import com.telerik.forum.models.dtos.userDTOs.UserPostsDisplayDTO;
+import com.telerik.forum.models.dtos.userDTOs.*;
 import com.telerik.forum.services.AdminService;
 import com.telerik.forum.services.UserService;
 import jakarta.validation.Valid;
@@ -36,6 +33,28 @@ public class UserMapper {
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
         user.setEmailAddress(dto.getEmailAddress());
+
+        return user;
+    }
+
+    public User dtoToUser(int id, UserUpdateDTO dto) {
+        User user = userService.getById(id);
+
+        if(dto.getEmailAddress() != null) {
+            user.setEmailAddress(dto.getEmailAddress());
+        }
+
+        if(dto.getFirstName() != null) {
+            user.setFirstName(dto.getFirstName());
+        }
+
+        if(dto.getLastName() != null) {
+            user.setLastName(dto.getLastName());
+        }
+
+        if(dto.getPassword() != null) {
+            user.setPassword(dto.getPassword());
+        }
 
         return user;
     }

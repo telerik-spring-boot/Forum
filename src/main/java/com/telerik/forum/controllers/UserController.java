@@ -7,10 +7,7 @@ import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.helpers.AuthenticationHelper;
 import com.telerik.forum.helpers.UserMapper;
 import com.telerik.forum.models.User;
-import com.telerik.forum.models.dtos.userDTOs.UserCommentsDisplayDTO;
-import com.telerik.forum.models.dtos.userDTOs.UserCreateDTO;
-import com.telerik.forum.models.dtos.userDTOs.UserDisplayDTO;
-import com.telerik.forum.models.dtos.userDTOs.UserPostsDisplayDTO;
+import com.telerik.forum.models.dtos.userDTOs.*;
 import com.telerik.forum.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,7 +73,7 @@ public class UserController {
     }
 
     @PostMapping
-    public UserDisplayDTO createUser(@RequestHeader HttpHeaders headers,@Valid @RequestBody UserCreateDTO userInput) {
+    public UserDisplayDTO createUser(@RequestHeader HttpHeaders headers, @Valid @RequestBody UserCreateDTO userInput) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
 
@@ -94,13 +91,15 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public User updateUser(@RequestHeader HttpHeaders headers, @PathVariable int id, @RequestBody User userInput) {
+    public UserDisplayDTO updateUser(@RequestHeader HttpHeaders headers, @PathVariable int id, @Valid @RequestBody UserUpdateDTO userInput) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
 
-            userService.update(userInput, userRequest);
+            User userToBeUpdated = userMapper.dtoToUser(id, userInput);
 
-            return userService.getById(id);
+            userService.update(userToBeUpdated, userRequest);
+
+            return userMapper.userToUserDisplayDTO(userService.getById(id));
 
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());

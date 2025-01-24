@@ -30,13 +30,9 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public Post getById(int id) {
-        try(Session session = sessionFactory.openSession()) {
-            Post post = session.get(Post.class, id);
+        try (Session session = sessionFactory.openSession()) {
 
-            if (post==null) {
-                throw new EntityNotFoundException("Post", "id", id);
-            }
-            return post;
+            return session.get(Post.class, id);
         }
     }
 
@@ -73,10 +69,8 @@ public class PostRepositoryImpl implements PostRepository {
             session.beginTransaction();
 
             Post post = session.get(Post.class, id);
-            if (post==null) {
-                throw new EntityNotFoundException("Post", "id", id);
-            }
             session.remove(post);
+
             session.getTransaction().commit();
 
         }

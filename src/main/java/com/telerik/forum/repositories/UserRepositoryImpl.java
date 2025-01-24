@@ -52,6 +52,8 @@ public class UserRepositoryImpl implements UserRepository {
         }
     }
 
+
+
     @Override
     public User getByIdWithComments(int id) {
         try(Session session = sessionFactory.openSession()) {
@@ -60,6 +62,18 @@ public class UserRepositoryImpl implements UserRepository {
             query.setParameter("id", id);
 
             return query.uniqueResult();
+        }
+    }
+
+    @Override
+    public User getByIdWithRoles(int id){
+        try (Session session = sessionFactory.openSession()) {
+            Query<User> query = session.createQuery("SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.roles WHERE u.id = :id", User.class);
+
+            query.setParameter("id", id);
+
+            return query.uniqueResult();
+
         }
     }
 

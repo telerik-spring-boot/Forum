@@ -14,6 +14,8 @@ public interface UserRepository {
 
     User getByIdWithComments(int id);
 
+    User getByIdWithRoles(int id);
+
     User getByEmail(String email);
 
     User getByUsername(String username);

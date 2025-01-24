@@ -5,9 +5,12 @@ import com.telerik.forum.exceptions.DuplicateEntityException;
 import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.helpers.AuthenticationHelper;
+import com.telerik.forum.helpers.UserMapper;
 import com.telerik.forum.models.Comment;
 import com.telerik.forum.models.Post;
 import com.telerik.forum.models.User;
+import com.telerik.forum.models.dtos.userdtos.UserCreateDTO;
+import com.telerik.forum.models.dtos.userdtos.UserDisplayDTO;
 import com.telerik.forum.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -23,11 +26,13 @@ public class UserController {
 
     private final UserService userService;
     private final AuthenticationHelper authenticationHelper;
+    private final UserMapper userMapper;
 
     @Autowired
-    public UserController(UserService userService, AuthenticationHelper authenticationHelper) {
+    public UserController(UserService userService, AuthenticationHelper authenticationHelper, UserMapper userMapper) {
         this.userService = userService;
         this.authenticationHelper = authenticationHelper;
+        this.userMapper = userMapper;
     }
 
 
@@ -68,13 +73,15 @@ public class UserController {
     }
 
     @PostMapping
-    public User createUser(@RequestHeader HttpHeaders headers, @RequestBody User userInput) {
+    public UserDisplayDTO createUser(@RequestHeader HttpHeaders headers, @RequestBody UserCreateDTO userInput) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
 
-            userService.create(userInput, userRequest);
+            User user = userMapper.dtoToUser(userInput);
 
-            return userInput;
+            userService.create(user, userRequest);
+
+            return userMapper.userToUserDisplayDTO(user);
 
         } catch (DuplicateEntityException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());

@@ -19,15 +19,11 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final AdminRepository adminRepository;
-    private final PostRepository postRepository;
-    private final CommentRepository commentRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, AdminRepository adminRepository, PostRepository postRepository, CommentRepository commentRepository) {
+    public UserServiceImpl(UserRepository userRepository, AdminRepository adminRepository) {
         this.userRepository = userRepository;
         this.adminRepository = adminRepository;
-        this.postRepository = postRepository;
-        this.commentRepository = commentRepository;
     }
 
 

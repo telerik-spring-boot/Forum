@@ -5,7 +5,8 @@ DROP TABLE IF EXISTS forum_schema.users CASCADE;
 DROP TABLE IF EXISTS forum_schema.admins CASCADE;
 DROP TABLE IF EXISTS forum_schema.posts CASCADE;
 DROP TABLE IF EXISTS forum_schema.comments CASCADE;
-
+# DROP TABLE IF EXISTS forum_schema.roles CASCADE;
+# DROP TABLE IF EXISTS forum_schema.users_roles CASCADE;
 
 CREATE TABLE forum_schema.users
 (
@@ -45,5 +46,19 @@ CREATE TABLE forum_schema.comments
     FOREIGN KEY (post_id) references forum_schema.posts (post_id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) references forum_schema.users (user_id) ON DELETE CASCADE
 );
+
+# CREATE TABLE forum_schema.roles
+# (
+#   role_id INT AUTO_INCREMENT PRIMARY KEY,
+#   name VARCHAR(50) NOT NULL UNIQUE
+# );
+#
+# CREATE TABLE forum_schema.users_roles (
+#     user_id INT NOT NULL,
+#     role_id INT NOT NULL,
+#     PRIMARY KEY (user_id, role_id),
+#     FOREIGN KEY (user_id) REFERENCES forum_schema.users(user_id) ON DELETE CASCADE,
+#     FOREIGN KEY (role_id) REFERENCES forum_schema.roles(role_id) ON DELETE CASCADE
+# );
 
 

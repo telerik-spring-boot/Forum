@@ -18,3 +18,4 @@ INSERT INTO forum_schema.comments (content, post_id, user_id)
 VALUES ('This is a comment on the first post.', 1, 3),
        ('Another comment on the first post.', 1, 2),
        ('Comment on the second post.', 2, 4);
+

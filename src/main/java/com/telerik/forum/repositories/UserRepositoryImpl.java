@@ -32,6 +32,28 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public User getByIdWithPosts(int id) {
+        try(Session session = sessionFactory.openSession()) {
+            Query<User> query = session.createQuery("SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.posts WHERE u.id = :id", User.class);
+
+            query.setParameter("id", id);
+
+            return query.uniqueResult();
+        }
+    }
+
+    @Override
+    public User getByIdWithComments(int id) {
+        try(Session session = sessionFactory.openSession()) {
+            Query<User> query = session.createQuery("SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.comments WHERE u.id = :id", User.class);
+
+            query.setParameter("id", id);
+
+            return query.uniqueResult();
+        }
+    }
+
+    @Override
     public User getById(int id) {
         try(Session session = sessionFactory.openSession()) {
 

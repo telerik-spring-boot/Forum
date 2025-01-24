@@ -5,6 +5,8 @@ import com.telerik.forum.exceptions.DuplicateEntityException;
 import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.helpers.AuthenticationHelper;
+import com.telerik.forum.models.Comment;
+import com.telerik.forum.models.Post;
 import com.telerik.forum.models.User;
 import com.telerik.forum.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +40,28 @@ public class UserController {
     public User getUserById(@PathVariable int id) {
         try {
             return userService.getById(id);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}/posts")
+    public List<Post> getUserPosts(@PathVariable int id) {
+        try {
+            User userEntity =  userService.getByIdWithPosts(id);
+
+            return userEntity.getPosts();
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}/comments")
+    public List<Comment> getUserComments(@PathVariable int id) {
+        try {
+            User userEntity =  userService.getByIdWithComments(id);
+
+            return userEntity.getComments();
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }

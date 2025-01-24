@@ -10,6 +10,10 @@ public interface UserRepository {
 
     User getById(int id);
 
+    User getByIdWithPosts(int id);
+
+    User getByIdWithComments(int id);
+
     User getByEmail(String email);
 
     User getByUsername(String username);

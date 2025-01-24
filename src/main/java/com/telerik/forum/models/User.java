@@ -1,7 +1,11 @@
 package com.telerik.forum.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -30,7 +34,13 @@ public class User {
     @Column(name = "blocked")
     private boolean blocked;
 
-    // TODO connection with the posts / comments
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private  List<Post> posts = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private  List<Comment> comments = new ArrayList<>();
 
     public User() {}
 
@@ -97,5 +107,21 @@ public class User {
 
     public void setBlocked(boolean blocked) {
         this.blocked = blocked;
+    }
+
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
     }
 }

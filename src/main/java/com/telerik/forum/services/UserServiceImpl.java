@@ -3,8 +3,11 @@ package com.telerik.forum.services;
 import com.telerik.forum.exceptions.DuplicateEntityException;
 import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
+import com.telerik.forum.models.Post;
 import com.telerik.forum.models.User;
 import com.telerik.forum.repositories.AdminRepository;
+import com.telerik.forum.repositories.CommentRepository;
+import com.telerik.forum.repositories.PostRepository;
 import com.telerik.forum.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,11 +19,15 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final AdminRepository adminRepository;
+    private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, AdminRepository adminRepository) {
+    public UserServiceImpl(UserRepository userRepository, AdminRepository adminRepository, PostRepository postRepository, CommentRepository commentRepository) {
         this.userRepository = userRepository;
         this.adminRepository = adminRepository;
+        this.postRepository = postRepository;
+        this.commentRepository = commentRepository;
     }
 
 
@@ -32,6 +39,28 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getById(int id) {
         User user = userRepository.getById(id);
+
+        if (user == null) {
+            throw new EntityNotFoundException("User", "id", id);
+        }
+
+        return user;
+    }
+
+    @Override
+    public User getByIdWithPosts(int id) {
+        User user = userRepository.getByIdWithPosts(id);
+
+        if (user == null) {
+            throw new EntityNotFoundException("User", "id", id);
+        }
+
+        return user;
+    }
+
+    @Override
+    public User getByIdWithComments(int id){
+        User user = userRepository.getByIdWithComments(id);
 
         if (user == null) {
             throw new EntityNotFoundException("User", "id", id);

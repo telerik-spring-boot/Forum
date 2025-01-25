@@ -8,9 +8,9 @@ public interface CommentRepository {
 
     //    List<Comment> getAll();
 //
-    Comment getById(int id);
+     Comment getById(int id);
 //
-    List<Comment> getByPostId(int postId);
+  //   List<Comment> getByPostId(int postId);
 
     void create(Comment comment);
 

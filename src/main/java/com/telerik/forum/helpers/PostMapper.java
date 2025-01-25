@@ -19,12 +19,11 @@ import java.util.List;
 public class PostMapper {
 
     private final PostService postService;
-    private final CommentService commentService;
+
 
     @Autowired
-    public PostMapper(PostService postService, CommentService commentService) {
+    public PostMapper(PostService postService) {
         this.postService = postService;
-        this.commentService = commentService;
     }
 
     public PostDisplayDTO postToPostDisplayDTO(Post post) {
@@ -84,13 +83,12 @@ public class PostMapper {
         return comment;
     }
 
-    public Comment dtoToComment(int commentId, CommentCreateDTO dto, int postId) {
-        List<Comment> comments = commentService.getByPostId(postId);
-
-        if (commentId - 1 >= comments.size()) {
+    public Comment dtoToComment(int commentId, CommentCreateDTO dto, Post post) {
+        int commentSize = post.getComments().size();
+        if (commentId > commentSize) {
             throw new EntityNotFoundException("Comment", "id", commentId);
         }
-        Comment commentToUpdate = comments.get(commentId - 1);
+        Comment commentToUpdate = post.getComments().get(commentId - 1);
 
         if (dto.getContent() != null) {
             commentToUpdate.setContent(dto.getContent());

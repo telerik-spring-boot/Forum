@@ -6,12 +6,11 @@ import com.telerik.forum.models.Comment;
 import com.telerik.forum.models.Post;
 import com.telerik.forum.models.User;
 import com.telerik.forum.repositories.AdminDetailsRepository;
-import com.telerik.forum.repositories.AdminRepositoryOld;
 import com.telerik.forum.repositories.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+
 
 import static com.telerik.forum.services.PostServiceImpl.BLOCKED_ACCOUNT_MESSAGE;
 
@@ -21,11 +20,11 @@ public class CommentServiceImpl implements CommentService {
     private static final String UNAUTHORIZED_DELETE_MESSAGE = "You do not have permission to delete this comment!";
 
     private final CommentRepository commentRepository;
-    private final AdminRepositoryOld adminRepository;
+    private final AdminDetailsRepository adminRepository;
 
 
     @Autowired
-    public CommentServiceImpl(CommentRepository commentRepository, AdminRepositoryOld adminRepository) {
+    public CommentServiceImpl(CommentRepository commentRepository, AdminDetailsRepository adminRepository) {
         this.commentRepository = commentRepository;
         this.adminRepository = adminRepository;
 
@@ -39,18 +38,18 @@ public class CommentServiceImpl implements CommentService {
         }
         return comment;
     }
-
-    @Override
-    public List<Comment> getByPostId(int postId) {
-        return commentRepository.getByPostId(postId);
-    }
+//
+//    @Override
+//    public List<Comment> getByPostId(int postId) {
+//        return commentRepository.getByPostId(postId);
+//    }
 
     @Override
     public void addComment(Post post, Comment comment, User user) {
         comment.setPost(post);
         comment.setUser(user);
+        post.getComments().add(comment);
         commentRepository.create(comment);
-//        postRepository.update(post);
 
     }
 
@@ -59,19 +58,18 @@ public class CommentServiceImpl implements CommentService {
 
         checkCommentUpdatePermission(comment.getId(), user);
         commentRepository.update(comment);
-        //postRepository.update(post);// Do we need this with CascadeType.ALL?
+
     }
 
     @Override
     public void deleteComment(Post post, int commentId, User user) {
-        List<Comment> comments = commentRepository.getByPostId(post.getId());
-        if (commentId - 1 >= comments.size()) {
+        int commentSize = post.getComments().size();
+        if (commentId > commentSize) {
             throw new EntityNotFoundException("Comment", "id", commentId);
         }
-        Comment commentToDelete = comments.get(commentId - 1);
+        Comment commentToDelete = post.getComments().get(commentId - 1);
         checkCommentDeletePermission(commentToDelete.getId(), user);
         commentRepository.delete(commentToDelete.getId());
-        //postRepository.update(post);
     }
 
     private void checkCommentUpdatePermission(int commentId, User user) {

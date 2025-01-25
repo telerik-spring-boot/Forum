@@ -10,7 +10,7 @@ public interface CommentService {
 
     Comment getComment(int id);
 
-    List<Comment> getByPostId(int postId);
+//    List<Comment> getByPostId(int postId);
 
     void addComment(Post post, Comment comment, User user);
 

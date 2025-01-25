@@ -76,8 +76,7 @@ public class PostController {
             Post post = postService.getPost(postId);
             Comment comment = postMapper.dtoToComment(userInput);
             commentService.addComment(post, comment, userRequest);
-            Post updatedPost = postService.getPost(postId);
-            return postMapper.postToPostDisplayDTO(updatedPost);
+            return postMapper.postToPostDisplayDTO(post);
         } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
@@ -139,10 +138,9 @@ public class PostController {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
             Post post = postService.getPost(postId);
-            Comment comment = postMapper.dtoToComment(commentId, userInput, postId);
+            Comment comment = postMapper.dtoToComment(commentId, userInput, post);
             commentService.updateComment(post, comment, userRequest);
-            Post updatedPost = postService.getPost(postId);
-            return postMapper.postToPostDisplayDTO(updatedPost);
+            return postMapper.postToPostDisplayDTO(post);
         } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
@@ -171,8 +169,8 @@ public class PostController {
             User userRequest = authenticationHelper.tryGetUser(headers);
             Post post = postService.getPost(postId);
             commentService.deleteComment(post, commentId, userRequest);
-            Post updatedPost = postService.getPost(postId);
-            return postMapper.postToPostDisplayDTO(updatedPost);
+            //Post updatedPost = postService.getPost(postId);
+            return postMapper.postToPostDisplayDTO(post);
         } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {

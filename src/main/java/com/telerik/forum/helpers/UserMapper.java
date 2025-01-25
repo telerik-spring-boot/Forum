@@ -2,8 +2,8 @@ package com.telerik.forum.helpers;
 
 
 import com.telerik.forum.models.Admin;
+import com.telerik.forum.models.AdminDetails;
 import com.telerik.forum.models.User;
-import com.telerik.forum.models.dtos.adminDTOs.AdminCreateDTO;
 import com.telerik.forum.models.dtos.adminDTOs.AdminDisplayDTO;
 import com.telerik.forum.models.dtos.adminDTOs.AdminUpdateDTO;
 import com.telerik.forum.models.dtos.commentDTOs.CommentDisplayDTO;
@@ -11,7 +11,6 @@ import com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO;
 import com.telerik.forum.models.dtos.userDTOs.*;
 import com.telerik.forum.services.AdminService;
 import com.telerik.forum.services.UserService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -104,7 +103,7 @@ public class UserMapper {
         return userPostsDisplayDTO;
     }
 
-    public AdminDisplayDTO AdminToAdminDisplayDTO(Admin admin) {
+    public AdminDisplayDTO AdminToAdminDisplayDTO(AdminDetails admin) {
         AdminDisplayDTO adminDisplayDTO = new AdminDisplayDTO();
         User userPartOfAdmin = admin.getUser();
 
@@ -118,8 +117,8 @@ public class UserMapper {
 
     }
 
-    public Admin dtoToAdmin(int userId, AdminUpdateDTO adminDTO) {
-        Admin admin = adminService.getByUserId(userId);
+    public AdminDetails dtoToAdmin(int userId, AdminUpdateDTO adminDTO) {
+        AdminDetails admin = adminService.getByUserId(userId);
 
         admin.setPhoneNumber(adminDTO.getPhoneNumber());
 

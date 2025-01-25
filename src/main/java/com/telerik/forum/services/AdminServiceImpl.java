@@ -1,12 +1,14 @@
 package com.telerik.forum.services;
 
-import com.telerik.forum.exceptions.DuplicateEntityException;
+import com.telerik.forum.exceptions.AdminRoleManagementException;
 import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
-import com.telerik.forum.models.Admin;
+import com.telerik.forum.models.AdminDetails;
 import com.telerik.forum.models.User;
-import com.telerik.forum.repositories.AdminRepository;
+import com.telerik.forum.repositories.AdminDetailsRepository;
+import com.telerik.forum.repositories.RoleRepository;
 import com.telerik.forum.repositories.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,30 +17,33 @@ import java.util.List;
 @Service
 public class AdminServiceImpl implements AdminService {
 
+
     private final UserRepository userRepository;
-    private final AdminRepository adminRepository;
+    private final AdminDetailsRepository adminDetailsRepository;
+    private final RoleRepository roleRepository;
 
     @Autowired
-    public AdminServiceImpl(UserRepository userRepository, AdminRepository adminRepository) {
+    public AdminServiceImpl(UserRepository userRepository, AdminDetailsRepository adminDetailsRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
-        this.adminRepository = adminRepository;
+        this.adminDetailsRepository = adminDetailsRepository;
+        this.roleRepository = roleRepository;
     }
 
 
     @Override
-    public List<Admin> getAll() {
-        return adminRepository.getAll();
+    public List<AdminDetails> getAll() {
+        return adminDetailsRepository.getAll();
     }
 
     @Override
-    public Admin getByUserId(int id) {
-        Admin byUserId = adminRepository.getByUserId(id);
+    public AdminDetails getByUserId(int id) {
+        AdminDetails adminDetails = adminDetailsRepository.getByUserId(id);
 
-        if (byUserId == null) {
-            throw new EntityNotFoundException("Admin", "user.id", id);
+        if(adminDetails == null){
+            throw new EntityNotFoundException("Admin","user.id", id);
         }
 
-        return byUserId;
+        return adminDetails;
     }
 
     @Override
@@ -46,6 +51,7 @@ public class AdminServiceImpl implements AdminService {
         authorization(requestUserId);
 
         userToBeBlocked.setBlocked(true);
+
         userRepository.update(userToBeBlocked);
     }
 
@@ -59,47 +65,85 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void create(User user, String phoneNumber, int requestUserId) {
+    @Transactional
+    public void revokeAdminRights(int userId, int requestUserId) {
         authorization(requestUserId);
 
-        if(adminRepository.getByUserId(user.getId()) != null) {
-            throw new DuplicateEntityException("Admin", "id", user.getId());
+        User user = userRepository.getByIdWithRoles(userId);
+
+        if(user == null){
+            throw new EntityNotFoundException("User","user.id", userId);
         }
 
-        Admin admin = new Admin();
-        admin.setPhoneNumber(phoneNumber);
-        admin.setUser(user);
+        boolean isAlreadyAdmin = user.getRoles().stream()
+                .anyMatch(role -> role.getName().equalsIgnoreCase("admin"));
 
-        adminRepository.create(admin);
+        if(!isAlreadyAdmin){
+            throw new AdminRoleManagementException("User is not an admin.");
+        }
+
+        user.removeRole(roleRepository.findByName("ADMIN"));
+
+        userRepository.update(user);
+
+        adminDetailsRepository.delete(userId);
+
     }
 
     @Override
-    public void update(Admin admin, int requestUserId) {
+    @Transactional
+    public void giveAdminRights(int userId, String phoneNumber, int requestUserId) {
         authorization(requestUserId);
 
-        if(adminRepository.getByUserId(admin.getUser().getId()) == null) {
+        User user = userRepository.getByIdWithRoles(userId);
+
+        if(user == null){
+            throw new EntityNotFoundException("User","user.id", userId);
+        }
+
+        boolean isAlreadyAdmin = user.getRoles().stream()
+                .anyMatch(role -> role.getName().equalsIgnoreCase("admin"));
+
+        if(isAlreadyAdmin){
+            throw new AdminRoleManagementException("User is already an admin.");
+        }
+
+        user.addRole(roleRepository.findByName("ADMIN"));
+
+        userRepository.update(user);
+
+        AdminDetails adminDetails = new AdminDetails(user, phoneNumber);
+
+        adminDetailsRepository.create(adminDetails);
+
+    }
+
+    @Override
+    public void update(AdminDetails admin, int requestUserId) {
+        authorization(requestUserId);
+
+        AdminDetails databaseAdminDetails = adminDetailsRepository.getByUserId(admin.getUser().getId());
+
+        if(databaseAdminDetails == null) {
             throw new EntityNotFoundException("Admin", "id", admin.getUser().getId());
         }
 
-        adminRepository.update(admin);
-    }
-
-    @Override
-    public void delete(int id, int requestUserId) {
-        authorization(requestUserId);
-
-        if(adminRepository.getByUserId(id) == null) {
-            throw new EntityNotFoundException("Admin", "id", id);
+        if(admin.getPhoneNumber() == null){
+            adminDetailsRepository.delete(admin.getUser().getId());
+        }else {
+            adminDetailsRepository.update(admin);
         }
-
-        adminRepository.delete(id);
     }
 
-    public void authorization(int id){
-        Admin admin = adminRepository.getByUserId(id);
+    private void authorization(int id){
+        User user = userRepository.getByIdWithRoles(id);
 
-        if(admin == null || admin.getUser().isBlocked()){
+        if(user.isBlocked() || user.getRoles().stream()
+                .noneMatch(role -> role.getName()
+                        .equalsIgnoreCase("admin"))){
             throw new UnauthorizedOperationException("You do not have permission to perform this action");
+
         }
     }
+
 }

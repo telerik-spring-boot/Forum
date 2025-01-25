@@ -4,7 +4,7 @@ import com.telerik.forum.models.Admin;
 
 import java.util.List;
 
-public interface AdminRepository {
+public interface AdminRepositoryOld {
 
     List<Admin> getAll();
 

@@ -5,16 +5,16 @@ import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.models.Comment;
 import com.telerik.forum.models.Post;
 import com.telerik.forum.models.User;
-import com.telerik.forum.repositories.AdminRepository;
+import com.telerik.forum.repositories.AdminRepositoryOld;
 import com.telerik.forum.repositories.CommentRepository;
 
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
-    private final AdminRepository adminRepository;
+    private final AdminRepositoryOld adminRepositoryOld;
 
-    public CommentServiceImpl(CommentRepository commentRepository, AdminRepository adminRepository) {
+    public CommentServiceImpl(CommentRepository commentRepository, AdminRepositoryOld adminRepositoryOld) {
         this.commentRepository = commentRepository;
-        this.adminRepository = adminRepository;
+        this.adminRepositoryOld = adminRepositoryOld;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class CommentServiceImpl implements CommentService {
         if (comment == null) {
             throw new EntityNotFoundException("Comment", "id", commentId);
         }
-        boolean isAdmin = adminRepository.getByUserId(user.getId()) != null;
+        boolean isAdmin = adminRepositoryOld.getByUserId(user.getId()) != null;
         if (!(comment.getUser().equals(user) || isAdmin)) {
             throw new UnauthorizedOperationException("You do not have permission to delete this comment!");
         }

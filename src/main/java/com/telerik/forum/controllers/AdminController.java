@@ -7,6 +7,7 @@ import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.helpers.AuthenticationHelper;
 import com.telerik.forum.helpers.UserMapper;
 import com.telerik.forum.models.Admin;
+import com.telerik.forum.models.AdminDetails;
 import com.telerik.forum.models.User;
 import com.telerik.forum.models.dtos.adminDTOs.AdminCreateDTO;
 import com.telerik.forum.models.dtos.adminDTOs.AdminDisplayDTO;
@@ -61,7 +62,7 @@ public class AdminController {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
 
-            adminService.create(userService.getById(adminDTO.getUser_id()), adminDTO.getPhone_number(), userRequest.getId());
+            adminService.giveAdminRights(adminDTO.getUser_id(), adminDTO.getPhone_number(), userRequest.getId());
 
             return userMapper.AdminToAdminDisplayDTO(adminService.getByUserId(adminDTO.getUser_id()));
 
@@ -79,7 +80,7 @@ public class AdminController {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
 
-            Admin admin = userMapper.dtoToAdmin(userId, adminDTO);
+            AdminDetails admin = userMapper.dtoToAdmin(userId, adminDTO);
 
             adminService.update(admin, userRequest.getId());
 
@@ -130,7 +131,7 @@ public class AdminController {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
 
-            adminService.delete(userId, userRequest.getId());
+            adminService.revokeAdminRights(userId, userRequest.getId());
 
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());

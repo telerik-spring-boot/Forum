@@ -4,7 +4,7 @@ import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.models.Post;
 import com.telerik.forum.models.User;
-import com.telerik.forum.repositories.AdminRepository;
+import com.telerik.forum.repositories.AdminRepositoryOld;
 import com.telerik.forum.repositories.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,13 +15,13 @@ import java.util.List;
 public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
-    private final AdminRepository adminRepository;
+    private final AdminRepositoryOld adminRepositoryOld;
 
     @Autowired
     public PostServiceImpl(PostRepository postRepository,
-                           AdminRepository adminRepository) {
+                           AdminRepositoryOld adminRepositoryOld) {
         this.postRepository = postRepository;
-        this.adminRepository = adminRepository;
+        this.adminRepositoryOld = adminRepositoryOld;
     }
 
     @Override
@@ -74,7 +74,7 @@ public class PostServiceImpl implements PostService {
         if (post == null) {
             throw new EntityNotFoundException("Post", "id", postId);
         }
-        boolean isAdmin = adminRepository.getByUserId(user.getId()) != null;
+        boolean isAdmin = adminRepositoryOld.getByUserId(user.getId()) != null;
         if (!(post.getUser().equals(user) || isAdmin)) {
             throw new UnauthorizedOperationException("You do not have permission to delete this post!");
         }

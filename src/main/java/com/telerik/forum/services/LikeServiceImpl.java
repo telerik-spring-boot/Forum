@@ -32,11 +32,21 @@ public class LikeServiceImpl implements LikeService {
             newLike.setPost(post);
             newLike.setUser(user);
             newLike.setReaction(1);
+
+            post.getLikes().add(newLike);
+
             likeRepository.create(newLike);
         } else if (like.getReaction() == -1) {
+            post.getLikes().remove(like);
+
             like.setReaction(1);
+
+            post.getLikes().add(like);
+
             likeRepository.update(like);
         }else{
+            post.getLikes().remove(like);
+
             likeRepository.delete(like.getId());
         }
     }
@@ -53,11 +63,19 @@ public class LikeServiceImpl implements LikeService {
             newDislike.setPost(post);
             newDislike.setUser(user);
             newDislike.setReaction(-1);
+
+            post.getLikes().add(newDislike);
             likeRepository.create(newDislike);
         } else if (dislike.getReaction() == 1) {
+            post.getLikes().remove(dislike);
+
             dislike.setReaction(-1);
+
+            post.getLikes().add(dislike);
+
             likeRepository.update(dislike);
         }else{
+            post.getLikes().remove(dislike);
             likeRepository.delete(dislike.getId());
         }
 

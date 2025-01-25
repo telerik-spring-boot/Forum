@@ -5,6 +5,7 @@ import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.models.Post;
 import com.telerik.forum.models.User;
 import com.telerik.forum.repositories.AdminDetailsRepository;
+import com.telerik.forum.repositories.AdminDetailsRepositoryImpl;
 import com.telerik.forum.repositories.AdminRepositoryOld;
 import com.telerik.forum.repositories.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +21,11 @@ public class PostServiceImpl implements PostService {
     private static final String UNAUTHORIZED_UPDATE_MESSAGE = "You do not have permission to update this post!";
 
     private final PostRepository postRepository;
-    private final AdminRepositoryOld adminRepository;
+    private final AdminDetailsRepository adminRepository;
 
     @Autowired
     public PostServiceImpl(PostRepository postRepository,
-                           AdminRepositoryOld adminRepository) {
+                           AdminDetailsRepository adminRepository) {
         this.postRepository = postRepository;
         this.adminRepository = adminRepository;
     }

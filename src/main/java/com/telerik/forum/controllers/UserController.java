@@ -34,12 +34,6 @@ public class UserController {
     }
 
 
-    @GetMapping
-    public List<UserDisplayDTO> getAllUsers() {
-        return userService.getAll().stream()
-                .map(userMapper::userToUserDisplayDTO)
-                .toList();
-    }
 
     @GetMapping("/{id}")
     public UserDisplayDTO getUserById(@PathVariable int id) {

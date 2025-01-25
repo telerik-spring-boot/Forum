@@ -24,10 +24,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    @Override
-    public List<User> getAll() {
-        return userRepository.getAll();
-    }
 
     @Override
     public User getById(int id) {

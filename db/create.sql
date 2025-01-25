@@ -32,7 +32,6 @@ CREATE TABLE forum_schema.posts(
     post_id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(70) NOT NULL,
     content TEXT NOT NULL,
-    likes INT DEFAULT 0 NOT NULL,
     user_id INT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES forum_schema.users(user_id) ON DELETE CASCADE
 );
@@ -68,6 +67,16 @@ CREATE TABLE forum_schema.admin_details
     user_id INT NOT NULL UNIQUE,
     phone_number VARCHAR(20) NOT NULL,
     FOREIGN KEY(user_id) REFERENCES  forum_schema.users(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE forum_schema.likes (
+                       like_id INT AUTO_INCREMENT PRIMARY KEY,
+                       user_id INT NOT NULL,
+                       post_id INT NOT NULL,
+                       reaction TINYINT NOT NULL,
+                       UNIQUE (user_id, post_id),
+                       FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+                       FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE
 );
 
 

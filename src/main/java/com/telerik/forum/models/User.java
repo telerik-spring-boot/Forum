@@ -4,9 +4,7 @@ package com.telerik.forum.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
@@ -51,6 +49,10 @@ public class User {
             inverseJoinColumns = @JoinColumn(name ="role_id")
     )
     private List<Role> roles = new ArrayList<>();
+
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private Set<Like> likes = new HashSet<>();
 
     public User() {}
 
@@ -149,6 +151,14 @@ public class User {
 
     public void removeRole(Role role) {
         this.roles.remove(role);
+    }
+
+    public Set<Like> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Set<Like> likes) {
+        this.likes = likes;
     }
 
     @Override

@@ -2,18 +2,19 @@ package com.telerik.forum.helpers;
 
 import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.models.Comment;
+import com.telerik.forum.models.Like;
 import com.telerik.forum.models.Post;
 import com.telerik.forum.models.dtos.commentDTOs.CommentCreateDTO;
 import com.telerik.forum.models.dtos.commentDTOs.CommentDisplayDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostCreateDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO;
-import com.telerik.forum.services.CommentService;
 import com.telerik.forum.services.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class PostMapper {
@@ -32,7 +33,14 @@ public class PostMapper {
         postDTO.setTitle(post.getTitle());
         postDTO.setContent(post.getContent());
         postDTO.setCreatorUsername(post.getUser().getUsername());
-        postDTO.setLikes(post.getLikes());
+
+        Set<Like> likes = post.getLikes();
+        int likesCount = 0;
+        for (Like like : likes) {
+            likesCount += like.getReaction();
+        }
+        postDTO.setLikes(likesCount);
+
         List<CommentDisplayDTO> commentDTOS = new ArrayList<>();
         for (Comment comment : post.getComments()) {
             commentDTOS.add(commentToCommentDisplayDTO(comment));

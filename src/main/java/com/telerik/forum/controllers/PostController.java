@@ -11,6 +11,7 @@ import com.telerik.forum.models.dtos.commentDTOs.CommentCreateDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostCreateDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO;
 import com.telerik.forum.services.CommentService;
+import com.telerik.forum.services.LikeService;
 import com.telerik.forum.services.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -27,14 +28,17 @@ public class PostController {
     private final AuthenticationHelper authenticationHelper;
     private final PostMapper postMapper;
     private final CommentService commentService;
+    private final LikeService likeService;
 
     @Autowired
     public PostController(PostService postService, AuthenticationHelper authenticationHelper,
-                          PostMapper postMapper, CommentService commentService) {
+                          PostMapper postMapper, CommentService commentService,
+                          LikeService likeService) {
         this.postService = postService;
         this.authenticationHelper = authenticationHelper;
         this.postMapper = postMapper;
         this.commentService = commentService;
+        this.likeService = likeService;
     }
 
     @GetMapping
@@ -104,9 +108,9 @@ public class PostController {
     public PostDisplayDTO likePost(@RequestHeader HttpHeaders headers,
                                    @PathVariable int postId) {
         try {
-            authenticationHelper.tryGetUser(headers);
+            User userRequest = authenticationHelper.tryGetUser(headers);
             Post post = postService.getPost(postId);
-            postService.likePost(post);
+            likeService.likePost(post, userRequest);
             return postMapper.postToPostDisplayDTO(post);
         } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
@@ -119,9 +123,9 @@ public class PostController {
     public PostDisplayDTO dislikePost(@RequestHeader HttpHeaders headers,
                                       @PathVariable int postId) {
         try {
-            authenticationHelper.tryGetUser(headers);
+            User userRequest = authenticationHelper.tryGetUser(headers);
             Post post = postService.getPost(postId);
-            postService.dislikePost(post);
+            likeService.dislikePost(post, userRequest);
             return postMapper.postToPostDisplayDTO(post);
         } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());

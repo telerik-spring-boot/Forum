@@ -3,8 +3,7 @@ package com.telerik.forum.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "posts")
@@ -20,9 +19,6 @@ public class Post {
     @Column(name="content")
     private String content;
 
-    @Column (name="likes")
-    private int likes;
-
     @ManyToOne
     @JoinColumn(name="user_id", nullable=false)
     private User user;
@@ -32,6 +28,9 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private Set<Like> likes = new HashSet<>();
+
     public Post() {
     }
 
@@ -39,7 +38,6 @@ public class Post {
         this.id = id;
         this.title = title;
         this.content = content;
-        this.likes = likes;
         this.user = user;
     }
 
@@ -67,14 +65,6 @@ public class Post {
         this.content = content;
     }
 
-    public int getLikes() {
-        return likes;
-    }
-
-    public void setLikes(int likes) {
-        this.likes = likes;
-    }
-
     public User getUser() {
         return user;
     }
@@ -91,4 +81,23 @@ public class Post {
         this.comments = comments;
     }
 
+    public Set<Like> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Set<Like> likes) {
+        this.likes = likes;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Post post = (Post) o;
+        return id == post.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

@@ -38,14 +38,14 @@ public class CommentRepositoryImpl implements CommentRepository {
         }
     }
 //
-    @Override
-    public List<Comment> getByPostId(int postId) {
-        try (Session session = sessionFactory.openSession()) {
-            Query<Comment> query = session.createQuery("from Comment where post.id = :postId", Comment.class);
-            query.setParameter("postId", postId);
-            return query.list();
-        }
-    }
+//    @Override
+//    public List<Comment> getByPostId(int postId) {
+//        try (Session session = sessionFactory.openSession()) {
+//            Query<Comment> query = session.createQuery("from Comment where post.id = :postId", Comment.class);
+//            query.setParameter("postId", postId);
+//            return query.list();
+//        }
+//    }
 
     @Override
     public void create(Comment comment) {

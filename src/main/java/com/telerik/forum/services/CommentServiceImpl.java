@@ -6,13 +6,11 @@ import com.telerik.forum.models.Comment;
 import com.telerik.forum.models.Post;
 import com.telerik.forum.models.User;
 import com.telerik.forum.repositories.AdminDetailsRepository;
-import com.telerik.forum.repositories.AdminDetailsRepositoryImpl;
-import com.telerik.forum.repositories.AdminRepositoryOld;
 import com.telerik.forum.repositories.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+
 
 import static com.telerik.forum.services.PostServiceImpl.BLOCKED_ACCOUNT_MESSAGE;
 
@@ -40,11 +38,11 @@ public class CommentServiceImpl implements CommentService {
         }
         return comment;
     }
-
-    @Override
-    public List<Comment> getByPostId(int postId) {
-        return commentRepository.getByPostId(postId);
-    }
+//
+//    @Override
+//    public List<Comment> getByPostId(int postId) {
+//        return commentRepository.getByPostId(postId);
+//    }
 
     @Override
     public void addComment(Post post, Comment comment, User user) {

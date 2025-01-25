@@ -24,9 +24,10 @@ public class AdminDetailsRepositoryImpl implements AdminDetailsRepository {
     public List<AdminDetails> getAll() {
         try(Session session = sessionFactory.openSession()) {
 
-            String hql = "SELECT DISTINCT ad FROM AdminDetails ad " +
-                    "LEFT JOIN FETCH ad.user u " +
-                    "LEFT JOIN FETCH u.roles r " +
+            String hql = "SELECT DISTINCT new AdminDetails(u, ad.phoneNumber) " +
+                    "FROM User u " +
+                    "LEFT JOIN u.roles r " +
+                    "LEFT JOIN AdminDetails ad ON ad.user.id = u.id " +
                     "WHERE r.name = :roleName";
 
             Query<AdminDetails> query = session.createQuery(hql, AdminDetails.class);
@@ -38,17 +39,18 @@ public class AdminDetailsRepositoryImpl implements AdminDetailsRepository {
     }
 
     @Override
-    public AdminDetails getByUserId(int id) {
+    public AdminDetails getByUserId(int userId) {
         try(Session session = sessionFactory.openSession()) {
 
-            String hql = "SELECT DISTINCT ad FROM AdminDetails ad " +
-                    "LEFT JOIN FETCH ad.user u " +
-                    "LEFT JOIN FETCH u.roles r " +
+            String hql = "SELECT DISTINCT new AdminDetails(u, ad.phoneNumber) " +
+                    "FROM User u " +
+                    "LEFT JOIN u.roles r " +
+                    "LEFT JOIN AdminDetails ad ON ad.user.id = u.id " +
                     "WHERE u.id = :userId AND r.name = :roleName";
 
             Query<AdminDetails> query = session.createQuery(hql, AdminDetails.class);
 
-            query.setParameter("id", id);
+            query.setParameter("userId", userId);
             query.setParameter("roleName", "ADMIN");
 
             return query.uniqueResult();

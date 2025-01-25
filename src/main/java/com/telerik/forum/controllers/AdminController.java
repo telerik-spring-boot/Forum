@@ -1,6 +1,7 @@
 package com.telerik.forum.controllers;
 
 
+import com.telerik.forum.exceptions.AdminRoleManagementException;
 import com.telerik.forum.exceptions.DuplicateEntityException;
 import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
@@ -57,12 +58,12 @@ public class AdminController {
         }
     }
 
-    @PostMapping
+    @PostMapping("/rights")
     public AdminDisplayDTO createAdmin(@RequestHeader HttpHeaders headers,@Valid @RequestBody AdminCreateDTO adminDTO) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
 
-            adminService.giveAdminRights(adminDTO.getUser_id(), adminDTO.getPhone_number(), userRequest.getId());
+            adminService.giveAdminRights(adminDTO.getUser_id(), adminDTO.getPhoneNumber(), userRequest.getId());
 
             return userMapper.AdminToAdminDisplayDTO(adminService.getByUserId(adminDTO.getUser_id()));
 
@@ -72,6 +73,22 @@ public class AdminController {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/rights/{id}")
+    public void revokeAdminRights(@RequestHeader HttpHeaders headers, @PathVariable int id) {
+        try {
+            User userRequest = authenticationHelper.tryGetUser(headers);
+
+            adminService.revokeAdminRights(id, userRequest.getId());
+
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (UnauthorizedOperationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        }catch(AdminRoleManagementException e){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         }
     }
 

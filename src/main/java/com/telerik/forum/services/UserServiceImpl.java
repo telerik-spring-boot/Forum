@@ -4,6 +4,7 @@ import com.telerik.forum.exceptions.DuplicateEntityException;
 import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.models.User;
+import com.telerik.forum.repositories.RoleRepository;
 import com.telerik.forum.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,10 +15,12 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
     }
 
 
@@ -101,6 +104,8 @@ public class UserServiceImpl implements UserService {
         if (userAlreadyExists) {
             throw new DuplicateEntityException("User", "email", userInput.getEmailAddress());
         }
+
+        userInput.addRole(roleRepository.findByName("USER"));
 
         userRepository.create(userInput);
     }

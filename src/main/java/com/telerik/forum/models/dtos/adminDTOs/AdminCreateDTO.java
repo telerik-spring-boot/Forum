@@ -9,13 +9,13 @@ public class AdminCreateDTO {
     private int user_id;
 
     @Pattern(regexp = "^(\\+\\d{1,3}[-\\s]?)?\\(?\\d{1,4}\\)?[-\\s]?\\d{0,4}[-\\s]?\\d{1,4}[-\\s]?\\d{1,4}$", message = "Invalid phone number format.")
-    private String phone_number;
+    private String phoneNumber;
 
     public AdminCreateDTO() {}
 
-    public AdminCreateDTO(int user_id, String phone_number) {
+    public AdminCreateDTO(int user_id, String phoneNumber) {
         this.user_id = user_id;
-        this.phone_number = phone_number;
+        this.phoneNumber = phoneNumber;
     }
 
     public int getUser_id() {
@@ -26,11 +26,11 @@ public class AdminCreateDTO {
         this.user_id = user_id;
     }
 
-    public String getPhone_number() {
-        return phone_number;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setPhone_number(String phone_number) {
-        this.phone_number = phone_number;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 }

@@ -84,9 +84,13 @@ public class AdminServiceImpl implements AdminService {
 
         user.removeRole(roleRepository.findByName("ADMIN"));
 
+        AdminDetails adminDetails = adminDetailsRepository.getByUserId(userId);
+
         userRepository.update(user);
 
-        adminDetailsRepository.delete(userId);
+        if(adminDetails != null && adminDetails.getPhoneNumber() != null ){
+            adminDetailsRepository.delete(userId);
+        }
 
     }
 
@@ -112,10 +116,11 @@ public class AdminServiceImpl implements AdminService {
 
         userRepository.update(user);
 
-        AdminDetails adminDetails = new AdminDetails(user, phoneNumber);
+        if(phoneNumber != null){
+            AdminDetails adminDetails = new AdminDetails(user, phoneNumber);
 
-        adminDetailsRepository.create(adminDetails);
-
+            adminDetailsRepository.create(adminDetails);
+        }
     }
 
     @Override
@@ -128,7 +133,7 @@ public class AdminServiceImpl implements AdminService {
             throw new EntityNotFoundException("Admin", "id", admin.getUser().getId());
         }
 
-        if(admin.getPhoneNumber() == null){
+        if(admin.getPhoneNumber() == null && databaseAdminDetails.getPhoneNumber() != null){
             adminDetailsRepository.delete(admin.getUser().getId());
         }else {
             adminDetailsRepository.update(admin);

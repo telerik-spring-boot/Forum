@@ -4,7 +4,7 @@ import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.models.Post;
 import com.telerik.forum.models.User;
-import com.telerik.forum.repositories.AdminRepositoryOld;
+import com.telerik.forum.repositories.AdminRepository;
 import com.telerik.forum.repositories.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,14 +14,18 @@ import java.util.List;
 @Service
 public class PostServiceImpl implements PostService {
 
+    public static final String BLOCKED_ACCOUNT_MESSAGE = "Your account is blocked!";
+    private static final String UNAUTHORIZED_DELETE_MESSAGE = "You do not have permission to delete this post!";
+    private static final String UNAUTHORIZED_UPDATE_MESSAGE = "You do not have permission to update this post!";
+
     private final PostRepository postRepository;
-    private final AdminRepositoryOld adminRepositoryOld;
+    private final AdminRepository adminRepository;
 
     @Autowired
     public PostServiceImpl(PostRepository postRepository,
-                           AdminRepositoryOld adminRepositoryOld) {
+                           AdminRepository adminRepository) {
         this.postRepository = postRepository;
-        this.adminRepositoryOld = adminRepositoryOld;
+        this.adminRepository = adminRepository;
     }
 
     @Override
@@ -29,10 +33,6 @@ public class PostServiceImpl implements PostService {
         return postRepository.getAll();
     }
 
-//    @Override
-//    public List<Post> getPostsByAuthor(User user) {
-//        return postRepository.getPostsAndCommentsbyUserId(user.getId());
-//    }
 
     @Override
     public Post getPost(int id) {
@@ -61,25 +61,41 @@ public class PostServiceImpl implements PostService {
         postRepository.delete(postId);
     }
 
+    @Override
+    public void likePost(Post post) {
+        post.setLikes(post.getLikes() + 1);
+        postRepository.update(post);
+    }
+
+    @Override
+    public void dislikePost(Post post) {
+        post.setLikes(post.getLikes() - 1);
+        postRepository.update(post);
+    }
+
     private void checkPostUpdatePermission(int postId, User user) {
-        Post post = postRepository.getPostById(postId);
+        Post post = getPost(postId);
 
         if (!post.getUser().equals(user)) {
-            throw new UnauthorizedOperationException("You do not have permission to update this post!");
+            throw new UnauthorizedOperationException(UNAUTHORIZED_UPDATE_MESSAGE);
+        }
+        if (user.isBlocked()) {
+            throw new UnauthorizedOperationException(BLOCKED_ACCOUNT_MESSAGE);
         }
     }
 
     private void checkPostDeletePermission(int postId, User user) {
-        Post post = postRepository.getPostById(postId);
-        if (post == null) {
-            throw new EntityNotFoundException("Post", "id", postId);
-        }
-        boolean isAdmin = adminRepositoryOld.getByUserId(user.getId()) != null;
+        Post post = getPost(postId);
+
+        boolean isAdmin = adminRepository.getByUserId(user.getId()) != null;
         if (!(post.getUser().equals(user) || isAdmin)) {
-            throw new UnauthorizedOperationException("You do not have permission to delete this post!");
+            throw new UnauthorizedOperationException(UNAUTHORIZED_DELETE_MESSAGE);
+        }
+        if (user.isBlocked()) {
+            throw new UnauthorizedOperationException(BLOCKED_ACCOUNT_MESSAGE);
         }
 
     }
 
-    // TODO restrict the capabilities of a blocked user
+
 }

@@ -12,12 +12,15 @@ public class PostDisplayDTO {
 
     public String content;
 
+    public int likes;
+
     public List<CommentDisplayDTO> comments;
 
     public PostDisplayDTO() {
     }
 
-    public PostDisplayDTO(String creatorUsername, String title, String content, List<CommentDisplayDTO> comments) {
+    public PostDisplayDTO(String creatorUsername, String title, String content, int likes,
+                          List<CommentDisplayDTO> comments) {
         this.creatorUsername = creatorUsername;
         this.title = title;
         this.content = content;
@@ -46,6 +49,14 @@ public class PostDisplayDTO {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
     }
 
     public List<CommentDisplayDTO> getComments() {

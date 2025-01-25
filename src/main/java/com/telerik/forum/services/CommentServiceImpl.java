@@ -5,7 +5,8 @@ import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.models.Comment;
 import com.telerik.forum.models.Post;
 import com.telerik.forum.models.User;
-import com.telerik.forum.repositories.AdminRepository;
+import com.telerik.forum.repositories.AdminDetailsRepository;
+import com.telerik.forum.repositories.AdminRepositoryOld;
 import com.telerik.forum.repositories.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,11 +21,11 @@ public class CommentServiceImpl implements CommentService {
     private static final String UNAUTHORIZED_DELETE_MESSAGE = "You do not have permission to delete this comment!";
 
     private final CommentRepository commentRepository;
-    private final AdminRepository adminRepository;
+    private final AdminRepositoryOld adminRepository;
 
 
     @Autowired
-    public CommentServiceImpl(CommentRepository commentRepository, AdminRepository adminRepository) {
+    public CommentServiceImpl(CommentRepository commentRepository, AdminRepositoryOld adminRepository) {
         this.commentRepository = commentRepository;
         this.adminRepository = adminRepository;
 

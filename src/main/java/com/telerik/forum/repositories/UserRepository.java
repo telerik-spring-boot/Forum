@@ -1,12 +1,13 @@
 package com.telerik.forum.repositories;
 
 import com.telerik.forum.models.User;
+import com.telerik.forum.models.filters.FilterUserOptions;
 
 import java.util.List;
 
 public interface UserRepository {
 
-    List<User> getAll();
+    List<User> getAll(FilterUserOptions options);
 
     User getById(int id);
 

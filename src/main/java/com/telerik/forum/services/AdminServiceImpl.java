@@ -2,9 +2,11 @@ package com.telerik.forum.services;
 
 import com.telerik.forum.exceptions.AdminRoleManagementException;
 import com.telerik.forum.exceptions.EntityNotFoundException;
+import com.telerik.forum.exceptions.InvalidSortParameterException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.models.AdminDetails;
 import com.telerik.forum.models.User;
+import com.telerik.forum.models.filters.FilterUserOptions;
 import com.telerik.forum.repositories.AdminDetailsRepository;
 import com.telerik.forum.repositories.RoleRepository;
 import com.telerik.forum.repositories.UserRepository;
@@ -33,6 +35,17 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public List<AdminDetails> getAll() {
         return adminDetailsRepository.getAll();
+    }
+
+    @Override
+    public List<User> getAllUsers(FilterUserOptions options, int requestUserId){
+        authorization(requestUserId);
+
+        options.getSortBy().ifPresent(this::validateSortField);
+
+        options.getSortOrder().ifPresent(this::validateSortOrderField);
+
+        return userRepository.getAll(options);
     }
 
     @Override
@@ -150,6 +163,18 @@ public class AdminServiceImpl implements AdminService {
                         .equalsIgnoreCase("admin"))){
             throw new UnauthorizedOperationException("You do not have permission to perform this action");
 
+        }
+    }
+
+    private void validateSortField(String type){
+        if(!type.equals("firstName") && !type.equals("lastName") && !type.equals("username")){
+            throw new InvalidSortParameterException(type);
+        }
+    }
+
+    private void validateSortOrderField(String type){
+        if(!type.equalsIgnoreCase("asc") && !type.equalsIgnoreCase("desc")){
+            throw new InvalidSortParameterException(type);
         }
     }
 

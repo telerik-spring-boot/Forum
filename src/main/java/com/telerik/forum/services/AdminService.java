@@ -2,12 +2,15 @@ package com.telerik.forum.services;
 
 import com.telerik.forum.models.AdminDetails;
 import com.telerik.forum.models.User;
+import com.telerik.forum.models.filters.FilterUserOptions;
 
 import java.util.List;
 
 public interface AdminService {
 
     List<AdminDetails> getAll();
+
+    List<User> getAllUsers(FilterUserOptions options, int requestUserId);
 
     AdminDetails getByUserId(int id);
 
@@ -21,4 +24,5 @@ public interface AdminService {
 
     void update(AdminDetails admin, int requestUserId);
 
+    ;
 }

@@ -2,12 +2,18 @@ package com.telerik.forum.repositories;
 
 import com.telerik.forum.models.Post;
 import com.telerik.forum.models.User;
+import com.telerik.forum.models.filters.FilterUserOptions;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -24,9 +30,41 @@ public class UserRepositoryImpl implements UserRepository {
 
 
     @Override
-    public List<User> getAll() {
+    public List<User> getAll(FilterUserOptions options) {
         try(Session session = sessionFactory.openSession()) {
-            Query<User> query = session.createQuery("from User", User.class);
+            CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+
+            CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
+
+            Root<User> root = criteriaQuery.from(User.class);
+
+            List<Predicate> predicates = new ArrayList<>();
+
+            options.getFirstName().ifPresent(firstName -> {
+                predicates.add(criteriaBuilder.like(root.get("firstName"), "%" + firstName + "%"));
+            });
+
+            options.getUsername().ifPresent(username -> {
+                predicates.add(criteriaBuilder.like(root.get("username"), "%" + username + "%"));
+            });
+
+            options.getFirstName().ifPresent(email -> {
+                predicates.add(criteriaBuilder.like(root.get("emailAddress"), "%" + email + "%"));
+            });
+
+            criteriaQuery.where(predicates.toArray(new Predicate[0]));
+
+            options.getSortBy().ifPresent(sortBy -> {
+                String sortOrder = options.getSortOrder().orElse("asc");
+
+                if (sortOrder.equalsIgnoreCase("desc")) {
+                    criteriaQuery.orderBy(criteriaBuilder.desc(root.get(sortBy)));
+                } else {
+                    criteriaQuery.orderBy(criteriaBuilder.asc(root.get(sortBy)));
+                }
+            });
+
+            Query<User> query = session.createQuery(criteriaQuery);
 
             return query.list();
         }
@@ -155,4 +193,5 @@ public class UserRepositoryImpl implements UserRepository {
             session.getTransaction().commit();
         }
     }
+
 }

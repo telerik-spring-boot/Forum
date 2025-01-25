@@ -79,7 +79,7 @@ public class UserController {
 
             User user = userMapper.dtoToUser(userInput);
 
-            userService.create(user, userRequest);
+            userService.create(user, userRequest.getId());
 
             return userMapper.userToUserDisplayDTO(user);
 
@@ -97,7 +97,7 @@ public class UserController {
 
             User userToBeUpdated = userMapper.dtoToUser(id, userInput);
 
-            userService.update(userToBeUpdated, userRequest);
+            userService.update(userToBeUpdated, userRequest.getId());
 
             return userMapper.userToUserDisplayDTO(userService.getById(id));
 
@@ -115,7 +115,7 @@ public class UserController {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
 
-            userService.delete(id, userRequest);
+            userService.delete(id, userRequest.getId());
 
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());

@@ -9,5 +9,4 @@ public interface LikeService {
 
     void dislikePost(Post post, User user);
 
-    //int getLikes(Post post);
 }

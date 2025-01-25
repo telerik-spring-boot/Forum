@@ -17,17 +17,6 @@ public class LikeRepositoryImpl implements LikeRepository {
         this.sessionFactory = sessionFactory;
     }
 
-//    @Override
-//    public int getNetLikeCountByPostId(int postId) {
-//        try (Session session = sessionFactory.openSession()) {
-//            Query<Integer> query = session.createQuery(
-//                    "SELECT COALESCE(SUM(l.reaction), 0) FROM Like l WHERE l.post.id = :postId",
-//                    Integer.class
-//            );
-//            query.setParameter("postId", postId);
-//            return query.uniqueResult();
-//        }
-//    }
 
     @Override
     public Like getLikeByPostAndUserId(int postId, int userId) {

@@ -5,7 +5,6 @@ import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.models.Comment;
 import com.telerik.forum.models.Post;
 import com.telerik.forum.models.User;
-import com.telerik.forum.repositories.AdminDetailsRepository;
 import com.telerik.forum.repositories.AdminRepositoryOld;
 import com.telerik.forum.repositories.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,8 +48,8 @@ public class CommentServiceImpl implements CommentService {
     public void addComment(Post post, Comment comment, User user) {
         comment.setPost(post);
         comment.setUser(user);
+        post.getComments().add(comment);
         commentRepository.create(comment);
-//        postRepository.update(post);
 
     }
 
@@ -59,19 +58,18 @@ public class CommentServiceImpl implements CommentService {
 
         checkCommentUpdatePermission(comment.getId(), user);
         commentRepository.update(comment);
-        //postRepository.update(post);// Do we need this with CascadeType.ALL?
+
     }
 
     @Override
     public void deleteComment(Post post, int commentId, User user) {
-        List<Comment> comments = commentRepository.getByPostId(post.getId());
-        if (commentId - 1 >= comments.size()) {
+        int commentSize = post.getComments().size();
+        if (commentId > commentSize) {
             throw new EntityNotFoundException("Comment", "id", commentId);
         }
-        Comment commentToDelete = comments.get(commentId - 1);
+        Comment commentToDelete = post.getComments().get(commentId - 1);
         checkCommentDeletePermission(commentToDelete.getId(), user);
         commentRepository.delete(commentToDelete.getId());
-        //postRepository.update(post);
     }
 
     private void checkCommentUpdatePermission(int commentId, User user) {

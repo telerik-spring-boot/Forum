@@ -14,6 +14,7 @@ import com.telerik.forum.models.dtos.adminDTOs.AdminCreateDTO;
 import com.telerik.forum.models.dtos.adminDTOs.AdminDisplayDTO;
 import com.telerik.forum.models.dtos.adminDTOs.AdminUpdateDTO;
 import com.telerik.forum.models.dtos.userDTOs.UserDisplayDTO;
+import com.telerik.forum.models.filters.FilterUserOptions;
 import com.telerik.forum.services.AdminService;
 import com.telerik.forum.services.UserService;
 import jakarta.validation.Valid;
@@ -48,6 +49,27 @@ public class AdminController {
                 .map(userMapper::AdminToAdminDisplayDTO)
                 .toList();
     }
+    @GetMapping("/users")
+    public List<UserDisplayDTO> getAllUsers(@RequestHeader HttpHeaders headers,
+                                            @RequestParam(required = false) String username,
+                                            @RequestParam(required = false) String email,
+                                            @RequestParam(required = false) String firstName,
+                                            @RequestParam(required = false) String sortBy,
+                                            @RequestParam(required = false) String sortOrder) {
+        try{
+            User userRequest = authenticationHelper.tryGetUser(headers);
+
+            return adminService.getAllUsers(new FilterUserOptions(username, email, firstName, sortBy, sortOrder), userRequest.getId())
+                    .stream()
+                    .map(userMapper::userToUserDisplayDTO)
+                    .toList();
+        }catch (UnauthorizedOperationException e){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        }catch (EntityNotFoundException e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+
+    }
 
     @GetMapping("/{userId}")
     public AdminDisplayDTO getAdminByUserId(@PathVariable int userId) {
@@ -58,7 +80,7 @@ public class AdminController {
         }
     }
 
-    @PostMapping("/rights")
+    @PostMapping("/users/rights")
     public AdminDisplayDTO createAdmin(@RequestHeader HttpHeaders headers,@Valid @RequestBody AdminCreateDTO adminDTO) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
@@ -76,7 +98,7 @@ public class AdminController {
         }
     }
 
-    @DeleteMapping("/rights/{id}")
+    @DeleteMapping("/users/rights/{id}")
     public void revokeAdminRights(@RequestHeader HttpHeaders headers, @PathVariable int id) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
@@ -110,7 +132,7 @@ public class AdminController {
         }
     }
 
-    @PutMapping("/block/{userId}")
+    @PutMapping("/users/{userId}/block")
     public UserDisplayDTO blockUser(@RequestHeader HttpHeaders headers, @PathVariable int userId) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
@@ -127,7 +149,7 @@ public class AdminController {
         }
     }
 
-    @PutMapping("/unblock/{userId}")
+    @PutMapping("/users/{userId}/unblock")
     public UserDisplayDTO unblockUser(@RequestHeader HttpHeaders headers, @PathVariable int userId) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);

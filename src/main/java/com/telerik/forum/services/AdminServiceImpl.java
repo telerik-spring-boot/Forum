@@ -135,8 +135,10 @@ public class AdminServiceImpl implements AdminService {
 
         if(admin.getPhoneNumber() == null && databaseAdminDetails.getPhoneNumber() != null){
             adminDetailsRepository.delete(admin.getUser().getId());
-        }else {
+        }else if(databaseAdminDetails.getPhoneNumber() != null){
             adminDetailsRepository.update(admin);
+        }else {
+            adminDetailsRepository.create(admin);
         }
     }
 

@@ -20,7 +20,4 @@ public interface PostService {
 
     void deletePost(int postId, User user);
 
-    void likePost(Post post);
-
-    void dislikePost(Post post);
 }

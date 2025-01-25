@@ -18,12 +18,10 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final AdminRepository adminRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, AdminRepository adminRepository) {
+    public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.adminRepository = adminRepository;
     }
 
 
@@ -99,8 +97,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void create(User userInput, User requestUser) {
-        authorization(requestUser);
+    public void create(User userInput, int requestUserId) {
+        authorization(requestUserId);
 
         boolean userAlreadyExists = userRepository.getByEmail(userInput.getEmailAddress()) != null;
 
@@ -112,8 +110,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void update(User userInput, User requestUser) {
-        authorization(userInput, requestUser);
+    public void update(User userInput, int requestUserId) {
+        authorization(userInput, requestUserId);
 
         User userToUpdate = userRepository.getByEmail(userInput.getEmailAddress());
 
@@ -129,25 +127,29 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void delete(int id, User requestUser) {
-        authorization(userRepository.getById(id), requestUser);
+    public void delete(int id, int requestUserId) {
+        authorization(userRepository.getById(id), requestUserId);
 
         userRepository.delete(id);
     }
 
-    private void authorization(User user) {
-        boolean isAdmin = adminRepository.getByUserId(user.getId()) != null;
+    private void authorization(int userId) {
+        User user = userRepository.getByIdWithRoles(userId);
+        boolean isAdmin = user.getRoles().stream()
+                .anyMatch(role -> role.getName().equalsIgnoreCase("ADMIN"));
 
         if (user.isBlocked() || !isAdmin) {
             throw new UnauthorizedOperationException("You do not have permission to perform this action");
         }
     }
 
-    private void authorization(User userInput, User requestUser) {
-        boolean isAdmin = adminRepository.getByUserId(requestUser.getId()) != null;
+    private void authorization(User userInput, int requestUserId) {
+        User user = userRepository.getByIdWithRoles(requestUserId);
+        boolean isAdmin = user.getRoles().stream()
+                .anyMatch(role -> role.getName().equalsIgnoreCase("ADMIN"));
 
-        if (requestUser.isBlocked() ||
-                (!isAdmin && requestUser.getId() != userInput.getId())) {
+        if (user.isBlocked() ||
+                (!isAdmin && requestUserId != userInput.getId())) {
             throw new UnauthorizedOperationException("You do not have permission to perform this action");
         }
     }

@@ -20,10 +20,10 @@ public interface UserService {
 
     User getByFirstName(String firstName);
 
-    void create(User userInput, User requestUser);
+    void create(User userInput, int requestUserId);
 
-    void update(User userInput, User requestUser);
+    void update(User userInput, int requestUserId);
 
-    void delete(int id, User requestUser);
+    void delete(int id, int requestUserId);
 
 }

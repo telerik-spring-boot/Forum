@@ -66,7 +66,7 @@ CREATE TABLE forum_schema.admin_details
 (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL UNIQUE,
-    phone_number VARCHAR(20),
+    phone_number VARCHAR(20) NOT NULL,
     FOREIGN KEY(user_id) REFERENCES  forum_schema.users(user_id) ON DELETE CASCADE
 );
 

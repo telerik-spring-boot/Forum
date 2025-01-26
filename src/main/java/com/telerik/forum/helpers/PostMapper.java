@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Component
 public class PostMapper {
@@ -34,9 +33,9 @@ public class PostMapper {
         postDTO.setContent(post.getContent());
         postDTO.setCreatorUsername(post.getUser().getUsername());
 
-        Set<Like> likes = post.getLikes();
+
         int likesCount = 0;
-        for (Like like : likes) {
+        for (Like like : post.getLikes()) {
             likesCount += like.getReaction();
         }
         postDTO.setLikes(likesCount);
@@ -70,7 +69,7 @@ public class PostMapper {
     }
 
     public Post dtoToPost(int postId, PostCreateDTO dto) {
-        Post post = postService.getPost(postId);
+        Post post = postService.getById(postId);
 
         if (dto.getTitle() != null) {
             post.setTitle(dto.getTitle());
@@ -91,12 +90,15 @@ public class PostMapper {
         return comment;
     }
 
-    public Comment dtoToComment(int commentId, CommentCreateDTO dto, Post post) {
+    public Comment dtoToComment(int commentId, CommentCreateDTO dto, int postId) {
+        Post post = postService.getByIdWithComments(postId);
         int commentSize = post.getComments().size();
         if (commentId > commentSize) {
             throw new EntityNotFoundException("Comment", "id", commentId);
         }
-        Comment commentToUpdate = post.getComments().get(commentId - 1);
+        //Comment commentToUpdate = post.getComments().get(commentId - 1);
+        Comment commentToUpdate = post.getComments().stream()
+                .toList().get(commentId - 1);
 
         if (dto.getContent() != null) {
             commentToUpdate.setContent(dto.getContent());

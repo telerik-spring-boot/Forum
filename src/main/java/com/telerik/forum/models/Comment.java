@@ -2,6 +2,8 @@ package com.telerik.forum.models;
 
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "comments")
 public class Comment {
@@ -61,5 +63,17 @@ public class Comment {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Comment comment = (Comment) o;
+        return id == comment.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

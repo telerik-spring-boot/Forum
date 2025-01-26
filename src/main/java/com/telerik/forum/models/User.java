@@ -51,9 +51,6 @@ public class User {
     private List<Role> roles = new ArrayList<>();
 
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-    private Set<Like> likes = new HashSet<>();
-
     public User() {}
 
     public User(String firstName, String lastName, String emailAddress, String username, String password, boolean blocked) {
@@ -153,13 +150,6 @@ public class User {
         this.roles.remove(role);
     }
 
-    public Set<Like> getLikes() {
-        return likes;
-    }
-
-    public void setLikes(Set<Like> likes) {
-        this.likes = likes;
-    }
 
     @Override
     public boolean equals(Object o) {

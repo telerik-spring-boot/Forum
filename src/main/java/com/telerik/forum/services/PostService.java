@@ -1,6 +1,5 @@
 package com.telerik.forum.services;
 
-import com.telerik.forum.models.Comment;
 import com.telerik.forum.models.Post;
 import com.telerik.forum.models.User;
 
@@ -12,7 +11,13 @@ public interface PostService {
 
     //List<Post> getPostsByAuthor(User user);
 
-    Post getPost(int id);
+    Post getById(int id);
+
+    Post getByIdWithComments(int id);
+
+    Post getByIdWithLikes(int id);
+
+    Post getByIdWithCommentsAndLikes(int id);
 
     void createPost(Post post, User user);
 

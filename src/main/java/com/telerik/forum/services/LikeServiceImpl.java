@@ -5,6 +5,7 @@ import com.telerik.forum.models.Like;
 import com.telerik.forum.models.Post;
 import com.telerik.forum.models.User;
 import com.telerik.forum.repositories.LikeRepository;
+import com.telerik.forum.repositories.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,18 +15,26 @@ import static com.telerik.forum.services.PostServiceImpl.BLOCKED_ACCOUNT_MESSAGE
 public class LikeServiceImpl implements LikeService {
 
     private final LikeRepository likeRepository;
+    private final PostRepository postRepository;
 
     @Autowired
-    public LikeServiceImpl(LikeRepository likeRepository) {
+    public LikeServiceImpl(LikeRepository likeRepository, PostRepository postRepository) {
         this.likeRepository = likeRepository;
+        this.postRepository = postRepository;
     }
 
     @Override
-    public void likePost(Post post, User user) {
+    public void likePost(int postId, User user) {
 
         checkForBlockedUser(user);
 
-        Like like = likeRepository.getLikeByPostAndUserId(post.getId(), user.getId());
+        Post post = postRepository.getPostAndLikesById(postId);
+
+        Like like = post.getLikes().stream()
+                .filter(l -> l.getUser().getId() == user.getId())
+                .findFirst()
+                .orElse(null);
+
 
         if (like == null) {
             Like newLike = new Like();
@@ -33,30 +42,31 @@ public class LikeServiceImpl implements LikeService {
             newLike.setUser(user);
             newLike.setReaction(1);
 
-            post.getLikes().add(newLike);
-
             likeRepository.create(newLike);
         } else if (like.getReaction() == -1) {
-            post.getLikes().remove(like);
 
             like.setReaction(1);
 
-            post.getLikes().add(like);
-
             likeRepository.update(like);
-        }else{
-            post.getLikes().remove(like);
+        } else {
 
             likeRepository.delete(like.getId());
+
         }
     }
 
     @Override
-    public void dislikePost(Post post, User user) {
+    public void dislikePost(int postId, User user) {
 
         checkForBlockedUser(user);
 
-        Like dislike = likeRepository.getLikeByPostAndUserId(post.getId(), user.getId());
+        Post post = postRepository.getPostAndLikesById(postId);
+
+        Like dislike = post.getLikes().stream()
+                .filter(l -> l.getUser().getId() == user.getId())
+                .findFirst()
+                .orElse(null);
+
 
         if (dislike == null) {
             Like newDislike = new Like();
@@ -64,19 +74,16 @@ public class LikeServiceImpl implements LikeService {
             newDislike.setUser(user);
             newDislike.setReaction(-1);
 
-            post.getLikes().add(newDislike);
             likeRepository.create(newDislike);
         } else if (dislike.getReaction() == 1) {
-            post.getLikes().remove(dislike);
 
             dislike.setReaction(-1);
 
-            post.getLikes().add(dislike);
-
             likeRepository.update(dislike);
-        }else{
-            post.getLikes().remove(dislike);
+        } else {
+
             likeRepository.delete(dislike.getId());
+
         }
 
     }

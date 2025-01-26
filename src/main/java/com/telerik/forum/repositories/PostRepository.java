@@ -10,7 +10,11 @@ public interface PostRepository {
 
     Post getPostById(int id);
 
-    //Post getPostAndCommnetsById(int id);
+    Post getPostAndCommentsById(int id);
+
+    Post getPostAndLikesById(int id);
+
+    Post getPostAndCommentsAndLikesById(int id);
 
    // List<Post> getPostsAndCommentsbyUserId(int userId);
 

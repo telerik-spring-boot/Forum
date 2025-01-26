@@ -35,6 +35,22 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
+    public List<Post> getMostCommentedPosts(int limit) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<Post> query = session.createQuery
+                    ("SELECT DISTINCT p FROM Post p" +
+                                    " LEFT JOIN FETCH p.comments " +
+                                    " LEFT JOIN FETCH p.likes " +
+                                    " LEFT JOIN FETCH p.tags " +
+                                    "ORDER BY SIZE(p.comments) DESC",
+                            Post.class);
+
+            query.setMaxResults(limit);
+            return query.list();
+        }
+    }
+
+    @Override
     public Post getPostById(int postId) {
 
         try (Session session = sessionFactory.openSession()) {

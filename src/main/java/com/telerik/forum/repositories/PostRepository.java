@@ -8,6 +8,8 @@ public interface PostRepository {
 
     List<Post> getAll();
 
+    List<Post> getMostCommentedPosts(int limit);
+
     Post getPostById(int id);
 
     Post getPostWithCommentsById(int id);

@@ -9,6 +9,8 @@ public interface PostService {
 
     List<Post> getPosts();
 
+    List<Post> getMostCommentedPosts(int limit);
+
     //List<Post> getPostsByAuthor(User user);
 
     Post getById(int id);

@@ -38,10 +38,10 @@ public class PostRepositoryImpl implements PostRepository {
     public List<Post> getMostCommentedPosts(int limit) {
         try (Session session = sessionFactory.openSession()) {
             Query<Post> query = session.createQuery
-                    ("SELECT DISTINCT p FROM Post p " +
-                                    "LEFT JOIN FETCH p.comments " +
-                                    "LEFT JOIN FETCH p.likes " +
-                                    "LEFT JOIN FETCH p.tags " +
+                    ("SELECT DISTINCT p FROM Post p" +
+                                    " LEFT JOIN FETCH p.comments " +
+                                    " LEFT JOIN FETCH p.likes " +
+                                    " LEFT JOIN FETCH p.tags " +
                                     "ORDER BY SIZE(p.comments) DESC",
                             Post.class);
 
@@ -52,42 +52,29 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public List<Post> getMostLikedPosts(int limit) {
-//        try (Session session = sessionFactory.openSession()) {
-//            Query<Integer> postIdQuery = session.createQuery
-//                    ("SELECT p.id " +
-//                            "FROM Post p " +
-//                            "LEFT JOIN p.likes l " +
-//                            "GROUP BY p.id " +
-//                            "ORDER BY SUM(COALESCE(l.reaction, 0)) DESC",
-//                            Integer.class);
-//
-//            postIdQuery.setMaxResults(limit);
-//            List<Integer> postIds = postIdQuery.list();
-//
-//            Query<Post> postQuery = session.createQuery(
-//                    "SELECT DISTINCT p FROM Post p " +
-//                            "LEFT JOIN FETCH p.comments " +
-//                            "LEFT JOIN FETCH p.likes " +
-//                            "LEFT JOIN FETCH p.tags " +
-//                            "WHERE p.id IN :postIds",
-//                    Post.class
-//            );
-//            postQuery.setParameter("postIds", postIds);
-//
-//            return postQuery.list();
-//        }
         try (Session session = sessionFactory.openSession()) {
-            Query<Post> query = session.createQuery
-                    ("SELECT DISTINCT p FROM Post p " +
-                                    "LEFT JOIN FETCH p.comments " +
-                                    "LEFT JOIN FETCH p.likes l " +
-                                    "LEFT JOIN FETCH p.tags " +
-                                    "GROUP BY p.id " +
-                                    "ORDER BY SUM(l.reaction) DESC",
-                            Post.class);
+            Query<Integer> postIdQuery = session.createQuery
+                    ("SELECT p.id " +
+                            "FROM Post p " +
+                            "LEFT JOIN p.likes l " +
+                            "GROUP BY p.id " +
+                            "ORDER BY SUM(l.reaction) DESC",
+                            Integer.class);
 
-            query.setMaxResults(limit);
-            return query.list();
+            postIdQuery.setMaxResults(limit);
+            List<Integer> postIds = postIdQuery.list();
+
+            Query<Post> postQuery = session.createQuery(
+                    "SELECT DISTINCT p FROM Post p " +
+                            "LEFT JOIN FETCH p.comments " +
+                            "LEFT JOIN FETCH p.likes " +
+                            "LEFT JOIN FETCH p.tags " +
+                            "WHERE p.id IN :postIds",
+                    Post.class
+            );
+            postQuery.setParameter("postIds", postIds);
+
+            return postQuery.list();
         }
     }
 

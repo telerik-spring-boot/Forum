@@ -24,5 +24,4 @@ public interface AdminService {
 
     void update(AdminDetails admin, int requestUserId);
 
-    ;
 }

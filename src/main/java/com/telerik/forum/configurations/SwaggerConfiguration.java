@@ -17,9 +17,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 @Configuration
 public class SwaggerConfiguration {
@@ -36,57 +34,107 @@ public class SwaggerConfiguration {
                                 .name("Yordan, Nikolai, and the API Team")
                                 .email("team@example.com")
                                 .url("www.google.com")))
-                .components(new Components()
-                        .addSecuritySchemes("basicAuth", new SecurityScheme()
-                                .type(SecurityScheme.Type.HTTP)
-                                .scheme("basic")
-                                .description("Enter username and password for basic authentication."))
-                        .addSchemas("UserDisplayDTO", getUserDisplayeSchema().description("The user will be displayed in the following format."))
-                        .addSchemas("UserCreateDTO", getUserBaseSchema()
-                                .description("The request body for creating the user should be in the following format.")
-                                .addProperty("username", new Schema<>().type("string")
-                                        .description("Username")
-                                        .example("george_bush")
-                                        .minLength(4)
-                                        .maxLength(20))
-                                .addProperty("password", getPasswordPropertySchema())
-                        )
-                        .addSchemas("UserUpdateDTO", getUserBaseSchema()
-                                .description("The request body for updating the user should be in the following format.")
-                                .addProperty("password", getPasswordPropertySchema()
-                                )
-                        )
-                        .addSchemas("UserCommentsDisplayDTO", getUserContentDisplayBaseSchema()
-                                .description("The user's comments will be displayed in the following format.")
-                                .addProperty("comments", new ArraySchema()
-                                        .items(new Schema<>().$ref("#/components/schemas/CommentDisplayDTO"))
-                                )
-                        )
-                        .addSchemas("UserPostsDisplayDTO", getUserContentDisplayBaseSchema()
-                                .description("The user's posts will be displayed in the following format.")
-                                .addProperty("posts", new ArraySchema()
-                                        .items(new Schema<>().$ref("#/components/schemas/PostDisplayDTO"))
-                                )
-                        )
-                        .addSchemas("AdminDisplayDTO", getUserBaseSchema()
-                                .description("The admin will be displayed in the following format.")
-                                .addProperty("phoneNumber", new Schema<>()
-                                        .description("Phone number")
-                                        .example("+359 89 444 5353")
-                                )
-                        )
-                        .addSchemas("AdminCreateDTO", new Schema<>()
-                                .type("object")
-                                .addProperty("user_id", new Schema<>()
-                                        .type("integer")
-                                        .description("he ID of the user you wish to assign admin privileges to.")
-                                        .example("1"))
-                                .addProperty("phoneNumber", getPhoneNumberPropertySchema()))
-                        .addSchemas("AdminUpdateDTO", new Schema<>()
-                                .type("object")
-                                .addProperty("phoneNumber", getPhoneNumberPropertySchema()))
-                )
+                .components(getComponentWithAllSchemas())
                 .paths(createPaths());
+    }
+
+    private Components getComponentWithAllSchemas() {
+        return new Components()
+                .addSecuritySchemes("basicAuth", new SecurityScheme()
+                        .type(SecurityScheme.Type.HTTP)
+                        .scheme("basic")
+                        .description("Enter username and password for basic authentication.")
+                )
+                .addSchemas("UserDisplayDTO", getUserDisplayeSchema().description("The user will be displayed in the following format.")
+                )
+                .addSchemas("UserCreateDTO", getUserBaseSchema()
+                        .description("The request body for creating the user should be in the following format.")
+                        .addProperty("username", new Schema<>().type("string")
+                                .description("Username")
+                                .example("george_bush")
+                                .minLength(4)
+                                .maxLength(20))
+                        .addProperty("password", getPasswordPropertySchema())
+                )
+                .addSchemas("UserUpdateDTO", getUserBaseSchema()
+                        .description("The request body for updating the user should be in the following format.")
+                        .addProperty("password", getPasswordPropertySchema()
+                        )
+                )
+                .addSchemas("UserCommentsDisplayDTO", getUserContentDisplayBaseSchema()
+                        .description("The user's comments will be displayed in the following format.")
+                        .addProperty("comments", new ArraySchema()
+                                .items(new Schema<>().$ref("#/components/schemas/CommentDisplayDTO"))
+                        )
+                )
+                .addSchemas("UserPostsDisplayDTO", getUserContentDisplayBaseSchema()
+                        .description("The user's posts will be displayed in the following format.")
+                        .addProperty("posts", new ArraySchema()
+                                .items(new Schema<>().$ref("#/components/schemas/PostDisplayDTO"))
+                        )
+                )
+                .addSchemas("AdminDisplayDTO", getUserBaseSchema()
+                        .description("The admin will be displayed in the following format.")
+                        .addProperty("phoneNumber", new Schema<>()
+                                .description("Phone number")
+                                .example("+359 89 444 5353")
+                        )
+                )
+                .addSchemas("AdminCreateDTO", new Schema<>().type("object")
+                        .addProperty("user_id", new Schema<>()
+                                .type("integer")
+                                .description("he ID of the user you wish to assign admin privileges to.")
+                                .example("1"))
+                        .addProperty("phoneNumber", getPhoneNumberPropertySchema())
+                )
+                .addSchemas("AdminUpdateDTO", new Schema<>()
+                        .type("object")
+                        .addProperty("phoneNumber", getPhoneNumberPropertySchema())
+                )
+                .addSchemas("PostCreateDTO", new Schema<>().type("object")
+                        .addProperty("title", new Schema<>().type("string")
+                                .description("Post title must be between 16 and 64 symbols.")
+                                .example("This is a valid post title")
+                                .minLength(16)
+                                .maxLength(64))
+                        .addProperty("content", new Schema<>().type("string")
+                                .description("Post content must be between 32 and 8192 symbols.")
+                                .example("This is a valid post content having over 32 symbols.")
+                                .minLength(32)
+                                .maxLength(8192))
+                )
+                .addSchemas("CommentCreateDTO", new Schema<>().type("object")
+                        .addProperty("content", new Schema<>().type("string")
+                                .description("Comment content must be between 1 and 200 symbols.")
+                                .example("This is a valid comment content having over 1 and 200 symbols.")
+                                .minLength(1)
+                                .maxLength(200))
+                )
+                .addSchemas("CommentDisplayDTO", new Schema<>().type("object")
+                        .addProperty("creatorUsername", new Schema<>().type("string")
+                                .description("The username of the creator of the comment.")
+                                .example("george_bush"))
+                        .addProperty("commentContent", new Schema<>().type("string")
+                                .description("Post content must be between 32 and 8192 symbols.")
+                                .example("This is a valid post content having over 32 symbols."))
+                )
+                .addSchemas("PostDisplayDTO", new Schema<>().type("object")
+                        .addProperty("creatorUsername", new Schema<>().type("string")
+                                .description("The username of the creator of the comment.")
+                                .example("george_bush"))
+                        .addProperty("title", new Schema<>().type("string")
+                                .description("Post title.")
+                                .example("This is a valid post title"))
+                        .addProperty("content", new Schema<>().type("string")
+                                .description("Post content.")
+                                .example("This is a valid post content having over 32 symbols."))
+                        .addProperty("likes", new Schema<>().type("integer")
+                                .description("Likes of the posts.")
+                                .example("2"))
+                        .addProperty("comments", new ArraySchema()
+                                .items(new Schema<>().$ref("#/components/schemas/CommentDisplayDTO"))
+                        )
+                );
     }
 
 
@@ -97,15 +145,124 @@ public class SwaggerConfiguration {
 
         addAdminPathItems(paths);
 
+        addPostPathItems(paths);
 
         return paths;
+    }
+
+    private void addPostPathItems(Paths paths) {
+        paths.addPathItem("/api/posts", new PathItem()
+                .get(new Operation()
+                        .summary("Get all posts")
+                        .description("This endpoint retrieves a list of all posts.")
+                        .addTagsItem("Post Operations")
+                        .responses(new ApiResponses()
+                                .addApiResponse("200", new ApiResponse()
+                                        .description("Successful operation.")
+                                        .content(getSampleContent("PostDisplayDTO"))
+                                )
+                        )
+                )
+                .post(new Operation()
+                        .summary("Create a new post")
+                        .description("This endpoint creates a new post.")
+                        .addTagsItem("Post Operations")
+                        .parameters(List.of(getHeaderParameter()))
+                        .requestBody(getRequestBody("PostCreateDTO"))
+                        .responses(successNotFoundUnauthorizedResponses("PostDisplayDTO"))
+                        .security(List.of(new SecurityRequirement().addList("basicAuth")))
+                )
+        );
+
+        paths.addPathItem("/api/posts/{postId}", new PathItem()
+                .get(new Operation()
+                        .summary("Get a single post by postId")
+                        .description("This endpoint retrieves a single post by postId.")
+                        .addTagsItem("Post Operations")
+                        .parameters(List.of(getPathIdParameter("postId")))
+                        .responses(successNotFoundResponses("PostDisplayDTO"))
+                )
+                .put(new Operation()
+                        .summary("Update a post by postId")
+                        .description("This endpoint updates a post by postId.")
+                        .addTagsItem("Post Operations")
+                        .parameters(List.of(getHeaderParameter(), getPathIdParameter("postId")))
+                        .requestBody(getRequestBody("PostCreateDTO"))
+                        .responses(successNotFoundUnauthorizedResponses("PostDisplayDTO"))
+                        .security(List.of(new SecurityRequirement().addList("basicAuth")))
+                )
+                .delete(new Operation()
+                        .summary("Delete a post by postId")
+                        .description("This endpoint deletes a post by postId.")
+                        .addTagsItem("Post Operations")
+                        .parameters(List.of(getHeaderParameter(), getPathIdParameter("postId")))
+                        .responses(successNotFoundUnauthorizedResponses(null))
+                        .security(List.of(new SecurityRequirement().addList("basicAuth")))
+                )
+        );
+
+        paths.addPathItem("/api/posts/{postId}/like", new PathItem()
+                .put(new Operation()
+                        .summary("Like a post by postId")
+                        .description("This endpoint increases the number of likes of a post by postId.")
+                        .addTagsItem("Post Operations")
+                        .parameters(List.of(getHeaderParameter(), getPathIdParameter("postId")))
+                        .responses(successNotFoundUnauthorizedResponses("PostDisplayDTO"))
+                        .security(List.of(new SecurityRequirement().addList("basicAuth")))
+                )
+        );
+
+        paths.addPathItem("/api/posts/{postId}/dislike", new PathItem()
+                .put(new Operation()
+                        .summary("Dislike a post by postId")
+                        .description("This endpoint increases the number of likes of a post by postId.")
+                        .addTagsItem("Post Operations")
+                        .parameters(List.of(getHeaderParameter(), getPathIdParameter("postId")))
+                        .responses(successNotFoundUnauthorizedResponses("PostDisplayDTO"))
+                        .security(List.of(new SecurityRequirement().addList("basicAuth")))
+                )
+        );
+
+        paths.addPathItem("/api/posts/{postId}/comments", new PathItem()
+                .post(new Operation()
+                        .summary("Create a new comment for a post by postId")
+                        .description("This endpoint creates a new comment to a post by postId.")
+                        .addTagsItem("Post Operations")
+                        .parameters(List.of(getHeaderParameter(), getPathIdParameter("postId")))
+                        .requestBody(getRequestBody("CommentCreateDTO"))
+                        .responses(successNotFoundUnauthorizedResponses("PostDisplayDTO"))
+                        .security(List.of(new SecurityRequirement().addList("basicAuth")))
+                )
+        );
+
+        paths.addPathItem("/api/posts/{postId}/comments/{commentId}", new PathItem()
+                .put(new Operation()
+                        .summary("Update a comment by comment number of a post by postId")
+                        .description("This endpoint updates a comment of a post by comment number.")
+                        .addTagsItem("Post Operations")
+                        .parameters(List.of(getHeaderParameter(), getPathIdParameter("postId"), getPathIdParameter("commentId")))
+                        .requestBody(getRequestBody("CommentCreateDTO"))
+                        .responses(successNotFoundUnauthorizedResponses("PostDisplayDTO"))
+                        .security(List.of(new SecurityRequirement().addList("basicAuth")))
+                )
+                .delete(new Operation()
+                        .summary("Delete a comment by comment number of a post by postId")
+                        .description("This endpoint deletes a comment of a post by comment number.")
+                        .addTagsItem("Post Operations")
+                        .parameters(List.of(getHeaderParameter(), getPathIdParameter("postId"), getPathIdParameter("commentId")))
+                        .responses(successNotFoundUnauthorizedResponses("PostDisplayDTO"))
+                        .security(List.of(new SecurityRequirement().addList("basicAuth")))
+                )
+        );
+
+
     }
 
     private void addAdminPathItems(Paths paths) {
         paths.addPathItem("/api/admins", new PathItem()
                 .get(new Operation()
                         .summary("Get all admins")
-                        .description("This endpoints retrieves all admins.")
+                        .description("This endpoint retrieves a list of all admins.")
                         .addTagsItem("Admin Operations")
                         .responses(new ApiResponses()
                                 .addApiResponse("200", new ApiResponse()
@@ -119,7 +276,7 @@ public class SwaggerConfiguration {
         paths.addPathItem("/api/admins/users", new PathItem()
                 .get(new Operation()
                         .summary("Get all users")
-                        .description("This endpoints retrieves all users.")
+                        .description("This endpoint retrieves a list of all users.")
                         .addTagsItem("Admin Operations")
                         .parameters(getAllUsersParameters())
                         .responses(new ApiResponses()
@@ -220,7 +377,7 @@ public class SwaggerConfiguration {
                         .addTagsItem("User Operations")
                         .parameters(List.of(getHeaderParameter(),getPathIdParameter("id")))
                         .requestBody(getRequestBody("UserUpdateDTO"))
-                        .responses(successNotFoundUnauthorizedDuplicateResponses("UserDisplayDTO"))
+                        .responses(successNotFoundUnauthorizedDuplicateResponses())
                         .security(List.of(
                                 new SecurityRequirement().addList("basicAuth")))
                 )
@@ -241,7 +398,7 @@ public class SwaggerConfiguration {
                         .description("This endpoint creates a new user.")
                         .addTagsItem("User Operations")
                         .requestBody(getRequestBody("UserCreateDTO"))
-                        .responses(successNotFoundDuplicateResponses("UserDisplayDTO"))
+                        .responses(successNotFoundDuplicateResponses())
                 )
         );
 
@@ -288,14 +445,14 @@ public class SwaggerConfiguration {
         return responses;
     }
 
-    private ApiResponses successNotFoundDuplicateResponses(String entityName) {
-        ApiResponses responses = successNotFoundResponses(entityName);
+    private ApiResponses successNotFoundDuplicateResponses() {
+        ApiResponses responses = successNotFoundResponses("UserDisplayDTO");
         responses.addApiResponse("409", new ApiResponse().description("Duplicate user"));
         return responses;
     }
 
-    private ApiResponses successNotFoundUnauthorizedDuplicateResponses(String entityName) {
-        ApiResponses responses = successNotFoundDuplicateResponses(entityName);
+    private ApiResponses successNotFoundUnauthorizedDuplicateResponses() {
+        ApiResponses responses = successNotFoundDuplicateResponses();
         responses.addApiResponse("401", new ApiResponse().description("Unauthorized operation"));
         return responses;
     }
@@ -311,8 +468,6 @@ public class SwaggerConfiguration {
         responses.addApiResponse("403", new ApiResponse().description("Forbidden"));
         return responses;
     }
-
-
 
     private Schema<?> getUserBaseSchema(){
         return new Schema<>()
@@ -336,7 +491,6 @@ public class SwaggerConfiguration {
                 );
     }
 
-
     private Schema<?> getUserContentDisplayBaseSchema(){
         return new Schema<>()
                 .type("object")
@@ -345,6 +499,7 @@ public class SwaggerConfiguration {
                 .addProperty("lastName", new Schema<>().type("string").description("Last Name")
                         .example("Bush"));
     }
+
     private Schema<?> getUserDisplayeSchema(){
         return getUserContentDisplayBaseSchema()
                 .addProperty("username", new Schema<>().type("string").description("Username")
@@ -352,6 +507,7 @@ public class SwaggerConfiguration {
                 .addProperty("blocked", new Schema<>().type("boolean").description("Blocked")
                         .example("false"));
     }
+
     private Schema<?> getPasswordPropertySchema(){
         return new Schema<>().type("string")
                 .description("Password must contain at least one uppercase letter, one lowercase letter, one number, one symbol, and be between 6 to 20 characters long.")

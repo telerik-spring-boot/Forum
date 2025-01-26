@@ -38,10 +38,10 @@ public class PostRepositoryImpl implements PostRepository {
     public List<Post> getMostCommentedPosts(int limit) {
         try (Session session = sessionFactory.openSession()) {
             Query<Post> query = session.createQuery
-                    ("SELECT DISTINCT p FROM Post p" +
-                                    " LEFT JOIN FETCH p.comments " +
-                                    " LEFT JOIN FETCH p.likes " +
-                                    " LEFT JOIN FETCH p.tags " +
+                    ("SELECT DISTINCT p FROM Post p " +
+                                    "LEFT JOIN FETCH p.comments " +
+                                    "LEFT JOIN FETCH p.likes " +
+                                    "LEFT JOIN FETCH p.tags " +
                                     "ORDER BY SIZE(p.comments) DESC",
                             Post.class);
 
@@ -78,10 +78,11 @@ public class PostRepositoryImpl implements PostRepository {
 //        }
         try (Session session = sessionFactory.openSession()) {
             Query<Post> query = session.createQuery
-                    ("SELECT DISTINCT p FROM Post p" +
-                                    " LEFT JOIN FETCH p.comments " +
-                                    " LEFT JOIN FETCH p.likes l" +
-                                    " LEFT JOIN FETCH p.tags " +
+                    ("SELECT DISTINCT p FROM Post p " +
+                                    "LEFT JOIN FETCH p.comments " +
+                                    "LEFT JOIN FETCH p.likes l " +
+                                    "LEFT JOIN FETCH p.tags " +
+                                    "GROUP BY p.id " +
                                     "ORDER BY SUM(l.reaction) DESC",
                             Post.class);
 

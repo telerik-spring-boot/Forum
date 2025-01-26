@@ -276,7 +276,7 @@ public class SwaggerConfiguration {
         paths.addPathItem("/api/admins/users", new PathItem()
                 .get(new Operation()
                         .summary("Get all users")
-                        .description("This endpoint retrieves a list of all users.")
+                        .description("This endpoint retrieves a list of all users. Supports filtration and sorting by parameters provided below.")
                         .addTagsItem("Admin Operations")
                         .parameters(getAllUsersParameters())
                         .responses(new ApiResponses()

@@ -49,6 +49,7 @@ public class AdminController {
                 .map(userMapper::AdminToAdminDisplayDTO)
                 .toList();
     }
+
     @GetMapping("/users")
     public List<UserDisplayDTO> getAllUsers(@RequestHeader HttpHeaders headers,
                                             @RequestParam(required = false) String username,
@@ -98,12 +99,12 @@ public class AdminController {
         }
     }
 
-    @DeleteMapping("/users/rights/{id}")
-    public void revokeAdminRights(@RequestHeader HttpHeaders headers, @PathVariable int id) {
+    @DeleteMapping("/users/rights/{userId}")
+    public void revokeAdminRights(@RequestHeader HttpHeaders headers, @PathVariable int userId) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
 
-            adminService.revokeAdminRights(id, userRequest.getId());
+            adminService.revokeAdminRights(userId, userRequest.getId());
 
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
@@ -158,20 +159,6 @@ public class AdminController {
             adminService.unblockUser(userToUnblock, userRequest.getId());
 
             return userMapper.userToUserDisplayDTO(userToUnblock);
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch (UnauthorizedOperationException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        }
-    }
-
-    @DeleteMapping("/{userId}")
-    public void deleteAdmin(@RequestHeader HttpHeaders headers, @PathVariable int userId) {
-        try {
-            User userRequest = authenticationHelper.tryGetUser(headers);
-
-            adminService.revokeAdminRights(userId, userRequest.getId());
-
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (UnauthorizedOperationException e) {

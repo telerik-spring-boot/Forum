@@ -93,8 +93,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void create(User userInput, int requestUserId) {
-        authorization(requestUserId);
+    public void create(User userInput) {
 
         boolean userAlreadyExists = userRepository.getByEmail(userInput.getEmailAddress()) != null;
 

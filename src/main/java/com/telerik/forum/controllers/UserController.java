@@ -45,42 +45,49 @@ public class UserController {
     }
 
     @GetMapping("/{id}/posts")
-    public UserPostsDisplayDTO getUserPosts(@PathVariable int id) {
+    public UserPostsDisplayDTO getUserPosts(@RequestHeader HttpHeaders headers, @PathVariable int id) {
         try {
+            authenticationHelper.tryGetUser(headers);
+
             User userEntity =  userService.getByIdWithPosts(id);
 
             return userMapper.userToUserPostsDisplayDTO(userEntity);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (UnauthorizedOperationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
     }
 
     @GetMapping("/{id}/comments")
-    public UserCommentsDisplayDTO getUserComments(@PathVariable int id) {
+    public UserCommentsDisplayDTO getUserComments(@RequestHeader HttpHeaders headers, @PathVariable int id) {
         try {
+            authenticationHelper.tryGetUser(headers);
+
             User userEntity = userService.getByIdWithComments(id);
 
             return userMapper.userToUserCommentsDisplayDTO(userEntity);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (UnauthorizedOperationException e){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
     }
 
     @PostMapping
-    public UserDisplayDTO createUser(@RequestHeader HttpHeaders headers, @Valid @RequestBody UserCreateDTO userInput) {
+    public UserDisplayDTO createUser(@Valid @RequestBody UserCreateDTO userInput) {
         try {
-            User userRequest = authenticationHelper.tryGetUser(headers);
 
             User user = userMapper.dtoToUser(userInput);
 
-            userService.create(user, userRequest.getId());
+            userService.create(user);
 
             return userMapper.userToUserDisplayDTO(user);
 
         } catch (DuplicateEntityException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
-        } catch (UnauthorizedOperationException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 

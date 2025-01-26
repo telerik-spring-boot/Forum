@@ -10,7 +10,8 @@ import com.telerik.forum.models.User;
 import com.telerik.forum.models.dtos.commentDTOs.CommentCreateDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostCreateDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO;
-import com.telerik.forum.models.dtos.tagDTOs.TagDTO;
+import com.telerik.forum.models.dtos.tagDTOs.TagCreateAndDeleteDTO;
+import com.telerik.forum.models.dtos.tagDTOs.TagUpdateDTO;
 import com.telerik.forum.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -91,7 +92,7 @@ public class PostController {
     @PostMapping("/{postId}/tags")
     public PostDisplayDTO addTagsToPost(@RequestHeader HttpHeaders headers,
                                         @PathVariable int postId,
-                                        @RequestBody TagDTO userInput) {
+                                        @RequestBody TagCreateAndDeleteDTO userInput) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
             tagService.addTagToPost(postId, userInput.getTags(), userRequest);
@@ -148,6 +149,21 @@ public class PostController {
         }
     }
 
+    @PutMapping("/{postId}/tags")
+    public PostDisplayDTO UpdateTagsToPost(@RequestHeader HttpHeaders headers,
+                                           @PathVariable int postId,
+                                           @RequestBody TagUpdateDTO userInput) {
+        try {
+            User userRequest = authenticationHelper.tryGetUser(headers);
+            tagService.updateTagFromPost(postId, userInput.getOldTags(), userInput.getNewTags(), userRequest);
+            return postMapper.postToPostDisplayDTO(postService.getByIdWithCommentsAndLikes(postId));
+        } catch (UnauthorizedOperationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
     @PutMapping("/{postId}/comments/{commentId}")
     public PostDisplayDTO updateComment(@RequestHeader HttpHeaders headers,
                                         @PathVariable int postId,
@@ -181,7 +197,7 @@ public class PostController {
     @DeleteMapping("/{postId}/tags")
     public PostDisplayDTO removeTagsFromPost(@RequestHeader HttpHeaders headers,
                                              @PathVariable int postId,
-                                             @RequestBody TagDTO userInput) {
+                                             @RequestBody TagCreateAndDeleteDTO userInput) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
             tagService.deleteTagFromPost(postId, userInput.getTags(), userRequest);

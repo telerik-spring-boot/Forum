@@ -33,15 +33,66 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public void addTagToPost(int postId, String tags, User user) {
-
         Post post = postRepository.getPostWithTagsById(postId);
         checkPermissions(post, user);
 
-        List<String> tagList = Arrays.stream(tags.split(","))
+        List<String> tagList = extractTags(tags);
+
+        addTagsToPostHelper(tagList, post);
+
+        postRepository.update(post);
+
+    }
+
+
+
+
+    @Override
+    public void updateTagFromPost(int postId, String oldTags,String newTags, User user) {
+        Post post = postRepository.getPostWithTagsById(postId);
+        checkPermissions(post, user);
+
+        List<String> oldTagList = extractTags(oldTags);
+        List<String> newTagList = extractTags(newTags);
+
+        if(oldTagList.size() != newTagList.size()) {
+            throw new UnauthorizedOperationException(UNAUTHORIZED_MESSAGE);
+        }
+    }
+
+    @Override
+    public void deleteTagFromPost(int postId, String tags, User user) {
+        Post post = postRepository.getPostWithTagsById(postId);
+        checkPermissions(post, user);
+
+        List<String> tagList = extractTags(tags);
+
+        deleteTagsFromPostHelper(tagList, post);
+
+        postRepository.update(post);
+    }
+
+
+    private void checkPermissions(Post post, User user) {
+
+        boolean isAdmin = adminDetailsRepository.getByUserId(user.getId()) != null;
+        if (!(post.getUser().equals(user) || isAdmin)) {
+            throw new UnauthorizedOperationException(UNAUTHORIZED_MESSAGE);
+        }
+        if (user.isBlocked()) {
+            throw new UnauthorizedOperationException(BLOCKED_ACCOUNT_MESSAGE);
+        }
+
+    }
+
+    private static List<String> extractTags(String tags) {
+        return Arrays.stream(tags.split(","))
                 .map(String::trim)
                 .map(String::toLowerCase)
                 .toList();
+    }
 
+    private void addTagsToPostHelper(List<String> tagList, Post post) {
         for (String tagToAdd : tagList) {
 
             Tag tag = tagRepository.findByName(tagToAdd);
@@ -57,26 +108,9 @@ public class TagServiceImpl implements TagService {
                 post.getTags().add(tag);
             }
         }
-
-        postRepository.update(post);
-
     }
 
-    @Override
-    public void updateTagFromPost(int postId, String tags, User user) {
-
-    }
-
-    @Override
-    public void deleteTagFromPost(int postId, String tags, User user) {
-        Post post = postRepository.getPostWithTagsById(postId);
-        checkPermissions(post, user);
-
-        List<String> tagList = Arrays.stream(tags.split(","))
-                .map(String::trim)
-                .map(String::toLowerCase)
-                .toList();
-
+    private void deleteTagsFromPostHelper(List<String> tagList, Post post) {
         for (String tagToRemove : tagList) {
 
             Tag tag = tagRepository.findByName(tagToRemove);
@@ -85,19 +119,5 @@ public class TagServiceImpl implements TagService {
                 post.getTags().remove(tag);
             }
         }
-
-        postRepository.update(post);
-    }
-
-    private void checkPermissions(Post post, User user) {
-
-        boolean isAdmin = adminDetailsRepository.getByUserId(user.getId()) != null;
-        if (!(post.getUser().equals(user) || isAdmin)) {
-            throw new UnauthorizedOperationException(UNAUTHORIZED_MESSAGE);
-        }
-        if (user.isBlocked()) {
-            throw new UnauthorizedOperationException(BLOCKED_ACCOUNT_MESSAGE);
-        }
-
     }
 }

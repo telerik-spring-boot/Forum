@@ -8,6 +8,8 @@ import com.telerik.forum.helpers.AuthenticationHelper;
 import com.telerik.forum.helpers.UserMapper;
 import com.telerik.forum.models.User;
 import com.telerik.forum.models.dtos.userDTOs.*;
+import com.telerik.forum.models.filters.FilterCommentOptions;
+import com.telerik.forum.models.filters.FilterPostOptions;
 import com.telerik.forum.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,11 +47,19 @@ public class UserController {
     }
 
     @GetMapping("/{id}/posts")
-    public UserPostsDisplayDTO getUserPosts(@RequestHeader HttpHeaders headers, @PathVariable int id) {
+    public UserPostsDisplayDTO getUserPosts(@RequestHeader HttpHeaders headers,
+                                            @RequestParam(required = false) String creatorUsername,
+                                            @RequestParam(required = false) String title,
+                                            @RequestParam(required = false) String content,
+                                            @RequestParam(required = false) String tags,
+                                            @RequestParam(required = false) Integer likes,
+                                            @RequestParam(required = false) String sortBy,
+                                            @RequestParam(required = false) String sortOrder,
+                                            @PathVariable int id) {
         try {
             authenticationHelper.tryGetUser(headers);
-
-            User userEntity =  userService.getByIdWithPosts(id);
+            FilterPostOptions options = new FilterPostOptions(creatorUsername,title,content,tags.split(","),likes, sortBy, sortOrder);
+            User userEntity =  userService.getByIdWithPosts(id, options);
 
             return userMapper.userToUserPostsDisplayDTO(userEntity);
         } catch (EntityNotFoundException e) {
@@ -60,11 +70,16 @@ public class UserController {
     }
 
     @GetMapping("/{id}/comments")
-    public UserCommentsDisplayDTO getUserComments(@RequestHeader HttpHeaders headers, @PathVariable int id) {
+    public UserCommentsDisplayDTO getUserComments(@RequestHeader HttpHeaders headers,
+                                                  @RequestParam(required = false) String creatorUsername,
+                                                  @RequestParam(required = false) String content,
+                                                  @RequestParam(required = false) String sortBy,
+                                                  @RequestParam(required = false) String sortOrder,
+                                                  @PathVariable int id) {
         try {
             authenticationHelper.tryGetUser(headers);
 
-            User userEntity = userService.getByIdWithComments(id);
+            User userEntity = userService.getByIdWithComments(id, new FilterCommentOptions(creatorUsername, content, sortBy, sortOrder));
 
             return userMapper.userToUserCommentsDisplayDTO(userEntity);
         } catch (EntityNotFoundException e) {

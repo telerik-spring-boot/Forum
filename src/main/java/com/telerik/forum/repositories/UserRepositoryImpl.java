@@ -2,6 +2,8 @@ package com.telerik.forum.repositories;
 
 import com.telerik.forum.models.Post;
 import com.telerik.forum.models.User;
+import com.telerik.forum.models.filters.FilterCommentOptions;
+import com.telerik.forum.models.filters.FilterPostOptions;
 import com.telerik.forum.models.filters.FilterUserOptions;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -71,7 +73,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User getByIdWithPosts(int id) {
+    public User getByIdWithPosts(int id, FilterPostOptions options) {
         try (Session session = sessionFactory.openSession()) {
             User user = session.createQuery("SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.posts WHERE u.id = :id", User.class)
                     .setParameter("id", id)
@@ -93,7 +95,7 @@ public class UserRepositoryImpl implements UserRepository {
 
 
     @Override
-    public User getByIdWithComments(int id) {
+    public User getByIdWithComments(int id, FilterCommentOptions options) {
         try(Session session = sessionFactory.openSession()) {
             Query<User> query = session.createQuery("SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.comments WHERE u.id = :id", User.class);
 

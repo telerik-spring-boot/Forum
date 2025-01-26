@@ -2,7 +2,7 @@ package com.telerik.forum.models.filters;
 
 import java.util.Optional;
 
-public class FilterPostOptions {
+public class FilterPostOptions implements Sortable{
 
     private final String creatorUsername;
 
@@ -14,12 +14,18 @@ public class FilterPostOptions {
 
     private final Integer likes;
 
-    public FilterPostOptions(String creatorUsername, String title, String content, String [] tags, Integer likes) {
+    private final String sortBy;
+
+    private final String sortOrder;
+
+    public FilterPostOptions(String creatorUsername, String title, String content, String [] tags, Integer likes, String sortBy, String sortOrder) {
         this.creatorUsername = creatorUsername;
         this.title = title;
         this.content = content;
         this.tags = tags;
         this.likes = likes;
+        this.sortBy = sortBy;
+        this.sortOrder = sortOrder;
     }
 
     public Optional<String> getCreatorUsername() {
@@ -40,5 +46,13 @@ public class FilterPostOptions {
 
     public Optional<Integer> getLikes() {
         return Optional.ofNullable(likes);
+    }
+
+    public Optional<String> getSortBy() {
+        return Optional.ofNullable(sortBy);
+    }
+
+    public Optional<String> getSortOrder() {
+        return Optional.ofNullable(sortOrder);
     }
 }

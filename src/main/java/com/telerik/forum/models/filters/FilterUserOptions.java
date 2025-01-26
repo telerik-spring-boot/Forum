@@ -2,7 +2,7 @@ package com.telerik.forum.models.filters;
 
 import java.util.Optional;
 
-public class FilterUserOptions {
+public class FilterUserOptions implements Sortable{
 
     private final String username;
     private final String email;

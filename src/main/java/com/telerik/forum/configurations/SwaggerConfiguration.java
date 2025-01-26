@@ -33,7 +33,7 @@ public class SwaggerConfiguration {
                         .contact(new Contact()
                                 .name("Yordan, Nikolai, and the API Team")
                                 .email("rocketteam@forum.api.com")
-                                .url("https://www.google.com")))
+                                .url("http://localhost:8080/home")))
                 .components(getComponentWithAllSchemas())
                 .paths(createPaths());
     }
@@ -135,23 +135,52 @@ public class SwaggerConfiguration {
                                 .items(new Schema<>().$ref("#/components/schemas/CommentDisplayDTO"))
                         )
                 )
-                .addSchemas("TagDTO", new Schema<>().type("object")
-                        .addProperty("tags", new Schema<>().type("string")
-                                .description("Tags separated by comma.")
-                                .pattern("^\\w+(,\\w+)*$")
-                                .example("fast,old,cars"))
+                .addSchemas("TagCreateAndDeleteDTO", new Schema<>().type("object")
+                        .addProperty("tags", getTagSchema("Tags separated by a comma between 4 and 200 symbols."))
+                )
+                .addSchemas("TagUpdateDTO", new Schema<>().type("object")
+                        .addProperty("tags", getTagSchema("Old name of tags to be replaced separated by a comma between 4 and 200 symbols."))
+                        .addProperty("tags", getTagSchema("New name of tags to be replaced separated by a comma between 4 and 200 symbols."))
+                )
+                .addSchemas("Home", new Schema<>().type("object")
+                        .addProperty("coreFeatureUrl", new Schema<>().type("string")
+                                .description("The url of the core features")
+                                .example("https://example.com/home"))
+                        .addProperty("usersCount", new Schema<>().type("integer")
+                                .description("Registered users count")
+                                .example(5))
+                        .addProperty("postsCount", new Schema<>().type("integer")
+                                .description("Registered posts count")
+                                .example(5))
+                        .addProperty("mostCommentedPosts", new ArraySchema()
+                                .items(new Schema<>().$ref("#/components/schemas/PostDisplayDTO"))
+                                .description("Top 10 commented posts"))
+                        .addProperty("mostLikedPosts", new ArraySchema()
+                                .items(new Schema<>().$ref("#/components/schemas/PostDisplayDTO"))
+                                .description("Top 10 liked posts"))
                 );
+
     }
 
 
     private Paths createPaths(){
         Paths paths = new Paths();
 
+        paths.addPathItem("/home", new PathItem()
+                .get(new Operation()
+                        .summary("Home page")
+                        .addTagsItem("Home page")
+                        .responses(new ApiResponses()
+                                .addApiResponse("200", new ApiResponse()
+                                        .description("Successful operation.")
+                                        .content(getSampleContent("Home"))))));
+
         addUserPathItems(paths);
 
         addAdminPathItems(paths);
 
         addPostPathItems(paths);
+
 
         return paths;
     }
@@ -267,8 +296,18 @@ public class SwaggerConfiguration {
                         .description("This endpoint creates a new tag for a post by postId.")
                         .addTagsItem("Post content management")
                         .parameters(List.of(getHeaderParameter(), getPathIdParameter("postId")))
-                        .requestBody(getRequestBody("TagDTO"))
+                        .requestBody(getRequestBody("TagCreateAndDeleteDTO"))
                         .responses(successNotFoundUnauthorizedResponses("PostDisplayDTO"))
+                        .security(List.of(new SecurityRequirement().addList("basicAuth")))
+                )
+                .put(new Operation()
+                        .summary("Update tags for a post by postId")
+                        .description("This endpoint updates tags names for a post by postId.")
+                        .addTagsItem("Post content management")
+                        .parameters(List.of(getHeaderParameter(), getPathIdParameter("postId")))
+                        .requestBody(getRequestBody("TagUpdateDTO"))
+                        .responses(successNotFoundUnauthorizedResponses("PostDisplayDTO")
+                                .addApiResponse("400", new ApiResponse().description("Bad Request")))
                         .security(List.of(new SecurityRequirement().addList("basicAuth")))
                 )
                 .delete(new Operation()
@@ -276,7 +315,7 @@ public class SwaggerConfiguration {
                         .description("This endpoint deletes a tag for a post by postId.")
                         .addTagsItem("Post content management")
                         .parameters(List.of(getHeaderParameter(), getPathIdParameter("postId")))
-                        .requestBody(getRequestBody("TagDTO"))
+                        .requestBody(getRequestBody("TagCreateAndDeleteDTO"))
                         .responses(successNotFoundUnauthorizedResponses("PostDisplayDTO"))
                         .security(List.of(new SecurityRequirement().addList("basicAuth")))
                 )
@@ -623,6 +662,15 @@ public class SwaggerConfiguration {
                 .in("path")
                 .schema(new Schema<>().type("integer")
                         .example("1"));
+    }
+
+    private Schema<?> getTagSchema(String description){
+        return new Schema<>().type("string")
+                .description(description)
+                .pattern("^\\w+(,\\w+)*$")
+                .minLength(4)
+                .maxLength(200)
+                .example("fast,old,cars");
     }
 
     private RequestBody getRequestBody(String schemaName){

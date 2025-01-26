@@ -90,11 +90,11 @@ public class PostController {
 
     @PostMapping("/{postId}/tags")
     public PostDisplayDTO addTagsToPost(@RequestHeader HttpHeaders headers,
-                                           @PathVariable int postId,
-                                           @RequestBody TagDTO userInput) {
+                                        @PathVariable int postId,
+                                        @RequestBody TagDTO userInput) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
-            tagService.addTagToPost(postId,userInput.getTags(), userRequest);
+            tagService.addTagToPost(postId, userInput.getTags(), userRequest);
             return postMapper.postToPostDisplayDTO(postService.getByIdWithCommentsAndLikes(postId));
         } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
@@ -125,7 +125,7 @@ public class PostController {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
             likeService.likePost(postId, userRequest);
-            Post post =postService.getByIdWithCommentsAndLikes(postId);
+            Post post = postService.getByIdWithCommentsAndLikes(postId);
             return postMapper.postToPostDisplayDTO(post);
         } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
@@ -171,6 +171,21 @@ public class PostController {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
             postService.deletePost(postId, userRequest);
+        } catch (UnauthorizedOperationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{postId}/tags")
+    public PostDisplayDTO removeTagsFromPost(@RequestHeader HttpHeaders headers,
+                                             @PathVariable int postId,
+                                             @RequestBody TagDTO userInput) {
+        try {
+            User userRequest = authenticationHelper.tryGetUser(headers);
+            tagService.deleteTagFromPost(postId, userInput.getTags(), userRequest);
+            return postMapper.postToPostDisplayDTO(postService.getByIdWithCommentsAndLikes(postId));
         } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {

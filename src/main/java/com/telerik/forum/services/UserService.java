@@ -19,7 +19,7 @@ public interface UserService {
 
     User getByFirstName(String firstName);
 
-    void create(User userInput, int requestUserId);
+    void create(User userInput);
 
     void update(User userInput, int requestUserId);
 

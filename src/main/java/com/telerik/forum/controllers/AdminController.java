@@ -49,6 +49,7 @@ public class AdminController {
                 .map(userMapper::AdminToAdminDisplayDTO)
                 .toList();
     }
+
     @GetMapping("/users")
     public List<UserDisplayDTO> getAllUsers(@RequestHeader HttpHeaders headers,
                                             @RequestParam(required = false) String username,

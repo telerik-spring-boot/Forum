@@ -32,8 +32,8 @@ public class SwaggerConfiguration {
                         .description("This is the API documentation for Forum Application.")
                         .contact(new Contact()
                                 .name("Yordan, Nikolai, and the API Team")
-                                .email("team@example.com")
-                                .url("www.google.com")))
+                                .email("rocketteam@forum.api.com")
+                                .url("https://www.google.com")))
                 .components(getComponentWithAllSchemas())
                 .paths(createPaths());
     }

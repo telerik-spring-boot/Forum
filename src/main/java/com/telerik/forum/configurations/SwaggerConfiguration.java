@@ -120,7 +120,7 @@ public class SwaggerConfiguration {
                 )
                 .addSchemas("PostDisplayDTO", new Schema<>().type("object")
                         .addProperty("creatorUsername", new Schema<>().type("string")
-                                .description("The username of the creator of the comment.")
+                                .description("The username of the creator of the post.")
                                 .example("george_bush"))
                         .addProperty("title", new Schema<>().type("string")
                                 .description("Post title.")

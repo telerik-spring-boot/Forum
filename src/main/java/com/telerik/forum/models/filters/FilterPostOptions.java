@@ -1,6 +1,5 @@
 package com.telerik.forum.models.filters;
 
-import java.util.List;
 import java.util.Optional;
 
 public class FilterPostOptions {

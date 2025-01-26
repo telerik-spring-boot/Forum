@@ -221,7 +221,7 @@ public class SwaggerConfiguration {
         paths.addPathItem("/api/posts/{postId}/dislike", new PathItem()
                 .put(new Operation()
                         .summary("Dislike a post by postId")
-                        .description("This endpoint increases the number of likes of a post by postId.")
+                        .description("This endpoint decreases the number of likes of a post by postId.")
                         .addTagsItem("Post content management")
                         .parameters(List.of(getHeaderParameter(), getPathIdParameter("postId")))
                         .responses(successNotFoundUnauthorizedResponses("PostDisplayDTO"))

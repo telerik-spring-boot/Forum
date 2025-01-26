@@ -7,6 +7,7 @@ import com.telerik.forum.models.Post;
 import com.telerik.forum.models.User;
 import com.telerik.forum.repositories.AdminDetailsRepository;
 import com.telerik.forum.repositories.CommentRepository;
+import com.telerik.forum.repositories.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,12 +22,15 @@ public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
     private final AdminDetailsRepository adminRepository;
+    private final PostRepository postRepository;
 
 
     @Autowired
-    public CommentServiceImpl(CommentRepository commentRepository, AdminDetailsRepository adminRepository) {
+    public CommentServiceImpl(CommentRepository commentRepository, AdminDetailsRepository adminRepository,
+                              PostRepository postRepository) {
         this.commentRepository = commentRepository;
         this.adminRepository = adminRepository;
+        this.postRepository = postRepository;
 
     }
 
@@ -45,7 +49,8 @@ public class CommentServiceImpl implements CommentService {
 //    }
 
     @Override
-    public void addComment(Post post, Comment comment, User user) {
+    public void addComment(int postId, Comment comment, User user) {
+        Post post = postRepository.getPostAndCommentsById(postId);
         comment.setPost(post);
         comment.setUser(user);
         post.getComments().add(comment);
@@ -54,7 +59,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void updateComment(Post post, Comment comment, User user) {
+    public void updateComment( Comment comment, User user) {
 
         checkCommentUpdatePermission(comment.getId(), user);
         commentRepository.update(comment);
@@ -62,12 +67,14 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void deleteComment(Post post, int commentId, User user) {
+    public void deleteComment(int postId, int commentId, User user) {
+        Post post = postRepository.getPostAndCommentsById(postId);
         int commentSize = post.getComments().size();
         if (commentId > commentSize) {
             throw new EntityNotFoundException("Comment", "id", commentId);
         }
-        Comment commentToDelete = post.getComments().get(commentId - 1);
+        Comment commentToDelete = post.getComments().stream()
+                .toList().get(commentId - 1);
         checkCommentDeletePermission(commentToDelete.getId(), user);
         commentRepository.delete(commentToDelete.getId());
     }

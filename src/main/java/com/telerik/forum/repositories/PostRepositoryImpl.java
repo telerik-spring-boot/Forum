@@ -24,7 +24,9 @@ public class PostRepositoryImpl implements PostRepository {
 
         try (Session session = sessionFactory.openSession()) {
             Query<Post> query = session.createQuery
-                    ("SELECT DISTINCT p FROM Post p LEFT JOIN FETCH p.comments ",
+                    ("SELECT DISTINCT p FROM Post p" +
+                                    " LEFT JOIN FETCH p.comments " +
+                                    " LEFT JOIN FETCH p.likes ",
                             Post.class);
 
             return query.list();
@@ -35,9 +37,45 @@ public class PostRepositoryImpl implements PostRepository {
     public Post getPostById(int postId) {
 
         try (Session session = sessionFactory.openSession()) {
+
+            return session.get(Post.class, postId);
+
+        }
+    }
+
+    @Override
+    public Post getPostAndCommentsById(int postId) {
+        try (Session session = sessionFactory.openSession()) {
             Query<Post> query = session.createQuery
                     ("SELECT DISTINCT p FROM Post p LEFT JOIN FETCH p.comments WHERE p.id=:postId ",
                             Post.class);
+            query.setParameter("postId", postId);
+            return query.uniqueResult();
+        }
+    }
+
+    @Override
+    public Post getPostAndLikesById(int postId) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<Post> query = session.createQuery
+                    ("SELECT DISTINCT p FROM Post p LEFT JOIN FETCH p.likes WHERE p.id=:postId ",
+                            Post.class);
+            query.setParameter("postId", postId);
+            return query.uniqueResult();
+        }
+    }
+
+    @Override
+    public Post getPostAndCommentsAndLikesById(int postId) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<Post> query = session.createQuery
+                    ("SELECT DISTINCT p FROM Post p" +
+                                    " LEFT JOIN FETCH p.comments " +
+                                    " LEFT JOIN FETCH p.likes " +
+                                    "WHERE p.id=:postId",
+
+                            Post.class);
+
             query.setParameter("postId", postId);
             return query.uniqueResult();
         }

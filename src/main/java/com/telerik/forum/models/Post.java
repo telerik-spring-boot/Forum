@@ -2,6 +2,7 @@ package com.telerik.forum.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.antlr.v4.runtime.misc.OrderedHashSet;
 
 import java.util.*;
 
@@ -26,7 +27,7 @@ public class Post {
     //@JsonIgnore
     // TODO Do we need JsonIgnore and do we need add and removeComment methods here?
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments = new ArrayList<>();
+    private Set<Comment> comments = new OrderedHashSet<>();
 
     @OneToMany(fetch = FetchType.EAGER,mappedBy = "post", cascade = CascadeType.REMOVE)
     private Set<Like> likes = new HashSet<>();
@@ -73,11 +74,11 @@ public class Post {
         this.user = user;
     }
 
-    public List<Comment> getComments() {
+    public Set<Comment> getComments() {
         return comments;
     }
 
-    public void setComments(List<Comment> comments) {
+    public void setComments(Set<Comment> comments) {
         this.comments = comments;
     }
 
@@ -100,4 +101,6 @@ public class Post {
     public int hashCode() {
         return Objects.hashCode(id);
     }
+
+
 }

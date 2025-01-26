@@ -12,10 +12,10 @@ public interface CommentService {
 
 //    List<Comment> getByPostId(int postId);
 
-    void addComment(Post post, Comment comment, User user);
+    void addComment(int postId, Comment comment, User user);
 
-    void updateComment(Post post, Comment comment, User user);
+    void updateComment( Comment comment, User user);
 
-    void deleteComment(Post post, int commentId, User user);
+    void deleteComment(int postId, int commentId, User user);
 
 }

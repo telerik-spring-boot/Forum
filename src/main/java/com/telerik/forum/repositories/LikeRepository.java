@@ -4,7 +4,7 @@ import com.telerik.forum.models.Like;
 
 public interface LikeRepository {
 
-    Like getLikeByPostAndUserId(int postId, int userId);
+    //Like getLikeByPostAndUserId(int postId, int userId);
 
     void create(Like like);
 

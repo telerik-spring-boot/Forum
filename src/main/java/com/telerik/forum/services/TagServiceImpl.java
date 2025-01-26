@@ -1,5 +1,6 @@
 package com.telerik.forum.services;
 
+import com.telerik.forum.exceptions.InvalidUserInputException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.models.Tag;
 import com.telerik.forum.models.Post;
@@ -19,6 +20,7 @@ import static com.telerik.forum.services.PostServiceImpl.BLOCKED_ACCOUNT_MESSAGE
 public class TagServiceImpl implements TagService {
 
     private static final String UNAUTHORIZED_MESSAGE = "You are not allowed to edit this post's tags.";
+    private static final String NON_MATCHING_OLD_AND_NEW_TAGS = "You have not entered the same number of old and new tags.";
     private final TagRepository tagRepository;
     private final PostRepository postRepository;
     private final AdminDetailsRepository adminDetailsRepository;
@@ -38,26 +40,42 @@ public class TagServiceImpl implements TagService {
 
         List<String> tagList = extractTags(tags);
 
-        addTagsToPostHelper(tagList, post);
+        for (String tagToAdd : tagList) {
+
+            addTagToPostHelper(tagToAdd, post);
+        }
 
         postRepository.update(post);
 
     }
 
 
-
-
     @Override
-    public void updateTagFromPost(int postId, String oldTags,String newTags, User user) {
+    public void updateTagFromPost(int postId, String oldTags, String newTags, User user) {
         Post post = postRepository.getPostWithTagsById(postId);
         checkPermissions(post, user);
 
         List<String> oldTagList = extractTags(oldTags);
         List<String> newTagList = extractTags(newTags);
 
-        if(oldTagList.size() != newTagList.size()) {
-            throw new UnauthorizedOperationException(UNAUTHORIZED_MESSAGE);
+        if (oldTagList.size() != newTagList.size()) {
+            throw new InvalidUserInputException(NON_MATCHING_OLD_AND_NEW_TAGS);
         }
+
+        for (int i = 0; i < oldTagList.size(); i++) {
+
+            Tag oldTag = tagRepository.findByName(oldTagList.get(i));
+
+            if (post.getTags().remove(oldTag)) {
+
+                addTagToPostHelper(newTagList.get(i), post);
+
+            }
+
+        }
+
+        postRepository.update(post);
+
     }
 
     @Override
@@ -67,7 +85,10 @@ public class TagServiceImpl implements TagService {
 
         List<String> tagList = extractTags(tags);
 
-        deleteTagsFromPostHelper(tagList, post);
+        for (String tagToRemove : tagList) {
+
+            removeTagFromPostHelper(tagToRemove, post);
+        }
 
         postRepository.update(post);
     }
@@ -92,32 +113,29 @@ public class TagServiceImpl implements TagService {
                 .toList();
     }
 
-    private void addTagsToPostHelper(List<String> tagList, Post post) {
-        for (String tagToAdd : tagList) {
 
-            Tag tag = tagRepository.findByName(tagToAdd);
+    private void addTagToPostHelper(String tagToAdd, Post post) {
+        Tag tag = tagRepository.findByName(tagToAdd);
 
-            if (tag == null) {
-                Tag newTag = new Tag();
-                newTag.setName(tagToAdd);
-                tagRepository.addTag(newTag);
+        if (tag == null) {
+            Tag newTag = new Tag();
+            newTag.setName(tagToAdd);
+            tagRepository.addTag(newTag);
 
-                post.getTags().add(newTag);
+            post.getTags().add(newTag);
 
-            } else {
-                post.getTags().add(tag);
-            }
+        } else {
+            post.getTags().add(tag);
         }
     }
 
-    private void deleteTagsFromPostHelper(List<String> tagList, Post post) {
-        for (String tagToRemove : tagList) {
+    private void removeTagFromPostHelper(String tagToRemove, Post post) {
+        Tag tag = tagRepository.findByName(tagToRemove);
 
-            Tag tag = tagRepository.findByName(tagToRemove);
-
-            if (tag != null) {
-                post.getTags().remove(tag);
-            }
+        if (tag != null) {
+            post.getTags().remove(tag);
         }
     }
+
+
 }

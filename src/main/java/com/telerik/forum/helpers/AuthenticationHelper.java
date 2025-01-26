@@ -15,6 +15,8 @@ import java.util.Base64;
 @Component
 public class AuthenticationHelper {
     private static final String AUTHORIZATION_HEADER_NAME = "Authorization";
+    private static final String AUTHENTICATION_ERROR_MESSAGE = "The requested resource requires authentication.";
+    private static final String WRONG_CREDENTIALS_ERROR_MESSAGE = "Invalid credentials.";
     private final UserService userService;
 
     public AuthenticationHelper(UserService userService) {
@@ -23,14 +25,14 @@ public class AuthenticationHelper {
 
     public User tryGetUser(HttpHeaders headers) {
         if (!headers.containsKey(AUTHORIZATION_HEADER_NAME)) {
-            throw new UnauthorizedOperationException("The requested resource requires authentication.");
+            throw new UnauthorizedOperationException(AUTHENTICATION_ERROR_MESSAGE);
         }
 
         try {
             String authorization = headers.getFirst(AUTHORIZATION_HEADER_NAME);
 
             if (authorization == null) {
-                throw new UnauthorizedOperationException("The requested resource requires authentication.");
+                throw new UnauthorizedOperationException(AUTHENTICATION_ERROR_MESSAGE);
             }
 
             String[] authentication = authorization.split(" ");
@@ -40,13 +42,13 @@ public class AuthenticationHelper {
             User user = userService.getByUsername(authenticationCredentials[0]);
 
             if (!user.getPassword().equals(authenticationCredentials[1])) {
-                throw new UnauthorizedOperationException("Invalid password.");
+                throw new UnauthorizedOperationException(WRONG_CREDENTIALS_ERROR_MESSAGE);
             }
 
             return user;
 
         } catch (EntityNotFoundException e) {
-            throw new UnauthorizedOperationException("Invalid username");
+            throw new UnauthorizedOperationException(WRONG_CREDENTIALS_ERROR_MESSAGE);
         }
 
     }

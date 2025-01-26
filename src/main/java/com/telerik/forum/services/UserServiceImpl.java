@@ -14,6 +14,7 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
 
+    private static final String PERMISSION_ERROR_MESSAGE = "You do not have permission to perform this action";
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
 
@@ -117,7 +118,7 @@ public class UserServiceImpl implements UserService {
         }
 
         if (userToUpdate != null && !userToUpdate.getUsername().equals(userInput.getUsername())) {
-            throw new UnauthorizedOperationException("You do not have permission to perform this action");
+            throw new UnauthorizedOperationException(PERMISSION_ERROR_MESSAGE);
         }
 
         userRepository.update(userInput);
@@ -136,7 +137,7 @@ public class UserServiceImpl implements UserService {
                 .anyMatch(role -> role.getName().equalsIgnoreCase("ADMIN"));
 
         if (user.isBlocked() || !isAdmin) {
-            throw new UnauthorizedOperationException("You do not have permission to perform this action");
+            throw new UnauthorizedOperationException(PERMISSION_ERROR_MESSAGE);
         }
     }
 
@@ -147,7 +148,7 @@ public class UserServiceImpl implements UserService {
 
         if (user.isBlocked() ||
                 (!isAdmin && requestUserId != userInput.getId())) {
-            throw new UnauthorizedOperationException("You do not have permission to perform this action");
+            throw new UnauthorizedOperationException(PERMISSION_ERROR_MESSAGE);
         }
     }
 }

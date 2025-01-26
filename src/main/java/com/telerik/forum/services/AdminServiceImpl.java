@@ -20,6 +20,9 @@ import java.util.List;
 public class AdminServiceImpl implements AdminService {
 
 
+    private static final String PERMISSION_ERROR_MESSAGE = "You do not have permission to perform this action";
+    private static final String ALREADY_ADMIN_ERROR_MESSAGE = "User is already an admin.";
+    private static final String NOT_ADMIN_ERROR_MESSAGE = "User is not an admin.";
     private final UserRepository userRepository;
     private final AdminDetailsRepository adminDetailsRepository;
     private final RoleRepository roleRepository;
@@ -88,11 +91,11 @@ public class AdminServiceImpl implements AdminService {
             throw new EntityNotFoundException("User","user.id", userId);
         }
 
-        boolean isAlreadyAdmin = user.getRoles().stream()
+        boolean isAdmin = user.getRoles().stream()
                 .anyMatch(role -> role.getName().equalsIgnoreCase("admin"));
 
-        if(!isAlreadyAdmin){
-            throw new AdminRoleManagementException("User is not an admin.");
+        if(!isAdmin){
+            throw new AdminRoleManagementException(NOT_ADMIN_ERROR_MESSAGE);
         }
 
         user.removeRole(roleRepository.findByName("ADMIN"));
@@ -118,11 +121,11 @@ public class AdminServiceImpl implements AdminService {
             throw new EntityNotFoundException("User","user.id", userId);
         }
 
-        boolean isAlreadyAdmin = user.getRoles().stream()
+        boolean isAdmin = user.getRoles().stream()
                 .anyMatch(role -> role.getName().equalsIgnoreCase("admin"));
 
-        if(isAlreadyAdmin){
-            throw new AdminRoleManagementException("User is already an admin.");
+        if(isAdmin){
+            throw new AdminRoleManagementException(ALREADY_ADMIN_ERROR_MESSAGE);
         }
 
         user.addRole(roleRepository.findByName("ADMIN"));
@@ -161,7 +164,7 @@ public class AdminServiceImpl implements AdminService {
         if(user.isBlocked() || user.getRoles().stream()
                 .noneMatch(role -> role.getName()
                         .equalsIgnoreCase("admin"))){
-            throw new UnauthorizedOperationException("You do not have permission to perform this action");
+            throw new UnauthorizedOperationException(PERMISSION_ERROR_MESSAGE);
 
         }
     }

@@ -1,6 +1,6 @@
 package com.telerik.forum.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import org.antlr.v4.runtime.misc.OrderedHashSet;
 
@@ -24,18 +24,24 @@ public class Post {
     @JoinColumn(name="user_id", nullable=false)
     private User user;
 
-    //@JsonIgnore
-    // TODO Do we need JsonIgnore and do we need add and removeComment methods here?
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private Set<Comment> comments = new OrderedHashSet<>();
 
-    @OneToMany(fetch = FetchType.EAGER,mappedBy = "post", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private Set<Like> likes = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "post_tags",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name ="tag_id")
+    )
+    private Set<Tag> tags = new HashSet<>();
 
     public Post() {
     }
 
-    public Post(int id, String title, String content, int likes, User user) {
+    public Post(int id, String title, String content,  User user) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -89,6 +95,15 @@ public class Post {
     public void setLikes(Set<Like> likes) {
         this.likes = likes;
     }
+
+    public Set<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
+    }
+
 
     @Override
     public boolean equals(Object o) {

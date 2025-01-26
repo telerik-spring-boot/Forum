@@ -50,7 +50,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void addComment(int postId, Comment comment, User user) {
-        Post post = postRepository.getPostAndCommentsById(postId);
+        Post post = postRepository.getPostWithCommentsById(postId);
         comment.setPost(post);
         comment.setUser(user);
         post.getComments().add(comment);
@@ -68,7 +68,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void deleteComment(int postId, int commentId, User user) {
-        Post post = postRepository.getPostAndCommentsById(postId);
+        Post post = postRepository.getPostWithCommentsById(postId);
         int commentSize = post.getComments().size();
         if (commentId > commentSize) {
             throw new EntityNotFoundException("Comment", "id", commentId);

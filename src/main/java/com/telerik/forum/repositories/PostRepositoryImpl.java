@@ -26,7 +26,8 @@ public class PostRepositoryImpl implements PostRepository {
             Query<Post> query = session.createQuery
                     ("SELECT DISTINCT p FROM Post p" +
                                     " LEFT JOIN FETCH p.comments " +
-                                    " LEFT JOIN FETCH p.likes ",
+                                    " LEFT JOIN FETCH p.likes " +
+                                    " LEFT JOIN FETCH p.tags ",
                             Post.class);
 
             return query.list();
@@ -44,7 +45,7 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public Post getPostAndCommentsById(int postId) {
+    public Post getPostWithCommentsById(int postId) {
         try (Session session = sessionFactory.openSession()) {
             Query<Post> query = session.createQuery
                     ("SELECT DISTINCT p FROM Post p LEFT JOIN FETCH p.comments WHERE p.id=:postId ",
@@ -55,7 +56,7 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public Post getPostAndLikesById(int postId) {
+    public Post getPostWithLikesById(int postId) {
         try (Session session = sessionFactory.openSession()) {
             Query<Post> query = session.createQuery
                     ("SELECT DISTINCT p FROM Post p LEFT JOIN FETCH p.likes WHERE p.id=:postId ",
@@ -66,12 +67,24 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public Post getPostAndCommentsAndLikesById(int postId) {
+    public Post getPostWithTagsById(int postId) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<Post> query = session.createQuery
+                    ("SELECT DISTINCT p FROM Post p LEFT JOIN FETCH p.tags WHERE p.id=:postId ",
+                            Post.class);
+            query.setParameter("postId", postId);
+            return query.uniqueResult();
+        }
+    }
+
+    @Override
+    public Post getPostWithCommentsAndLikesAndTagsById(int postId) {
         try (Session session = sessionFactory.openSession()) {
             Query<Post> query = session.createQuery
                     ("SELECT DISTINCT p FROM Post p" +
                                     " LEFT JOIN FETCH p.comments " +
                                     " LEFT JOIN FETCH p.likes " +
+                                    " LEFT JOIN FETCH p.tags " +
                                     "WHERE p.id=:postId",
 
                             Post.class);

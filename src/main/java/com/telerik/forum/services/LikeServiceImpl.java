@@ -28,7 +28,7 @@ public class LikeServiceImpl implements LikeService {
 
         checkForBlockedUser(user);
 
-        Post post = postRepository.getPostAndLikesById(postId);
+        Post post = postRepository.getPostWithLikesById(postId);
 
         Like like = post.getLikes().stream()
                 .filter(l -> l.getUser().getId() == user.getId())
@@ -60,7 +60,7 @@ public class LikeServiceImpl implements LikeService {
 
         checkForBlockedUser(user);
 
-        Post post = postRepository.getPostAndLikesById(postId);
+        Post post = postRepository.getPostWithLikesById(postId);
 
         Like dislike = post.getLikes().stream()
                 .filter(l -> l.getUser().getId() == user.getId())

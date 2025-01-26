@@ -4,6 +4,7 @@ import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.models.Comment;
 import com.telerik.forum.models.Like;
 import com.telerik.forum.models.Post;
+import com.telerik.forum.models.Tag;
 import com.telerik.forum.models.dtos.commentDTOs.CommentCreateDTO;
 import com.telerik.forum.models.dtos.commentDTOs.CommentDisplayDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostCreateDTO;
@@ -33,6 +34,11 @@ public class PostMapper {
         postDTO.setContent(post.getContent());
         postDTO.setCreatorUsername(post.getUser().getUsername());
 
+        List<String> tags = new ArrayList<>();
+        for (Tag tag : post.getTags()) {
+            tags.add(tag.getName());
+        }
+        postDTO.setTags(tags);
 
         int likesCount = 0;
         for (Like like : post.getLikes()) {

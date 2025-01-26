@@ -47,7 +47,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post getByIdWithComments(int id) {
-        Post post = postRepository.getPostAndCommentsById(id);
+        Post post = postRepository.getPostWithCommentsById(id);
 
         if (post == null) {
             throw new EntityNotFoundException("Post", "id", id);
@@ -58,7 +58,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post getByIdWithLikes(int id) {
-        Post post = postRepository.getPostAndLikesById(id);
+        Post post = postRepository.getPostWithLikesById(id);
 
         if (post == null) {
             throw new EntityNotFoundException("Post", "id", id);
@@ -69,7 +69,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post getByIdWithCommentsAndLikes(int id) {
-        Post post = postRepository.getPostAndCommentsAndLikesById(id);
+        Post post = postRepository.getPostWithCommentsAndLikesAndTagsById(id);
 
         if (post == null) {
             throw new EntityNotFoundException("Post", "id", id);

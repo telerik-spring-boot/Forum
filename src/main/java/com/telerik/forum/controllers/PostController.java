@@ -10,9 +10,8 @@ import com.telerik.forum.models.User;
 import com.telerik.forum.models.dtos.commentDTOs.CommentCreateDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostCreateDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO;
-import com.telerik.forum.services.CommentService;
-import com.telerik.forum.services.LikeService;
-import com.telerik.forum.services.PostService;
+import com.telerik.forum.models.dtos.tagDTOs.TagDTO;
+import com.telerik.forum.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -29,16 +28,18 @@ public class PostController {
     private final PostMapper postMapper;
     private final CommentService commentService;
     private final LikeService likeService;
+    private final TagService tagService;
 
     @Autowired
     public PostController(PostService postService, AuthenticationHelper authenticationHelper,
                           PostMapper postMapper, CommentService commentService,
-                          LikeService likeService) {
+                          LikeService likeService, TagService tagService) {
         this.postService = postService;
         this.authenticationHelper = authenticationHelper;
         this.postMapper = postMapper;
         this.commentService = commentService;
         this.likeService = likeService;
+        this.tagService = tagService;
     }
 
     @GetMapping
@@ -79,6 +80,21 @@ public class PostController {
             User userRequest = authenticationHelper.tryGetUser(headers);
             Comment comment = postMapper.dtoToComment(userInput);
             commentService.addComment(postId, comment, userRequest);
+            return postMapper.postToPostDisplayDTO(postService.getByIdWithCommentsAndLikes(postId));
+        } catch (UnauthorizedOperationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+    @PostMapping("/{postId}/tags")
+    public PostDisplayDTO addTagsToPost(@RequestHeader HttpHeaders headers,
+                                           @PathVariable int postId,
+                                           @RequestBody TagDTO userInput) {
+        try {
+            User userRequest = authenticationHelper.tryGetUser(headers);
+            tagService.addTagToPost(postId,userInput.getTags(), userRequest);
             return postMapper.postToPostDisplayDTO(postService.getByIdWithCommentsAndLikes(postId));
         } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());

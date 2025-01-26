@@ -10,6 +10,8 @@ public interface PostRepository {
 
     List<Post> getMostCommentedPosts(int limit);
 
+    List<Post> getMostLikedPosts(int limit);
+
     Post getPostById(int id);
 
     Post getPostWithCommentsById(int id);

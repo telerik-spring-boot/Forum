@@ -38,6 +38,11 @@ public class PostServiceImpl implements PostService {
         return postRepository.getMostCommentedPosts(limit);
     }
 
+    @Override
+    public List<Post> getMostLikedPosts(int limit) {
+        return postRepository.getMostLikedPosts(limit);
+    }
+
 
     @Override
     public Post getById(int id) {

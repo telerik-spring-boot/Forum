@@ -20,7 +20,7 @@ logs/
 # Spring Boot configuration (exclude sensitive files)
 application-*.yml
 application-*.properties
-.env
+src/main/java/.env
 *.key
 *.pem
 

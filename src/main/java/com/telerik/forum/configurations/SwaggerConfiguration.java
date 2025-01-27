@@ -15,6 +15,7 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -471,9 +472,9 @@ public class SwaggerConfiguration {
         paths.addPathItem("/api/users/{id}/comments", new PathItem()
                 .get(new Operation()
                         .summary("Get comments of user by ID")
-                        .description("This endpoint retrieves user's comments by their ID.")
+                        .description("This endpoint retrieves user's comments by their ID. Supports filtration and sorting by comment content.")
                         .addTagsItem("User content management")
-                        .parameters(List.of(getHeaderParameter(), getPathIdParameter("id")))
+                        .parameters(getCommentParameters())
                         .responses(successNotFoundUnauthorizedResponses("UserCommentsDisplayDTO"))
                         .security(List.of(
                                 new SecurityRequirement().addList("basicAuth")))
@@ -485,7 +486,7 @@ public class SwaggerConfiguration {
                         .summary("Get posts of user by ID")
                         .description("This endpoint retrieves user's posts by their ID.")
                         .addTagsItem("User content management")
-                        .parameters(List.of(getHeaderParameter(), getPathIdParameter("id")))
+                        .parameters(getPostParameters())
                         .responses(successNotFoundUnauthorizedResponses("UserPostsDisplayDTO"))
                         .security(List.of(
                                 new SecurityRequirement().addList("basicAuth")))
@@ -635,9 +636,17 @@ public class SwaggerConfiguration {
                 .schema(new Schema<>().type("string")
                         .example("George")));
 
+        result.addAll(getSortParameters("Sorting type can be firstName, lastName or username"));
+
+        return result;
+    }
+
+    private List<Parameter> getSortParameters(String description){
+        List<Parameter> result = new ArrayList<>();
+
         result.add(new Parameter()
                 .name("sortBy")
-                .description("Sorts by, can be either firstName, lastName or username.")
+                .description(description)
                 .required(false)
                 .in("query")
                 .schema(new Schema<>().type("string")
@@ -650,6 +659,78 @@ public class SwaggerConfiguration {
                 .in("query")
                 .schema(new Schema<>().type("string")
                         .example("desc")));
+
+        return result;
+    }
+
+    private List<Parameter> getCommentParameters(){
+        List<Parameter> result = new ArrayList<>();
+
+        result.add(getHeaderParameter());
+
+        result.add(new Parameter()
+                .name("commentContent")
+                .description("The content of the comment by the user.")
+                .required(false)
+                .in("query")
+                .schema(new Schema<>().type("string")
+                        .example("com")));
+
+        result.addAll(getSortParameters("Sorting type can be only commentContent"));
+
+        result.add(getPathIdParameter("id"));
+
+        return result;
+    }
+
+    private List<Parameter> getPostParameters(){
+        List<Parameter> result = new ArrayList<>();
+
+        result.add(getHeaderParameter());
+
+        result.add(new Parameter()
+                        .name("title")
+                        .description("Title or part of the title of the post.")
+                        .required(false)
+                        .in("query")
+                        .schema(new Schema<>().type("string")
+                                .example("Car malfunction.")));
+
+        result.add(new Parameter()
+                .name("content")
+                .description("Content or part of the content of the post.")
+                .required(false)
+                .in("query")
+                .schema(new Schema<>().type("string")
+                        .example("some content to be found")));
+
+        result.add(new Parameter()
+                .name("tags")
+                .description("Tags of the post. It shows all that has at least one of them.")
+                .required(false)
+                .in("query")
+                .schema(new Schema<>().type("string")
+                        .example("car,speed")));
+
+        result.add(new Parameter()
+                .name("minLikes")
+                .description("The minimum number of likes required for a post to be displayed.")
+                .required(false)
+                .in("query")
+                .schema(new Schema<>().type("integer")
+                        .example("3")));
+
+        result.add(new Parameter()
+                .name("maxLikes")
+                .description("The maximum number of likes required for a post to be displayed..")
+                .required(false)
+                .in("query")
+                .schema(new Schema<>().type("integer")
+                        .example("25")));
+
+        result.addAll(getSortParameters("Sorting type can be title, content or likes"));
+
+        result.add(getPathIdParameter("id"));
 
         return result;
     }

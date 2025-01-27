@@ -6,15 +6,15 @@ public class FilterCommentOptions implements Sortable{
 
     private final String creatorUsername;
 
-    private final String content;
+    private final String commentContent;
 
     private final String sortBy;
 
     private final String sortOrder;
 
-    public FilterCommentOptions(String creatorUsername, String content, String sortBy, String sortOrder) {
+    public FilterCommentOptions(String creatorUsername, String commentContent, String sortBy, String sortOrder) {
         this.creatorUsername = creatorUsername;
-        this.content = content;
+        this.commentContent = commentContent;
         this.sortBy = sortBy;
         this.sortOrder = sortOrder;
     }
@@ -23,8 +23,8 @@ public class FilterCommentOptions implements Sortable{
         return Optional.ofNullable(creatorUsername);
     }
 
-    public Optional<String> getContent() {
-        return Optional.ofNullable(content);
+    public Optional<String> getCommentContent() {
+        return Optional.ofNullable(commentContent);
     }
 
     public Optional<String> getSortBy() {

@@ -78,14 +78,14 @@ public class UserController {
 
     @GetMapping("/{id}/comments")
     public UserCommentsDisplayDTO getUserComments(@RequestHeader HttpHeaders headers,
-                                                  @RequestParam(required = false) String content,
+                                                  @RequestParam(required = false) String commentContent,
                                                   @RequestParam(required = false) String sortBy,
                                                   @RequestParam(required = false) String sortOrder,
                                                   @PathVariable int id) {
         try {
             authenticationHelper.tryGetUser(headers);
 
-            User userEntity = userService.getByIdWithComments(id, new FilterCommentOptions(null, content, sortBy, sortOrder));
+            User userEntity = userService.getByIdWithComments(id, new FilterCommentOptions(null, commentContent, sortBy, sortOrder));
 
             return userMapper.userToUserCommentsDisplayDTO(userEntity);
         } catch (EntityNotFoundException e) {

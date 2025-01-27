@@ -27,8 +27,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Grant execute permission for Gradle wrapper
-        run: chmod +x gradlew # Add this step to fix the permission issue
-
+        run: chmod +x gradlew
 
       - name: Cache Gradle dependencies
         uses: actions/cache@v3
@@ -38,9 +37,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-${{ matrix.java-version }}
 
+      # Step to set up environment variables from GitHub Secrets
+      - name: Set up environment variables
+        run: |
+          echo "DB_URL=${{ secrets.DB_URL }}" >> $GITHUB_ENV
+          echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> $GITHUB_ENV
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV
+
+
       - name: Run tests with Gradle
         run: ./gradlew test --no-daemon
 
-      # Optional static analysis
-      - name: Static code analysis
-        run: ./gradlew check --no-daemon
+      # Remove application.properties after tests
+      - name: Cleanup application.properties
+        run: rm -f src/main/resources/application.properties

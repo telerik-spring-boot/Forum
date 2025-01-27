@@ -12,6 +12,7 @@ import com.telerik.forum.repositories.CommentRepository;
 import com.telerik.forum.repositories.PostRepository;
 import com.telerik.forum.repositories.RoleRepository;
 import com.telerik.forum.repositories.UserRepository;
+import com.telerik.forum.repositories.utilities.SortingHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -50,11 +51,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getByIdWithPosts(int id, FilterPostOptions options) {
         User user = userRepository.getById(id);
+
         List<Post> posts = postRepository.getPostsWithCommentsByUserId(id, options);
 
         if (user == null) {
             throw new EntityNotFoundException("User", "id", id);
         }
+
+        options.getSortBy().ifPresent(SortingHelper::validateSortByFieldPost);
+
+        options.getSortOrder().ifPresent(SortingHelper::validateSortOrderField);
 
         user.setPosts(posts);
 
@@ -64,11 +70,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getByIdWithComments(int id, FilterCommentOptions options){
         User user = userRepository.getById(id);
+
         List<Comment> comments = commentRepository.getByUserId(id,  options);
 
         if (user == null) {
             throw new EntityNotFoundException("User", "id", id);
         }
+
+        options.getSortBy().ifPresent(SortingHelper::validateSortByFieldComment);
+
+        options.getSortOrder().ifPresent(SortingHelper::validateSortOrderField);
+
         user.setComments(comments);
 
         return user;
@@ -164,5 +176,17 @@ public class UserServiceImpl implements UserService {
                 (!isAdmin && requestUserId != userInput.getId())) {
             throw new UnauthorizedOperationException(PERMISSION_ERROR_MESSAGE);
         }
+    }
+
+    private void sortingFieldsValidationPosts(FilterPostOptions options) {
+        if(options.getSortBy().isPresent()){
+            if(!options.getSortBy().get().equals("title") && !options.getSortBy().get().equals("content") && !options.getSortBy().get().equals("likes")){
+                throw new UnauthorizedOperationException(PERMISSION_ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private void sortingFieldsValidationComments(FilterCommentOptions options) {
+
     }
 }

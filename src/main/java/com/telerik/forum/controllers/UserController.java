@@ -48,7 +48,6 @@ public class UserController {
 
     @GetMapping("/{id}/posts")
     public UserPostsDisplayDTO getUserPosts(@RequestHeader HttpHeaders headers,
-                                            @RequestParam(required = false) String creatorUsername,
                                             @RequestParam(required = false) String title,
                                             @RequestParam(required = false) String content,
                                             @RequestParam(required = false) String tags,
@@ -64,7 +63,9 @@ public class UserController {
             if(tags != null){
                 tagArray = tags.split(",");
             }
-            FilterPostOptions options = new FilterPostOptions(creatorUsername,title,content,tagArray,minLikes, maxLikes, sortBy, sortOrder);
+
+            FilterPostOptions options = new FilterPostOptions(null, title, content, tagArray, minLikes, maxLikes, sortBy, sortOrder);
+
             User userEntity =  userService.getByIdWithPosts(id, options);
 
             return userMapper.userToUserPostsDisplayDTO(userEntity);
@@ -77,7 +78,6 @@ public class UserController {
 
     @GetMapping("/{id}/comments")
     public UserCommentsDisplayDTO getUserComments(@RequestHeader HttpHeaders headers,
-                                                  @RequestParam(required = false) String creatorUsername,
                                                   @RequestParam(required = false) String content,
                                                   @RequestParam(required = false) String sortBy,
                                                   @RequestParam(required = false) String sortOrder,
@@ -85,7 +85,7 @@ public class UserController {
         try {
             authenticationHelper.tryGetUser(headers);
 
-            User userEntity = userService.getByIdWithComments(id, new FilterCommentOptions(creatorUsername, content, sortBy, sortOrder));
+            User userEntity = userService.getByIdWithComments(id, new FilterCommentOptions(null, content, sortBy, sortOrder));
 
             return userMapper.userToUserCommentsDisplayDTO(userEntity);
         } catch (EntityNotFoundException e) {

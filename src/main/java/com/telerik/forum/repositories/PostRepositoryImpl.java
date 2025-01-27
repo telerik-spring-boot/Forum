@@ -100,10 +100,6 @@ public class PostRepositoryImpl implements PostRepository {
 
             predicates.add(criteriaBuilder.equal(root.get("user").get("id"), userId));
 
-            options.getCreatorUsername().ifPresent(creatorUsername -> {
-                predicates.add(criteriaBuilder.like(root.get("creatorUsername"), "%" + creatorUsername + "%"));
-            });
-
             options.getTitle().ifPresent(title -> {
                 predicates.add(criteriaBuilder.like(root.get("title"), "%" + title + "%"));
             });

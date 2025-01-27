@@ -10,10 +10,12 @@ import com.telerik.forum.models.filters.FilterUserOptions;
 import com.telerik.forum.repositories.AdminDetailsRepository;
 import com.telerik.forum.repositories.RoleRepository;
 import com.telerik.forum.repositories.UserRepository;
+import com.telerik.forum.repositories.utilities.SortingHelper;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.Utilities;
 import java.util.List;
 
 @Service
@@ -44,9 +46,9 @@ public class AdminServiceImpl implements AdminService {
     public List<User> getAllUsers(FilterUserOptions options, int requestUserId){
         authorization(requestUserId);
 
-        options.getSortBy().ifPresent(this::validateSortField);
+        options.getSortBy().ifPresent(SortingHelper::validateSortByFieldUser);
 
-        options.getSortOrder().ifPresent(this::validateSortOrderField);
+        options.getSortOrder().ifPresent(SortingHelper::validateSortOrderField);
 
         return userRepository.getAll(options);
     }
@@ -168,17 +170,4 @@ public class AdminServiceImpl implements AdminService {
 
         }
     }
-
-    private void validateSortField(String type){
-        if(!type.equals("firstName") && !type.equals("lastName") && !type.equals("username")){
-            throw new InvalidSortParameterException(type);
-        }
-    }
-
-    private void validateSortOrderField(String type){
-        if(!type.equalsIgnoreCase("asc") && !type.equalsIgnoreCase("desc")){
-            throw new InvalidSortParameterException(type);
-        }
-    }
-
 }

@@ -96,8 +96,6 @@ public class PostRepositoryImpl implements PostRepository {
 
             Join<Post, Like> likesJoin = root.join("likes", JoinType.LEFT);
 
-
-
             List<Predicate> predicates = new ArrayList<>();
 
             predicates.add(criteriaBuilder.equal(root.get("user").get("id"), userId));
@@ -110,17 +108,6 @@ public class PostRepositoryImpl implements PostRepository {
                 predicates.add(criteriaBuilder.like(root.get("content"), "%" + content + "%"));
             });
 
-            Expression<Long> sumOfReactions = criteriaBuilder.sum(likesJoin.get("reaction"));
-
-            List<Predicate> sumPredicates = new ArrayList<>();
-
-            options.getMinLikes().ifPresent(minLikes -> {
-                sumPredicates.add(criteriaBuilder.greaterThanOrEqualTo(sumOfReactions, minLikes));
-            });
-
-            options.getMaxLikes().ifPresent(maxLikes -> {
-                sumPredicates.add(criteriaBuilder.lessThanOrEqualTo(sumOfReactions, maxLikes));
-            });
 
             options.getTags().ifPresent(tagNames -> {
                 Join<Post, Tag> tagsJoin = root.join("tags", JoinType.LEFT);
@@ -135,10 +122,6 @@ public class PostRepositoryImpl implements PostRepository {
             criteriaQuery.where(predicates.toArray(new Predicate[0]));
 
             criteriaQuery.groupBy(root.get("id"));
-
-            if(!sumPredicates.isEmpty()){
-                criteriaQuery.having(criteriaBuilder.and(sumPredicates.toArray(new Predicate[0])));
-            }
 
             options.getSortBy().ifPresent(sortBy -> {
                 String sortOrder = options.getSortOrder().orElse("asc");
@@ -167,6 +150,31 @@ public class PostRepositoryImpl implements PostRepository {
                 Hibernate.initialize(post.getLikes());
                 Hibernate.initialize(post.getComments());
             });
+
+            List<Post> postsToDelete = new ArrayList<>();
+
+            for(Post post : posts){
+                options.getMinLikes().ifPresent(minLikes -> {
+                   if(post.getLikes().stream()
+                           .map(Like::getReaction)
+                            .mapToInt(Integer::intValue)
+                            .sum() < minLikes){
+                       postsToDelete.add(post);
+                   }
+                });
+
+                options.getMaxLikes().ifPresent(maxLikes -> {
+                    if(post.getLikes().stream()
+                            .map(Like::getReaction)
+                            .mapToInt(Integer::intValue)
+                            .sum() > maxLikes){
+                        postsToDelete.add(post);
+                    }
+                });
+            }
+            if(!postsToDelete.isEmpty()){
+                posts.removeAll(postsToDelete);
+            }
 
             return posts;
         }

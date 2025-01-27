@@ -3,10 +3,12 @@ package com.telerik.forum.services;
 import com.telerik.forum.exceptions.DuplicateEntityException;
 import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
+import com.telerik.forum.models.Comment;
 import com.telerik.forum.models.Post;
 import com.telerik.forum.models.User;
 import com.telerik.forum.models.filters.FilterCommentOptions;
 import com.telerik.forum.models.filters.FilterPostOptions;
+import com.telerik.forum.repositories.CommentRepository;
 import com.telerik.forum.repositories.PostRepository;
 import com.telerik.forum.repositories.RoleRepository;
 import com.telerik.forum.repositories.UserRepository;
@@ -22,12 +24,14 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PostRepository postRepository) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PostRepository postRepository, CommentRepository commentRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.postRepository = postRepository;
+        this.commentRepository = commentRepository;
     }
 
 
@@ -60,6 +64,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getByIdWithComments(int id, FilterCommentOptions options){
         User user = userRepository.getById(id);
+        List<Comment> comments = commentRepository.getByUserId(id,  options);
 
         if (user == null) {
             throw new EntityNotFoundException("User", "id", id);

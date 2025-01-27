@@ -18,6 +18,8 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.telerik.forum.repositories.utilities.SortingHelper.sortingHelper;
+
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
@@ -56,15 +58,7 @@ public class UserRepositoryImpl implements UserRepository {
 
             criteriaQuery.where(predicates.toArray(new Predicate[0]));
 
-            options.getSortBy().ifPresent(sortBy -> {
-                String sortOrder = options.getSortOrder().orElse("asc");
-
-                if (sortOrder.equalsIgnoreCase("desc")) {
-                    criteriaQuery.orderBy(criteriaBuilder.desc(root.get(sortBy)));
-                } else {
-                    criteriaQuery.orderBy(criteriaBuilder.asc(root.get(sortBy)));
-                }
-            });
+            sortingHelper(criteriaBuilder,root,criteriaQuery,options);
 
             Query<User> query = session.createQuery(criteriaQuery);
 
@@ -73,7 +67,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User getByIdWithPosts(int id, FilterPostOptions options) {
+    public User getByIdWithPosts(int id) {
         try (Session session = sessionFactory.openSession()) {
             User user = session.createQuery("SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.posts WHERE u.id = :id", User.class)
                     .setParameter("id", id)
@@ -95,7 +89,7 @@ public class UserRepositoryImpl implements UserRepository {
 
 
     @Override
-    public User getByIdWithComments(int id, FilterCommentOptions options) {
+    public User getByIdWithComments(int id) {
         try(Session session = sessionFactory.openSession()) {
             Query<User> query = session.createQuery("SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.comments WHERE u.id = :id", User.class);
 

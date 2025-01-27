@@ -1,5 +1,6 @@
 package com.telerik.forum.repositories;
 
+import com.telerik.forum.models.Post;
 import com.telerik.forum.models.User;
 import com.telerik.forum.models.filters.FilterCommentOptions;
 import com.telerik.forum.models.filters.FilterPostOptions;
@@ -13,9 +14,9 @@ public interface UserRepository {
 
     User getById(int id);
 
-    User getByIdWithPosts(int id, FilterPostOptions options);
+    User getByIdWithPosts(int id);
 
-    User getByIdWithComments(int id, FilterCommentOptions options);
+    User getByIdWithComments(int id);
 
     User getByIdWithRoles(int id);
 

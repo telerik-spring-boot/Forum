@@ -2,13 +2,23 @@ package com.telerik.forum.repositories;
 
 
 import com.telerik.forum.models.Comment;
+import com.telerik.forum.models.User;
+import com.telerik.forum.models.filters.FilterCommentOptions;
+import com.telerik.forum.models.filters.FilterUserOptions;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.telerik.forum.repositories.utilities.SortingHelper.sortingHelper;
 
 
 @Repository
@@ -36,6 +46,38 @@ public class CommentRepositoryImpl implements CommentRepository {
             return session.get(Comment.class, id);
 
         }
+    }
+
+    @Override
+    public List<Comment> getByUserId(int id, FilterCommentOptions options) {
+
+
+        try(Session session = sessionFactory.openSession()) {
+            CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+
+            CriteriaQuery<Comment> criteriaQuery = criteriaBuilder.createQuery(Comment.class);
+
+            Root<Comment> root = criteriaQuery.from(Comment.class);
+
+            List<Predicate> predicates = new ArrayList<>();
+
+            options.getCreatorUsername().ifPresent(creatorUsername -> {
+                predicates.add(criteriaBuilder.like(root.get("user").get("username"), "%" + creatorUsername + "%"));
+            });
+
+            options.getContent().ifPresent(content -> {
+                predicates.add(criteriaBuilder.like(root.get("content"), "%" + content + "%"));
+            });
+
+            criteriaQuery.where(predicates.toArray(new Predicate[0]));
+
+            sortingHelper(criteriaBuilder,root,criteriaQuery,options);
+
+            Query<Comment> query = session.createQuery(criteriaQuery);
+
+            return query.list();
+        }
+
     }
 //
 //    @Override

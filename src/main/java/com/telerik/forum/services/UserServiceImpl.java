@@ -3,9 +3,11 @@ package com.telerik.forum.services;
 import com.telerik.forum.exceptions.DuplicateEntityException;
 import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
+import com.telerik.forum.models.Post;
 import com.telerik.forum.models.User;
 import com.telerik.forum.models.filters.FilterCommentOptions;
 import com.telerik.forum.models.filters.FilterPostOptions;
+import com.telerik.forum.repositories.PostRepository;
 import com.telerik.forum.repositories.RoleRepository;
 import com.telerik.forum.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +21,13 @@ public class UserServiceImpl implements UserService {
     private static final String PERMISSION_ERROR_MESSAGE = "You do not have permission to perform this action";
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final PostRepository postRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PostRepository postRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.postRepository = postRepository;
     }
 
 
@@ -41,18 +45,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getByIdWithPosts(int id, FilterPostOptions options) {
-        User user = userRepository.getByIdWithPosts(id, options);
+        User user = userRepository.getById(id);
+        List<Post> posts = postRepository.getPostsWithCommentsByUserId(id, options);
 
         if (user == null) {
             throw new EntityNotFoundException("User", "id", id);
         }
+
+        user.setPosts(posts);
 
         return user;
     }
 
     @Override
     public User getByIdWithComments(int id, FilterCommentOptions options){
-        User user = userRepository.getByIdWithComments(id, options);
+        User user = userRepository.getById(id);
 
         if (user == null) {
             throw new EntityNotFoundException("User", "id", id);

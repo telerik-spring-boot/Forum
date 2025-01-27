@@ -1,6 +1,7 @@
 package com.telerik.forum.repositories;
 
 import com.telerik.forum.models.Post;
+import com.telerik.forum.models.filters.FilterPostOptions;
 
 import java.util.List;
 
@@ -11,6 +12,8 @@ public interface PostRepository {
     List<Post> getMostCommentedPosts(int limit);
 
     List<Post> getMostLikedPosts(int limit);
+
+    List<Post> getPostsWithCommentsByUserId(int userId, FilterPostOptions options);
 
     Post getPostById(int id);
 

@@ -12,18 +12,21 @@ public class FilterPostOptions implements Sortable{
 
     private final String [] tags;
 
-    private final Integer likes;
+    private final Long minLikes;
+
+    private final Long maxLikes;
 
     private final String sortBy;
 
     private final String sortOrder;
 
-    public FilterPostOptions(String creatorUsername, String title, String content, String [] tags, Integer likes, String sortBy, String sortOrder) {
+    public FilterPostOptions(String creatorUsername, String title, String content, String [] tags, Long minLikes, Long maxLikes, String sortBy, String sortOrder) {
         this.creatorUsername = creatorUsername;
         this.title = title;
         this.content = content;
         this.tags = tags;
-        this.likes = likes;
+        this.minLikes = minLikes;
+        this.maxLikes = maxLikes;
         this.sortBy = sortBy;
         this.sortOrder = sortOrder;
     }
@@ -44,8 +47,12 @@ public class FilterPostOptions implements Sortable{
         return Optional.ofNullable(content);
     }
 
-    public Optional<Integer> getLikes() {
-        return Optional.ofNullable(likes);
+    public Optional<Long> getMinLikes() {
+        return Optional.ofNullable(minLikes);
+    }
+
+    public Optional<Long> getMaxLikes() {
+        return Optional.ofNullable(maxLikes);
     }
 
     public Optional<String> getSortBy() {

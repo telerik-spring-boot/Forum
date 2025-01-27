@@ -52,13 +52,19 @@ public class UserController {
                                             @RequestParam(required = false) String title,
                                             @RequestParam(required = false) String content,
                                             @RequestParam(required = false) String tags,
-                                            @RequestParam(required = false) Integer likes,
+                                            @RequestParam(required = false) Long minLikes,
+                                            @RequestParam(required = false) Long maxLikes,
                                             @RequestParam(required = false) String sortBy,
                                             @RequestParam(required = false) String sortOrder,
                                             @PathVariable int id) {
         try {
             authenticationHelper.tryGetUser(headers);
-            FilterPostOptions options = new FilterPostOptions(creatorUsername,title,content,tags.split(","),likes, sortBy, sortOrder);
+            String[] tagArray = null;
+
+            if(tags != null){
+                tagArray = tags.split(",");
+            }
+            FilterPostOptions options = new FilterPostOptions(creatorUsername,title,content,tagArray,minLikes, maxLikes, sortBy, sortOrder);
             User userEntity =  userService.getByIdWithPosts(id, options);
 
             return userMapper.userToUserPostsDisplayDTO(userEntity);

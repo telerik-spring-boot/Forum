@@ -4,12 +4,6 @@ VALUES ('John', 'Doe', 'john.doe@example.com', 'johndoe', 'password123'),
        ('Admin', 'User', 'admin.user@example.com', 'adminuser', 'adminpass'),
        ('Nophone', 'Andy', 'nophone.andy@example.com', 'nophoneadmin', 'adminpass');
 
-INSERT INTO forum_schema.admins (user_id, phone_number)
-VALUES (3, '123-456-7890');
-
-INSERT INTO forum_schema.admins (user_id)
-VALUES (4);
-
 INSERT INTO forum_schema.posts (title, content, user_id)
 VALUES ('Welcome Post', 'This is the first post in the forum!', 1),
        ('Second Post', 'Another interesting post in the forum.', 2);

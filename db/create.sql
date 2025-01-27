@@ -2,7 +2,6 @@ CREATE SCHEMA forum_schema;
 
 
 DROP TABLE IF EXISTS forum_schema.users CASCADE;
-DROP TABLE IF EXISTS forum_schema.admins CASCADE;
 DROP TABLE IF EXISTS forum_schema.posts CASCADE;
 DROP TABLE IF EXISTS forum_schema.comments CASCADE;
 DROP TABLE IF EXISTS forum_schema.roles CASCADE;
@@ -23,13 +22,6 @@ CREATE TABLE forum_schema.users
     blocked       TINYINT(1) DEFAULT 0 NOT NULL
 );
 
-CREATE TABLE forum_schema.admins
-(
-    admin_id     INT AUTO_INCREMENT PRIMARY KEY,
-    user_id      INT NOT NULL,
-    phone_number VARCHAR(50),
-    FOREIGN KEY (user_id) REFERENCES forum_schema.users (user_id) ON DELETE CASCADE
-);
 
 CREATE TABLE forum_schema.posts
 (

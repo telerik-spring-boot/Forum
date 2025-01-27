@@ -1,10 +1,7 @@
 package com.telerik.forum.controllers;
 
 
-import com.telerik.forum.exceptions.AdminRoleManagementException;
-import com.telerik.forum.exceptions.DuplicateEntityException;
-import com.telerik.forum.exceptions.EntityNotFoundException;
-import com.telerik.forum.exceptions.UnauthorizedOperationException;
+import com.telerik.forum.exceptions.*;
 import com.telerik.forum.helpers.AuthenticationHelper;
 import com.telerik.forum.helpers.UserMapper;
 import com.telerik.forum.models.Admin;
@@ -68,6 +65,8 @@ public class AdminController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }catch (EntityNotFoundException e){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }catch (InvalidSortParameterException e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
 
     }

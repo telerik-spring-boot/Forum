@@ -355,6 +355,7 @@ public class SwaggerConfiguration {
                                                         .maxItems(2)))
                                         )
                                 )
+                                .addApiResponse("400", new ApiResponse().description("Bad Request"))
                                 .addApiResponse("404", new ApiResponse().description("User not found"))
                                 .addApiResponse("401", new ApiResponse().description("Unauthorized operation"))
                         )
@@ -474,7 +475,8 @@ public class SwaggerConfiguration {
                         .description("This endpoint retrieves user's comments by their ID. Supports filtration and sorting by comment content.")
                         .addTagsItem("User content management")
                         .parameters(getCommentParameters())
-                        .responses(successNotFoundUnauthorizedResponses("UserCommentsDisplayDTO"))
+                        .responses(successNotFoundUnauthorizedResponses("UserCommentsDisplayDTO")
+                                .addApiResponse("400", new ApiResponse().description("Bad Request")))
                         .security(List.of(
                                 new SecurityRequirement().addList("basicAuth")))
                 )
@@ -486,7 +488,8 @@ public class SwaggerConfiguration {
                         .description("This endpoint retrieves user's posts by their ID.")
                         .addTagsItem("User content management")
                         .parameters(getPostParameters())
-                        .responses(successNotFoundUnauthorizedResponses("UserPostsDisplayDTO"))
+                        .responses(successNotFoundUnauthorizedResponses("UserPostsDisplayDTO")
+                                .addApiResponse("400", new ApiResponse().description("Bad Request")))
                         .security(List.of(
                                 new SecurityRequirement().addList("basicAuth")))
                 )

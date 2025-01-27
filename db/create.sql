@@ -8,6 +8,9 @@ DROP TABLE IF EXISTS forum_schema.comments CASCADE;
 DROP TABLE IF EXISTS forum_schema.roles CASCADE;
 DROP TABLE IF EXISTS forum_schema.user_roles CASCADE;
 DROP TABLE IF EXISTS forum_schema.admin_details CASCADE;
+DROP TABLE IF EXISTS forum_schema.likes CASCADE;
+DROP TABLE IF EXISTS forum_schema.post_tags CASCADE;
+DROP TABLE IF EXISTS forum_schema.tags CASCADE;
 
 CREATE TABLE forum_schema.users
 (

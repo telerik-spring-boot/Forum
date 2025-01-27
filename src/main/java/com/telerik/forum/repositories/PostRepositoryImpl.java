@@ -151,31 +151,6 @@ public class PostRepositoryImpl implements PostRepository {
                 Hibernate.initialize(post.getComments());
             });
 
-            List<Post> postsToDelete = new ArrayList<>();
-
-            for(Post post : posts){
-                options.getMinLikes().ifPresent(minLikes -> {
-                   if(post.getLikes().stream()
-                           .map(Like::getReaction)
-                            .mapToInt(Integer::intValue)
-                            .sum() < minLikes){
-                       postsToDelete.add(post);
-                   }
-                });
-
-                options.getMaxLikes().ifPresent(maxLikes -> {
-                    if(post.getLikes().stream()
-                            .map(Like::getReaction)
-                            .mapToInt(Integer::intValue)
-                            .sum() > maxLikes){
-                        postsToDelete.add(post);
-                    }
-                });
-            }
-            if(!postsToDelete.isEmpty()){
-                posts.removeAll(postsToDelete);
-            }
-
             return posts;
         }
     }

@@ -4,6 +4,7 @@ import com.telerik.forum.exceptions.DuplicateEntityException;
 import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.models.Comment;
+import com.telerik.forum.models.Like;
 import com.telerik.forum.models.Post;
 import com.telerik.forum.models.User;
 import com.telerik.forum.models.filters.FilterCommentOptions;
@@ -16,6 +17,7 @@ import com.telerik.forum.repositories.utilities.SortingHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -62,10 +64,13 @@ public class UserServiceImpl implements UserService {
 
         options.getSortOrder().ifPresent(SortingHelper::validateSortOrderField);
 
+        filterByLikes(posts, options);
+
         user.setPosts(posts);
 
         return user;
     }
+
 
     @Override
     public User getByIdWithComments(int id, FilterCommentOptions options){
@@ -178,15 +183,30 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private void sortingFieldsValidationPosts(FilterPostOptions options) {
-        if(options.getSortBy().isPresent()){
-            if(!options.getSortBy().get().equals("title") && !options.getSortBy().get().equals("content") && !options.getSortBy().get().equals("likes")){
-                throw new UnauthorizedOperationException(PERMISSION_ERROR_MESSAGE);
-            }
+    private void filterByLikes(List<Post> posts, FilterPostOptions options) {
+        List<Post> postsToDelete = new ArrayList<>();
+
+        for(Post post : posts){
+            options.getMinLikes().ifPresent(minLikes -> {
+                if(post.getLikes().stream()
+                        .map(Like::getReaction)
+                        .mapToInt(Integer::intValue)
+                        .sum() < minLikes){
+                    postsToDelete.add(post);
+                }
+            });
+
+            options.getMaxLikes().ifPresent(maxLikes -> {
+                if(post.getLikes().stream()
+                        .map(Like::getReaction)
+                        .mapToInt(Integer::intValue)
+                        .sum() > maxLikes){
+                    postsToDelete.add(post);
+                }
+            });
         }
-    }
-
-    private void sortingFieldsValidationComments(FilterCommentOptions options) {
-
+        if(!postsToDelete.isEmpty()){
+            posts.removeAll(postsToDelete);
+        }
     }
 }

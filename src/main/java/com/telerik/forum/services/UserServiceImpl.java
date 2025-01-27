@@ -69,6 +69,7 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             throw new EntityNotFoundException("User", "id", id);
         }
+        user.setComments(comments);
 
         return user;
     }

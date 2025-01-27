@@ -1,7 +1,6 @@
 package com.telerik.forum.configurations;
 
 
-import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,12 +18,14 @@ public class HibernateConfiguration {
 
     private final String dbUrl, dbUsername, dbPassword;
 
-    public HibernateConfiguration() {
-        Dotenv dotenv = Dotenv.load();
 
-        dbUrl = dotenv.get("DB_URL");
-        dbUsername = dotenv.get("DB_USERNAME");
-        dbPassword = dotenv.get("DB_PASSWORD");
+    @Autowired
+    public HibernateConfiguration(Environment env) {
+
+
+        this.dbUrl = env.getProperty("DB_URL");
+        this.dbUsername = env.getProperty("DB_USERNAME");
+        this.dbPassword = env.getProperty("DB_PASSWORD");
     }
 
     @Bean(name = "entityManagerFactory")

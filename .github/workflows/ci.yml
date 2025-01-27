@@ -47,7 +47,3 @@ jobs:
 
       - name: Run tests with Gradle
         run: ./gradlew test --no-daemon
-
-      # Remove application.properties after tests
-      - name: Cleanup application.properties
-        run: rm -f src/main/resources/application.properties

@@ -4,7 +4,9 @@ import com.telerik.forum.models.Like;
 import com.telerik.forum.models.Post;
 import com.telerik.forum.models.Tag;
 import com.telerik.forum.models.filters.FilterPostOptions;
+import jakarta.persistence.Tuple;
 import jakarta.persistence.criteria.*;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -92,9 +94,9 @@ public class PostRepositoryImpl implements PostRepository {
 
             Root<Post> root = criteriaQuery.from(Post.class);
 
-            Join<Post, Tag> tagsJoin = root.join("tags", JoinType.LEFT);
-
             Join<Post, Like> likesJoin = root.join("likes", JoinType.LEFT);
+
+
 
             List<Predicate> predicates = new ArrayList<>();
 
@@ -108,27 +110,35 @@ public class PostRepositoryImpl implements PostRepository {
                 predicates.add(criteriaBuilder.like(root.get("content"), "%" + content + "%"));
             });
 
+            Expression<Long> sumOfReactions = criteriaBuilder.sum(likesJoin.get("reaction"));
+
+            List<Predicate> sumPredicates = new ArrayList<>();
+
             options.getMinLikes().ifPresent(minLikes -> {
-                Expression<Long> sumOfReactions = criteriaBuilder.sum(likesJoin.get("reaction"));
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(sumOfReactions, minLikes));
+                sumPredicates.add(criteriaBuilder.greaterThanOrEqualTo(sumOfReactions, minLikes));
             });
 
             options.getMaxLikes().ifPresent(maxLikes -> {
-                Expression<Long> sumOfReactions = criteriaBuilder.sum(likesJoin.get("reaction"));
-                predicates.add(criteriaBuilder.lessThanOrEqualTo(sumOfReactions, maxLikes));
+                sumPredicates.add(criteriaBuilder.lessThanOrEqualTo(sumOfReactions, maxLikes));
             });
 
             options.getTags().ifPresent(tagNames -> {
-                List<Predicate> likePredicates = new ArrayList<>();
+                Join<Post, Tag> tagsJoin = root.join("tags", JoinType.LEFT);
+                List<Predicate> tagPredicates = new ArrayList<>();
+
                 for (String tagName : tagNames) {
-                    likePredicates.add(criteriaBuilder.like(tagsJoin.get("name"), "%" + tagName + "%"));
+                    tagPredicates.add(criteriaBuilder.like(tagsJoin.get("name"), "%" + tagName + "%"));
                 }
-                predicates.add(criteriaBuilder.or(likePredicates.toArray(new Predicate[0])));
+                predicates.add(criteriaBuilder.or(tagPredicates.toArray(new Predicate[0])));
             });
 
             criteriaQuery.where(predicates.toArray(new Predicate[0]));
 
             criteriaQuery.groupBy(root.get("id"));
+
+            if(!sumPredicates.isEmpty()){
+                criteriaQuery.having(criteriaBuilder.and(sumPredicates.toArray(new Predicate[0])));
+            }
 
             options.getSortBy().ifPresent(sortBy -> {
                 String sortOrder = options.getSortOrder().orElse("asc");
@@ -151,15 +161,12 @@ public class PostRepositoryImpl implements PostRepository {
 
             List<Post> posts = query.list();
 
-            for(Post post : posts){
-                session.createQuery("SELECT DISTINCT p FROM Post p " +
-                                "LEFT JOIN FETCH p.comments " +
-                                "LEFT JOIN FETCH p.tags " +
-                                "LEFT JOIN FETCH p.likes " +
-                                "WHERE p.id = :postId", Post.class)
-                        .setParameter("postId", post.getId())
-                        .uniqueResult();
-            }
+
+            posts.forEach(post -> {
+                Hibernate.initialize(post.getTags());
+                Hibernate.initialize(post.getLikes());
+                Hibernate.initialize(post.getComments());
+            });
 
             return posts;
         }

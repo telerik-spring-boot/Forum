@@ -104,7 +104,6 @@ public class Post {
         this.tags = tags;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;

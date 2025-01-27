@@ -53,14 +53,14 @@ public class AdminController {
     @GetMapping("/users")
     public List<UserDisplayDTO> getAllUsers(@RequestHeader HttpHeaders headers,
                                             @RequestParam(required = false) String username,
-                                            @RequestParam(required = false) String email,
+                                            @RequestParam(required = false) String emailAddress,
                                             @RequestParam(required = false) String firstName,
                                             @RequestParam(required = false) String sortBy,
                                             @RequestParam(required = false) String sortOrder) {
         try{
             User userRequest = authenticationHelper.tryGetUser(headers);
 
-            return adminService.getAllUsers(new FilterUserOptions(username, email, firstName, sortBy, sortOrder), userRequest.getId())
+            return adminService.getAllUsers(new FilterUserOptions(username, emailAddress, firstName, sortBy, sortOrder), userRequest.getId())
                     .stream()
                     .map(userMapper::userToUserDisplayDTO)
                     .toList();

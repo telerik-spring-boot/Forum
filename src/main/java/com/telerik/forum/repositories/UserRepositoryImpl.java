@@ -52,13 +52,13 @@ public class UserRepositoryImpl implements UserRepository {
                 predicates.add(criteriaBuilder.like(root.get("username"), "%" + username + "%"));
             });
 
-            options.getFirstName().ifPresent(email -> {
+            options.getEmailAddress().ifPresent(email -> {
                 predicates.add(criteriaBuilder.like(root.get("emailAddress"), "%" + email + "%"));
             });
 
             criteriaQuery.where(predicates.toArray(new Predicate[0]));
 
-            sortingHelper(criteriaBuilder,root,criteriaQuery,options);
+            sortingHelper(criteriaBuilder, root, criteriaQuery, options);
 
             Query<User> query = session.createQuery(criteriaQuery);
 

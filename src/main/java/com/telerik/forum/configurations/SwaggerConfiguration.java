@@ -616,16 +616,13 @@ public class SwaggerConfiguration {
                         .example("george_bush")));
 
         result.add(new Parameter()
-                .name("email")
+                .name("emailAddress")
                 .description("Email of the user.")
                 .required(false)
                 .in("query")
                 .schema(new Schema<>().type("string")
                         .description("Email address should be unique in the system")
-                        .example("example@example.com")
-                        .pattern("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")
-                        .minLength(5)
-                        .maxLength(254)));
+                        .example("example@example.com")));
 
         result.add(new Parameter()
                 .name("firstName")
@@ -657,7 +654,8 @@ public class SwaggerConfiguration {
                 .required(false)
                 .in("query")
                 .schema(new Schema<>().type("string")
-                        .example("desc")));
+                        .example("desc")
+                        .pattern("asc|desc")));
 
         return result;
     }

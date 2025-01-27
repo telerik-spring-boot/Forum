@@ -2,13 +2,17 @@ package com.telerik.forum.services;
 
 import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
+import com.telerik.forum.models.Like;
 import com.telerik.forum.models.Post;
 import com.telerik.forum.models.User;
+import com.telerik.forum.models.filters.FilterPostOptions;
 import com.telerik.forum.repositories.AdminDetailsRepository;
 import com.telerik.forum.repositories.PostRepository;
+import com.telerik.forum.repositories.utilities.SortingHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,8 +33,22 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> getPosts() {
-        return postRepository.getAll();
+    public List<Post> getAllPosts() {
+        return postRepository.getAllPosts();
+    }
+
+    @Override
+    public List<Post> getAllPostsWithFilters(FilterPostOptions filterOptions) {
+
+        filterOptions.getSortBy().ifPresent(SortingHelper::validateSortByFieldPost);
+
+        filterOptions.getSortOrder().ifPresent(SortingHelper::validateSortOrderField);
+
+        List<Post> posts = postRepository.getAllPostsWithFilters(filterOptions);
+        filterByLikes(posts, filterOptions);
+
+        return posts;
+
     }
 
     @Override
@@ -108,8 +126,7 @@ public class PostServiceImpl implements PostService {
     }
 
     private void checkPostCreatePermission(User user) {
-        if(user.isBlocked())
-        {
+        if (user.isBlocked()) {
             throw new UnauthorizedOperationException(BLOCKED_ACCOUNT_MESSAGE);
         }
     }
@@ -137,6 +154,33 @@ public class PostServiceImpl implements PostService {
             throw new UnauthorizedOperationException(BLOCKED_ACCOUNT_MESSAGE);
         }
 
+    }
+
+    private void filterByLikes(List<Post> posts, FilterPostOptions options) {
+        List<Post> postsToDelete = new ArrayList<>();
+
+        for (Post post : posts) {
+            options.getMinLikes().ifPresent(minLikes -> {
+                if (post.getLikes().stream()
+                        .map(Like::getReaction)
+                        .mapToInt(Integer::intValue)
+                        .sum() < minLikes) {
+                    postsToDelete.add(post);
+                }
+            });
+
+            options.getMaxLikes().ifPresent(maxLikes -> {
+                if (post.getLikes().stream()
+                        .map(Like::getReaction)
+                        .mapToInt(Integer::intValue)
+                        .sum() > maxLikes) {
+                    postsToDelete.add(post);
+                }
+            });
+        }
+        if (!postsToDelete.isEmpty()) {
+            posts.removeAll(postsToDelete);
+        }
     }
 
 

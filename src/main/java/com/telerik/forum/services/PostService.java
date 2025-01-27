@@ -2,12 +2,15 @@ package com.telerik.forum.services;
 
 import com.telerik.forum.models.Post;
 import com.telerik.forum.models.User;
+import com.telerik.forum.models.filters.FilterPostOptions;
 
 import java.util.List;
 
 public interface PostService {
 
-    List<Post> getPosts();
+    List<Post> getAllPosts();
+
+    List<Post> getAllPostsWithFilters(FilterPostOptions filterPostOptions);
 
     List<Post> getMostCommentedPosts(int limit);
 

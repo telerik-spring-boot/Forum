@@ -1,6 +1,7 @@
 package com.telerik.forum.controllers;
 
 import com.telerik.forum.exceptions.EntityNotFoundException;
+import com.telerik.forum.exceptions.InvalidSortParameterException;
 import com.telerik.forum.exceptions.InvalidUserInputException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.helpers.AuthenticationHelper;
@@ -13,6 +14,7 @@ import com.telerik.forum.models.dtos.postDTOs.PostCreateDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO;
 import com.telerik.forum.models.dtos.tagDTOs.TagCreateAndDeleteDTO;
 import com.telerik.forum.models.dtos.tagDTOs.TagUpdateDTO;
+import com.telerik.forum.models.filters.FilterPostOptions;
 import com.telerik.forum.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -44,11 +46,43 @@ public class PostController {
         this.tagService = tagService;
     }
 
+//    @GetMapping
+//    public List<PostDisplayDTO> getAllPosts() {
+//        return postService.getPosts().stream()
+//                .map(postMapper::postToPostDisplayDTO)
+//                .toList();
+//    }
+
     @GetMapping
-    public List<PostDisplayDTO> getAllPosts() {
-        return postService.getPosts().stream()
-                .map(postMapper::postToPostDisplayDTO)
-                .toList();
+    public List<PostDisplayDTO> getAllPosts(@RequestHeader HttpHeaders headers,
+                                            @RequestParam(required = false) String username,
+                                            @RequestParam(required = false) String title,
+                                            @RequestParam(required = false) String content,
+                                            @RequestParam(required = false) String tags,
+                                            @RequestParam(required = false) Long minLikes,
+                                            @RequestParam(required = false) Long maxLikes,
+                                            @RequestParam(required = false) String sortBy,
+                                            @RequestParam(required = false) String sortOrder) {
+        try {
+            authenticationHelper.tryGetUser(headers);
+            String[] tagArray = null;
+
+            if (tags != null) {
+                tagArray = tags.split(",");
+            }
+
+            FilterPostOptions options = new FilterPostOptions(username, title, content, tagArray,
+                    minLikes, maxLikes, sortBy, sortOrder);
+            return postService.getAllPostsWithFilters(options).stream()
+                    .map(postMapper::postToPostDisplayDTO)
+                    .toList();
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (UnauthorizedOperationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (InvalidSortParameterException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
     }
 
     @GetMapping("/{postId}")
@@ -162,7 +196,7 @@ public class PostController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch (InvalidUserInputException e){
+        } catch (InvalidUserInputException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }

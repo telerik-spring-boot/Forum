@@ -43,7 +43,7 @@ public class HomeController {
                 .map(postMapper::postToPostDisplayDTO)
                 .collect(Collectors.toSet()));
         home.setUsersCount(adminService.getAllUsers(new FilterUserOptions(null, null, null, null, null), adminService.getAll().get(0).getUser().getId()).size());
-        home.setPostsCount(postService.getPosts().size());
+        home.setPostsCount(postService.getAllPosts().size());
 
         return home;
     }

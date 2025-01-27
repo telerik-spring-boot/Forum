@@ -7,7 +7,9 @@ import java.util.List;
 
 public interface PostRepository {
 
-    List<Post> getAll();
+    List<Post> getAllPosts();
+
+    List<Post> getAllPostsWithFilters(FilterPostOptions options);
 
     List<Post> getMostCommentedPosts(int limit);
 

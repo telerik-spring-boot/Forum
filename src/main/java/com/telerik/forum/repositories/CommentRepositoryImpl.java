@@ -61,6 +61,8 @@ public class CommentRepositoryImpl implements CommentRepository {
 
             List<Predicate> predicates = new ArrayList<>();
 
+            predicates.add(criteriaBuilder.equal(root.get("user").get("id"), id));
+
             options.getCreatorUsername().ifPresent(creatorUsername -> {
                 predicates.add(criteriaBuilder.like(root.get("user").get("username"), "%" + creatorUsername + "%"));
             });

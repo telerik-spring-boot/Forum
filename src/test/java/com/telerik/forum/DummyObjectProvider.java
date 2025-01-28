@@ -8,6 +8,8 @@ import com.telerik.forum.models.user.AdminDetails;
 import com.telerik.forum.models.user.Role;
 import com.telerik.forum.models.user.User;
 
+import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -23,7 +25,9 @@ public class DummyObjectProvider {
         user.setUsername("george_bush");
         user.setPassword("Password123!");
         user.setBlocked(false);
-        user.setRoles(Set.of(new Role("USER")));
+        Set<Role> roles = new HashSet<>();
+        roles.add(new Role("USER"));
+        user.setRoles(roles);
 
         return user;
     }
@@ -34,6 +38,7 @@ public class DummyObjectProvider {
         adminDetails.setId(1);
         User user = createMockUser();
         user.addRole(new Role("ADMIN"));
+        adminDetails.setUser(user);
         adminDetails.setPhoneNumber("123456789");
 
         return adminDetails;
@@ -45,6 +50,7 @@ public class DummyObjectProvider {
         post.setId(1);
         post.setTitle("This is the title of a mock post.");
         post.setContent("This is the content of a mock post.");
+        post.setCreatedAt(LocalDateTime.now());
 
         return post;
     }
@@ -54,6 +60,7 @@ public class DummyObjectProvider {
 
         comment.setId(1);
         comment.setContent("This is the content of a mock comment.");
+        comment.setCreatedAt(LocalDateTime.now());
 
         return comment;
 

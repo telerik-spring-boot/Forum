@@ -1,10 +1,11 @@
 package com.telerik.forum.services;
 
-import com.telerik.forum.models.User;
-import com.telerik.forum.repositories.CommentRepository;
-import com.telerik.forum.repositories.PostRepository;
-import com.telerik.forum.repositories.RoleRepository;
-import com.telerik.forum.repositories.UserRepository;
+import com.telerik.forum.models.user.User;
+import com.telerik.forum.repositories.comment.CommentRepository;
+import com.telerik.forum.repositories.post.PostRepository;
+import com.telerik.forum.repositories.role.RoleRepository;
+import com.telerik.forum.repositories.user.UserRepository;
+import com.telerik.forum.services.user.UserServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

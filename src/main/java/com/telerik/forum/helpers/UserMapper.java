@@ -1,16 +1,15 @@
 package com.telerik.forum.helpers;
 
 
-import com.telerik.forum.models.Admin;
-import com.telerik.forum.models.AdminDetails;
-import com.telerik.forum.models.User;
+import com.telerik.forum.models.user.AdminDetails;
+import com.telerik.forum.models.user.User;
 import com.telerik.forum.models.dtos.adminDTOs.AdminDisplayDTO;
 import com.telerik.forum.models.dtos.adminDTOs.AdminUpdateDTO;
 import com.telerik.forum.models.dtos.commentDTOs.CommentDisplayDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO;
 import com.telerik.forum.models.dtos.userDTOs.*;
-import com.telerik.forum.services.AdminService;
-import com.telerik.forum.services.UserService;
+import com.telerik.forum.services.admin.AdminService;
+import com.telerik.forum.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

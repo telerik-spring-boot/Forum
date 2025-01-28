@@ -1,15 +1,15 @@
 package com.telerik.forum.helpers;
 
 import com.telerik.forum.exceptions.EntityNotFoundException;
-import com.telerik.forum.models.Comment;
-import com.telerik.forum.models.Like;
-import com.telerik.forum.models.Post;
-import com.telerik.forum.models.Tag;
+import com.telerik.forum.models.post.Comment;
+import com.telerik.forum.models.post.Like;
+import com.telerik.forum.models.post.Post;
+import com.telerik.forum.models.post.Tag;
 import com.telerik.forum.models.dtos.commentDTOs.CommentCreateDTO;
 import com.telerik.forum.models.dtos.commentDTOs.CommentDisplayDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostCreateDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO;
-import com.telerik.forum.services.PostService;
+import com.telerik.forum.services.post.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

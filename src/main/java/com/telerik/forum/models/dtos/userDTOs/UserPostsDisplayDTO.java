@@ -1,6 +1,5 @@
 package com.telerik.forum.models.dtos.userDTOs;
 
-import com.telerik.forum.models.Post;
 import com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO;
 
 import java.util.List;

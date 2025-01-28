@@ -7,19 +7,17 @@ import com.telerik.forum.exceptions.InvalidSortParameterException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.helpers.AuthenticationHelper;
 import com.telerik.forum.helpers.UserMapper;
-import com.telerik.forum.models.User;
+import com.telerik.forum.models.user.User;
 import com.telerik.forum.models.dtos.userDTOs.*;
 import com.telerik.forum.models.filters.FilterCommentOptions;
 import com.telerik.forum.models.filters.FilterPostOptions;
-import com.telerik.forum.services.UserService;
+import com.telerik.forum.services.user.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")

@@ -1,7 +1,7 @@
 package com.telerik.forum;
 
-import com.telerik.forum.models.Role;
-import com.telerik.forum.models.User;
+import com.telerik.forum.models.user.Role;
+import com.telerik.forum.models.user.User;
 
 public class DummyObjectProvider {
 

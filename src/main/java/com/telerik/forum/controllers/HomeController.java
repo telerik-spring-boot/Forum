@@ -2,11 +2,10 @@ package com.telerik.forum.controllers;
 
 
 import com.telerik.forum.helpers.PostMapper;
-import com.telerik.forum.models.AdminDetails;
 import com.telerik.forum.models.Home;
 import com.telerik.forum.models.filters.FilterUserOptions;
-import com.telerik.forum.services.AdminService;
-import com.telerik.forum.services.PostService;
+import com.telerik.forum.services.admin.AdminService;
+import com.telerik.forum.services.post.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

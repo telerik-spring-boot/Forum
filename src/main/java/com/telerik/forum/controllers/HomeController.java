@@ -4,6 +4,7 @@ package com.telerik.forum.controllers;
 import com.telerik.forum.helpers.PostMapper;
 import com.telerik.forum.models.Home;
 import com.telerik.forum.models.filters.FilterUserOptions;
+import com.telerik.forum.models.post.Post;
 import com.telerik.forum.services.admin.AdminService;
 import com.telerik.forum.services.post.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -42,7 +44,8 @@ public class HomeController {
                 .map(postMapper::postToPostDisplayDTO)
                 .collect(Collectors.toSet()));
         home.setUsersCount(adminService.getAllUsers(new FilterUserOptions(null, null, null, null, null), adminService.getAll().get(0).getUser().getId()).size());
-        home.setPostsCount(postService.getAllPosts().size());
+        List<Post> posts = postService.getAllPosts();
+        home.setPostsCount(posts.isEmpty() ? 0 : posts.size());
 
         return home;
     }

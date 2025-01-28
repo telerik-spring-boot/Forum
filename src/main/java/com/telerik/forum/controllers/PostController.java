@@ -91,7 +91,7 @@ public class PostController {
     @GetMapping("/{postId}")
     public PostDisplayDTO getPostById(@PathVariable int postId) {
         try {
-            return postMapper.postToPostDisplayDTO(postService.getByIdWithCommentsAndLikes(postId));
+            return postMapper.postToPostDisplayDTO(postService.getByIdWithCommentsAndLikesAndTags(postId));
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
@@ -119,7 +119,7 @@ public class PostController {
             User userRequest = authenticationHelper.tryGetUser(headers);
             Comment comment = postMapper.dtoToComment(userInput);
             commentService.addComment(postId, comment, userRequest);
-            return postMapper.postToPostDisplayDTO(postService.getByIdWithCommentsAndLikes(postId));
+            return postMapper.postToPostDisplayDTO(postService.getByIdWithCommentsAndLikesAndTags(postId));
         } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
@@ -134,7 +134,7 @@ public class PostController {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
             tagService.addTagToPost(postId, userInput.getTags(), userRequest);
-            return postMapper.postToPostDisplayDTO(postService.getByIdWithCommentsAndLikes(postId));
+            return postMapper.postToPostDisplayDTO(postService.getByIdWithCommentsAndLikesAndTags(postId));
         } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
@@ -164,7 +164,7 @@ public class PostController {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
             likeService.likePost(postId, userRequest);
-            Post post = postService.getByIdWithCommentsAndLikes(postId);
+            Post post = postService.getByIdWithCommentsAndLikesAndTags(postId);
             return postMapper.postToPostDisplayDTO(post);
         } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
@@ -179,7 +179,7 @@ public class PostController {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
             likeService.dislikePost(postId, userRequest);
-            return postMapper.postToPostDisplayDTO(postService.getByIdWithCommentsAndLikes(postId));
+            return postMapper.postToPostDisplayDTO(postService.getByIdWithCommentsAndLikesAndTags(postId));
         } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
@@ -194,7 +194,7 @@ public class PostController {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
             tagService.updateTagFromPost(postId, userInput.getOldTags(), userInput.getNewTags(), userRequest);
-            return postMapper.postToPostDisplayDTO(postService.getByIdWithCommentsAndLikes(postId));
+            return postMapper.postToPostDisplayDTO(postService.getByIdWithCommentsAndLikesAndTags(postId));
         } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
@@ -213,7 +213,7 @@ public class PostController {
             User userRequest = authenticationHelper.tryGetUser(headers);
             Comment comment = postMapper.dtoToComment(commentId, userInput, postId);
             commentService.updateComment(comment, userRequest);
-            return postMapper.postToPostDisplayDTO(postService.getByIdWithCommentsAndLikes(postId));
+            return postMapper.postToPostDisplayDTO(postService.getByIdWithCommentsAndLikesAndTags(postId));
         } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
@@ -241,7 +241,7 @@ public class PostController {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
             tagService.deleteTagFromPost(postId, userInput.getTags(), userRequest);
-            return postMapper.postToPostDisplayDTO(postService.getByIdWithCommentsAndLikes(postId));
+            return postMapper.postToPostDisplayDTO(postService.getByIdWithCommentsAndLikesAndTags(postId));
         } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
@@ -256,7 +256,7 @@ public class PostController {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
             commentService.deleteComment(postId, commentId, userRequest);
-            return postMapper.postToPostDisplayDTO(postService.getByIdWithCommentsAndLikes(postId));
+            return postMapper.postToPostDisplayDTO(postService.getByIdWithCommentsAndLikesAndTags(postId));
         } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {

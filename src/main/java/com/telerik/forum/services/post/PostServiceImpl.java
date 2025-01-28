@@ -34,12 +34,6 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<Post> getAllPosts() {
-        List<Post> posts = postRepository.getAllPosts();
-
-        if(posts.isEmpty()){
-            throw new EntityNotFoundException("There are no posts.");
-        }
-
         return postRepository.getAllPosts();
     }
 
@@ -51,6 +45,7 @@ public class PostServiceImpl implements PostService {
         filterOptions.getSortOrder().ifPresent(SortingHelper::validateSortOrderField);
 
         List<Post> posts = postRepository.getAllPostsWithFilters(filterOptions);
+
         filterByLikes(posts, filterOptions);
 
         return posts;
@@ -102,7 +97,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post getByIdWithCommentsAndLikes(int id) {
+    public Post getByIdWithCommentsAndLikesAndTags(int id) {
         Post post = postRepository.getPostWithCommentsAndLikesAndTagsById(id);
 
         if (post == null) {

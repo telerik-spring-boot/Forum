@@ -24,7 +24,7 @@ public interface PostService {
 
     Post getByIdWithLikes(int id);
 
-    Post getByIdWithCommentsAndLikes(int id);
+    Post getByIdWithCommentsAndLikesAndTags(int id);
 
     void createPost(Post post, User user);
 

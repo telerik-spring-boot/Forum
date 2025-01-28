@@ -16,14 +16,18 @@ public class Home {
 
     private  Set<PostDisplayDTO>  mostLikedPosts;
 
+    private  Set<PostDisplayDTO>  mostRecentPosts;
+
     public Home() {}
 
-    public Home(String coreFeatureURL, int usersCount, int postsCount, Set<PostDisplayDTO> mostCommentedPosts, Set<PostDisplayDTO> mostLikedPosts) {
+    public Home(String coreFeatureURL, int usersCount, int postsCount, Set<PostDisplayDTO> mostCommentedPosts,
+                Set<PostDisplayDTO> mostLikedPosts, Set<PostDisplayDTO> mostRecentPosts) {
         this.coreFeatureURL = coreFeatureURL;
         this.usersCount = usersCount;
         this.postsCount = postsCount;
         this.mostCommentedPosts = mostCommentedPosts;
         this.mostLikedPosts = mostLikedPosts;
+        this.mostRecentPosts = mostRecentPosts;
     }
 
     public String getCoreFeatureURL() {
@@ -48,6 +52,14 @@ public class Home {
 
     public void setMostCommentedPosts(Set<PostDisplayDTO> mostCommentedPosts) {
         this.mostCommentedPosts = mostCommentedPosts;
+    }
+
+    public Set<PostDisplayDTO> getMostRecentPosts() {
+        return mostRecentPosts;
+    }
+
+    public void setMostRecentPosts(Set<PostDisplayDTO> mostRecentPosts) {
+        this.mostRecentPosts = mostRecentPosts;
     }
 
     public int getPostsCount() {

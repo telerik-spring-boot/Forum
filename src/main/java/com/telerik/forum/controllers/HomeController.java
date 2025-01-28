@@ -41,6 +41,9 @@ public class HomeController {
         home.setMostLikedPosts(postService.getMostLikedPosts(10).stream()
                 .map(postMapper::postToPostDisplayDTO)
                 .collect(Collectors.toSet()));
+        home.setMostRecentPosts(postService.getMostRecentPosts(10).stream()
+                .map(postMapper::postToPostDisplayDTO)
+                .collect(Collectors.toSet()));
         home.setUsersCount(adminService.getAllUsers(new FilterUserOptions(null, null, null, null, null), adminService.getAll().get(0).getUser().getId()).size());
         home.setPostsCount(postService.getAllPosts().size());
 

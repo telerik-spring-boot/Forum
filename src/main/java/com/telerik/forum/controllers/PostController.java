@@ -49,13 +49,6 @@ public class PostController {
         this.tagService = tagService;
     }
 
-//    @GetMapping
-//    public List<PostDisplayDTO> getAllPosts() {
-//        return postService.getPosts().stream()
-//                .map(postMapper::postToPostDisplayDTO)
-//                .toList();
-//    }
-
     @GetMapping
     public List<PostDisplayDTO> getAllPosts(@RequestHeader HttpHeaders headers,
                                             @RequestParam(required = false) String username,
@@ -89,11 +82,15 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public PostDisplayDTO getPostById(@PathVariable int postId) {
+    public PostDisplayDTO getPostById(@RequestHeader HttpHeaders headers,
+                                      @PathVariable int postId) {
         try {
+            authenticationHelper.tryGetUser(headers);
             return postMapper.postToPostDisplayDTO(postService.getByIdWithCommentsAndLikes(postId));
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }catch (UnauthorizedOperationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
     }
 

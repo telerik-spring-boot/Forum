@@ -115,19 +115,23 @@ public class PostServiceImpl implements PostService {
     @Override
     public void createPost(Post post, User user) {
         checkPostCreatePermission(user);
+
         post.setUser(user);
+
         postRepository.create(post);
     }
 
     @Override
     public void updatePost(Post post, User user) {
         checkPostUpdatePermission(post.getId(), user);
+
         postRepository.update(post);
     }
 
     @Override
     public void deletePost(int postId, User user) {
         checkPostDeletePermission(postId, user);
+
         postRepository.delete(postId);
     }
 
@@ -153,9 +157,11 @@ public class PostServiceImpl implements PostService {
         Post post = getById(postId);
 
         boolean isAdmin = adminRepository.getByUserId(user.getId()) != null;
+
         if (!(post.getUser().equals(user) || isAdmin)) {
             throw new UnauthorizedOperationException(UNAUTHORIZED_DELETE_MESSAGE);
         }
+
         if (user.isBlocked()) {
             throw new UnauthorizedOperationException(BLOCKED_ACCOUNT_MESSAGE);
         }
@@ -184,6 +190,7 @@ public class PostServiceImpl implements PostService {
                 }
             });
         }
+
         if (!postsToDelete.isEmpty()) {
             posts.removeAll(postsToDelete);
         }

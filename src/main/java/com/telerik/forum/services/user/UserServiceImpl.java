@@ -54,15 +54,15 @@ public class UserServiceImpl implements UserService {
     public User getByIdWithPosts(int id, FilterPostOptions options) {
         User user = userRepository.getById(id);
 
-        List<Post> posts = postRepository.getPostsWithCommentsByUserId(id, options);
+        options.getSortBy().ifPresent(SortingHelper::validateSortByFieldPost);
+
+        options.getSortOrder().ifPresent(SortingHelper::validateSortOrderField);
 
         if (user == null) {
             throw new EntityNotFoundException("User", "id", id);
         }
 
-        options.getSortBy().ifPresent(SortingHelper::validateSortByFieldPost);
-
-        options.getSortOrder().ifPresent(SortingHelper::validateSortOrderField);
+        List<Post> posts = postRepository.getPostsWithCommentsByUserId(id, options);
 
         filterByLikes(posts, options);
 
@@ -76,15 +76,15 @@ public class UserServiceImpl implements UserService {
     public User getByIdWithComments(int id, FilterCommentOptions options){
         User user = userRepository.getById(id);
 
-        List<Comment> comments = commentRepository.getByUserId(id,  options);
+        options.getSortBy().ifPresent(SortingHelper::validateSortByFieldComment);
+
+        options.getSortOrder().ifPresent(SortingHelper::validateSortOrderField);
 
         if (user == null) {
             throw new EntityNotFoundException("User", "id", id);
         }
 
-        options.getSortBy().ifPresent(SortingHelper::validateSortByFieldComment);
-
-        options.getSortOrder().ifPresent(SortingHelper::validateSortOrderField);
+        List<Comment> comments = commentRepository.getByUserId(id,  options);
 
         user.setComments(comments);
 
@@ -162,16 +162,6 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(id);
     }
 
-    private void authorization(int userId) {
-        User user = userRepository.getByIdWithRoles(userId);
-        boolean isAdmin = user.getRoles().stream()
-                .anyMatch(role -> role.getName().equalsIgnoreCase("ADMIN"));
-
-        if (user.isBlocked() || !isAdmin) {
-            throw new UnauthorizedOperationException(PERMISSION_ERROR_MESSAGE);
-        }
-    }
-
     private void authorization(User userInput, int requestUserId) {
         User user = userRepository.getByIdWithRoles(requestUserId);
         boolean isAdmin = user.getRoles().stream()
@@ -187,20 +177,19 @@ public class UserServiceImpl implements UserService {
         List<Post> postsToDelete = new ArrayList<>();
 
         for(Post post : posts){
+            int totalLikes = post.getLikes().stream()
+                    .map(Like::getReaction)
+                    .mapToInt(Integer::intValue)
+                    .sum();
+
             options.getMinLikes().ifPresent(minLikes -> {
-                if(post.getLikes().stream()
-                        .map(Like::getReaction)
-                        .mapToInt(Integer::intValue)
-                        .sum() < minLikes){
+                if(totalLikes < minLikes){
                     postsToDelete.add(post);
                 }
             });
 
             options.getMaxLikes().ifPresent(maxLikes -> {
-                if(post.getLikes().stream()
-                        .map(Like::getReaction)
-                        .mapToInt(Integer::intValue)
-                        .sum() > maxLikes){
+                if(totalLikes > maxLikes){
                     postsToDelete.add(post);
                 }
             });

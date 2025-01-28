@@ -161,8 +161,7 @@ public class PostController {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
             likeService.likePost(postId, userRequest);
-            Post post = postService.getByIdWithCommentsAndLikes(postId);
-            return postMapper.postToPostDisplayDTO(post);
+            return postMapper.postToPostDisplayDTO(postService.getByIdWithCommentsAndLikes(postId));
         } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {

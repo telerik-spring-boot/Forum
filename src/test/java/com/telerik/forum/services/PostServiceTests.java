@@ -177,7 +177,6 @@ public class PostServiceTests {
         Mockito.when(mockPostRepository.getPostById(Mockito.anyInt()))
                 .thenReturn(null);
 
-
         // Assert
         Assertions.assertThrows(EntityNotFoundException.class, () -> postService.getById(2));
 
@@ -189,7 +188,9 @@ public class PostServiceTests {
     public void getByIdWithComments_Should_ReturnPostWithComments_When_PostWithIdExists(){
         // Arrange
         Post expectedPost = createMockPost();
+
         expectedPost.setComments(Set.of(createMockComment()));
+
         Mockito.when(mockPostRepository.getPostWithCommentsById(1))
                 .thenReturn(expectedPost);
 
@@ -209,7 +210,6 @@ public class PostServiceTests {
         Mockito.when(mockPostRepository.getPostWithCommentsById(Mockito.anyInt()))
                 .thenReturn(null);
 
-
         // Assert
         Assertions.assertThrows(EntityNotFoundException.class, () -> postService.getByIdWithComments(2));
 
@@ -221,7 +221,9 @@ public class PostServiceTests {
     public void getByIdWithLikes_Should_ReturnPostWithLikes_When_PostWithIdExists(){
         // Arrange
         Post expectedPost = createMockPost();
+
         expectedPost.setLikes(Set.of(createMockLike()));
+
         Mockito.when(mockPostRepository.getPostWithLikesById(1))
                 .thenReturn(expectedPost);
 
@@ -253,6 +255,7 @@ public class PostServiceTests {
     public void getByIdWithCommentsAndLikesAndTags_Should_ReturnPostWithLikesAndComments_When_PostWithIdExists(){
         // Arrange
         Post expectedPost = createMockPost();
+
         expectedPost.setLikes(Set.of(createMockLike()));
         expectedPost.setComments(Set.of(createMockComment()));
         expectedPost.setTags(Set.of(createMockTag()));
@@ -278,7 +281,6 @@ public class PostServiceTests {
         // Arrange
         Mockito.when(mockPostRepository.getPostWithCommentsAndLikesAndTagsById(Mockito.anyInt()))
                 .thenReturn(null);
-
 
         // Assert
         Assertions.assertThrows(EntityNotFoundException.class, () -> postService.getByIdWithCommentsAndLikesAndTags(2));
@@ -325,6 +327,7 @@ public class PostServiceTests {
         // Arrange
         User user = createMockUser();
         Post post = createMockPost();
+
         user.setPosts(List.of(post));
         post.setUser(user);
 
@@ -346,6 +349,7 @@ public class PostServiceTests {
         // Arrange
         Post post = createMockPost();
         User user = createMockUser();
+
         post.setUser(user);
         user.setBlocked(true);
 
@@ -364,6 +368,7 @@ public class PostServiceTests {
         // Arrange
         Post post = createMockPost();
         User user = createMockUser();
+
         user.setId(2);
         post.setUser(user);
         user.setBlocked(true);
@@ -384,6 +389,7 @@ public class PostServiceTests {
         // Arrange
         User user = createMockUser();
         Post post = createMockPost();
+
         user.setPosts(List.of(post));
         post.setUser(user);
 
@@ -409,6 +415,7 @@ public class PostServiceTests {
         // Arrange
         Post post = createMockPost();
         User user = createMockUser();
+
         post.setUser(user);
         user.setBlocked(true);
 
@@ -430,6 +437,7 @@ public class PostServiceTests {
         // Arrange
         Post post = createMockPost();
         User user = createMockUser();
+
         user.setId(2);
         post.setUser(user);
         user.setBlocked(true);
@@ -452,9 +460,10 @@ public class PostServiceTests {
         // Arrange
         Post post = createMockPost();
         User user = createMockUser();
+        AdminDetails adminDetails = createMockAdminDetails();
+
         user.setId(2);
         post.setUser(user);
-        AdminDetails adminDetails = createMockAdminDetails();
 
         Mockito.when(mockPostRepository.getPostById(1))
                 .thenReturn(post);

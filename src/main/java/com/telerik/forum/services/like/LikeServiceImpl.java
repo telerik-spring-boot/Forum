@@ -1,5 +1,6 @@
 package com.telerik.forum.services.like;
 
+import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.models.post.Like;
 import com.telerik.forum.models.post.Post;
@@ -30,6 +31,14 @@ public class LikeServiceImpl implements LikeService {
 
         Post post = postRepository.getPostWithLikesById(postId);
 
+        if(post == null) {
+            throw new EntityNotFoundException("Post", "id", postId);
+        } // added
+
+
+        // think of a way to get postsWithLikesForParticularUser rather than doing it in memory
+        // user might have just 1post where the entire database is of 1million posts
+
         Like like = post.getLikes().stream()
                 .filter(l -> l.getUser().getId() == user.getId())
                 .findFirst()
@@ -38,6 +47,7 @@ public class LikeServiceImpl implements LikeService {
 
         if (like == null) {
             Like newLike = new Like();
+
             newLike.setPost(post);
             newLike.setUser(user);
             newLike.setReaction(1);
@@ -49,9 +59,7 @@ public class LikeServiceImpl implements LikeService {
 
             likeRepository.update(like);
         } else {
-
             likeRepository.delete(like.getId());
-
         }
     }
 
@@ -62,6 +70,10 @@ public class LikeServiceImpl implements LikeService {
 
         Post post = postRepository.getPostWithLikesById(postId);
 
+        if(post == null){
+            throw new EntityNotFoundException("Post", "id", postId);
+        } // added
+
         Like dislike = post.getLikes().stream()
                 .filter(l -> l.getUser().getId() == user.getId())
                 .findFirst()
@@ -70,13 +82,15 @@ public class LikeServiceImpl implements LikeService {
 
         if (dislike == null) {
             Like newDislike = new Like();
+
             newDislike.setPost(post);
             newDislike.setUser(user);
             newDislike.setReaction(-1);
 
             likeRepository.create(newDislike);
         } else if (dislike.getReaction() == 1) {
-
+            // methods are exactly the same the only difference are the variables in the reaction fields
+            // think of a way how to extract all into 1 method and just call them based on reactions
             dislike.setReaction(-1);
 
             likeRepository.update(dislike);

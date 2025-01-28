@@ -1,10 +1,10 @@
 package com.telerik.forum.repositories.utilities;
 
 import com.telerik.forum.exceptions.InvalidSortParameterException;
+
 import com.telerik.forum.models.filters.Sortable;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
+
 
 public class SortingHelper {
 
@@ -21,30 +21,30 @@ public class SortingHelper {
         });
     }
 
-    public static void validateSortOrderField(String type){
-        if(!type.equalsIgnoreCase("asc") && !type.equalsIgnoreCase("desc")){
+    public static void validateSortOrderField(String type) {
+        if (!type.equalsIgnoreCase("asc") && !type.equalsIgnoreCase("desc")) {
             throw new InvalidSortParameterException(type);
         }
     }
 
-    public static void validateSortByFieldPost(String type){
-        if(!type.equalsIgnoreCase("title") &&
+    public static void validateSortByFieldPost(String type) {
+        if (!type.equalsIgnoreCase("title") &&
                 !type.equalsIgnoreCase("content") &&
-                !type.equalsIgnoreCase("likes")){
+                !type.equalsIgnoreCase("likes")) {
             throw new InvalidSortParameterException(type);
         }
     }
 
-    public static void validateSortByFieldUser(String type){
-        if(!type.equalsIgnoreCase("firstname") &&
+    public static void validateSortByFieldUser(String type) {
+        if (!type.equalsIgnoreCase("firstname") &&
                 !type.equalsIgnoreCase("lastname") &&
-                !type.equalsIgnoreCase("username")){
+                !type.equalsIgnoreCase("username")) {
             throw new InvalidSortParameterException(type);
         }
     }
 
     public static void validateSortByFieldComment(String type) {
-        if(!type.equalsIgnoreCase("commentContent")){
+        if (!type.equalsIgnoreCase("commentContent")) {
             throw new InvalidSortParameterException(type);
         }
     }

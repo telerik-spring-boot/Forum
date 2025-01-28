@@ -15,6 +15,8 @@ public interface PostRepository {
 
     List<Post> getMostLikedPosts(int limit);
 
+    List<Post> getMostRecentPosts(int limit);
+
     List<Post> getPostsWithCommentsByUserId(int userId, FilterPostOptions options);
 
     Post getPostById(int id);

@@ -70,7 +70,7 @@ public class DummyObjectProvider {
         Tag tag = new Tag();
 
         tag.setId(1);
-        tag.setName("Mock Tag");
+        tag.setName("mocktag");
 
         return tag;
     }

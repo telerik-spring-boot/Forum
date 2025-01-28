@@ -1,5 +1,6 @@
 package com.telerik.forum.services.tag;
 
+import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.InvalidUserInputException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.models.post.Tag;
@@ -36,12 +37,16 @@ public class TagServiceImpl implements TagService {
     @Override
     public void addTagToPost(int postId, String tags, User user) {
         Post post = postRepository.getPostWithTagsById(postId);
+
+        if(post == null){
+            throw new EntityNotFoundException("Post", "id", postId);
+        }
+
         checkPermissions(post, user);
 
         List<String> tagList = extractTags(tags);
 
         for (String tagToAdd : tagList) {
-
             addTagToPostHelper(tagToAdd, post);
         }
 
@@ -53,8 +58,14 @@ public class TagServiceImpl implements TagService {
     @Override
     public void updateTagFromPost(int postId, String oldTags, String newTags, User user) {
         Post post = postRepository.getPostWithTagsById(postId);
+
+        if(post == null){
+            throw new EntityNotFoundException("Post", "id", postId);
+        }//added
+
         checkPermissions(post, user);
 
+        // bug found try to test it, I made the test to pass but there is a corner case here
         List<String> oldTagList = extractTags(oldTags);
         List<String> newTagList = extractTags(newTags);
 
@@ -64,12 +75,14 @@ public class TagServiceImpl implements TagService {
 
         for (int i = 0; i < oldTagList.size(); i++) {
 
+            // this is extremely inefficient -> you already have the tags in the post
+            // think of a way to work with the tags from the post
             Tag oldTag = tagRepository.findByName(oldTagList.get(i));
+            // plus you are using with raw user input, it might not exist in the database
+
 
             if (post.getTags().remove(oldTag)) {
-
                 addTagToPostHelper(newTagList.get(i), post);
-
             }
 
         }
@@ -81,12 +94,20 @@ public class TagServiceImpl implements TagService {
     @Override
     public void deleteTagFromPost(int postId, String tags, User user) {
         Post post = postRepository.getPostWithTagsById(postId);
+
+        if(post == null){
+            throw new EntityNotFoundException("Post", "id", postId);
+        }// added
+
         checkPermissions(post, user);
 
         List<String> tagList = extractTags(tags);
 
         for (String tagToRemove : tagList) {
 
+            // this is also inefficient, you have all the tags loaded
+            // you are going to the database for each delete
+            // think of a way to work with the tags already loaded in the post
             removeTagFromPostHelper(tagToRemove, post);
         }
 
@@ -97,9 +118,11 @@ public class TagServiceImpl implements TagService {
     private void checkPermissions(Post post, User user) {
 
         boolean isAdmin = adminDetailsRepository.getByUserId(user.getId()) != null;
+
         if (!(post.getUser().equals(user) || isAdmin)) {
             throw new UnauthorizedOperationException(UNAUTHORIZED_MESSAGE);
         }
+
         if (user.isBlocked()) {
             throw new UnauthorizedOperationException(BLOCKED_ACCOUNT_MESSAGE);
         }
@@ -115,11 +138,14 @@ public class TagServiceImpl implements TagService {
 
 
     private void addTagToPostHelper(String tagToAdd, Post post) {
+
         Tag tag = tagRepository.findByName(tagToAdd);
 
         if (tag == null) {
             Tag newTag = new Tag();
+
             newTag.setName(tagToAdd);
+
             tagRepository.addTag(newTag);
 
             post.getTags().add(newTag);
@@ -130,6 +156,7 @@ public class TagServiceImpl implements TagService {
     }
 
     private void removeTagFromPostHelper(String tagToRemove, Post post) {
+
         Tag tag = tagRepository.findByName(tagToRemove);
 
         if (tag != null) {

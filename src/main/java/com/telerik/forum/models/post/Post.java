@@ -5,6 +5,7 @@ import com.telerik.forum.models.user.User;
 import jakarta.persistence.*;
 import org.antlr.v4.runtime.misc.OrderedHashSet;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
@@ -20,6 +21,9 @@ public class Post {
 
     @Column(name="content")
     private String content;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name="user_id", nullable=false)
@@ -103,6 +107,19 @@ public class Post {
 
     public void setTags(Set<Tag> tags) {
         this.tags = tags;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     @Override

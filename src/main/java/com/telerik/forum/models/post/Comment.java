@@ -3,6 +3,7 @@ package com.telerik.forum.models.post;
 import com.telerik.forum.models.user.User;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -15,6 +16,9 @@ public class Comment {
 
     @Column(name="content")
     private String content;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name="post_id", nullable = false)
@@ -64,6 +68,19 @@ public class Comment {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     @Override

@@ -29,7 +29,8 @@ CREATE TABLE forum_schema.posts
     title   VARCHAR(70) NOT NULL,
     content TEXT        NOT NULL,
     user_id INT         NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES forum_schema.users (user_id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES forum_schema.users (user_id) ON DELETE CASCADE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -40,7 +41,8 @@ CREATE TABLE forum_schema.comments
     post_id    INT  NOT NULL,
     user_id    INT  NOT NULL,
     FOREIGN KEY (post_id) references forum_schema.posts (post_id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) references forum_schema.users (user_id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) references forum_schema.users (user_id) ON DELETE CASCADE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 CREATE TABLE forum_schema.roles

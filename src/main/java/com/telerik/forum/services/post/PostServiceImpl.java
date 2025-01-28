@@ -36,9 +36,9 @@ public class PostServiceImpl implements PostService {
     public List<Post> getAllPosts() {
         List<Post> posts = postRepository.getAllPosts();
 
-        if(posts.isEmpty()){
-            throw new EntityNotFoundException("There are no posts.");
-        }
+//        if(posts.isEmpty()){
+//            throw new EntityNotFoundException("There are no posts.");
+//        }
 
         return postRepository.getAllPosts();
     }

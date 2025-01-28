@@ -62,6 +62,11 @@ public class PostServiceImpl implements PostService {
         return postRepository.getMostLikedPosts(limit);
     }
 
+    @Override
+    public List<Post> getMostRecentPosts(int limit) {
+        return postRepository.getMostRecentPosts(limit);
+    }
+
 
     @Override
     public Post getById(int id) {

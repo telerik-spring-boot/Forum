@@ -1,7 +1,9 @@
 package com.telerik.forum.models.dtos.postDTOs;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.telerik.forum.models.dtos.commentDTOs.CommentDisplayDTO;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class PostDisplayDTO {
@@ -16,17 +18,24 @@ public class PostDisplayDTO {
 
     public int likes;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm '['dd-MM-yyyy']'")
+    public LocalDateTime createdAt;
+
     public List<CommentDisplayDTO> comments;
 
     public PostDisplayDTO() {
     }
 
-    public PostDisplayDTO(String creatorUsername, String title, String content, List<String> tags, int likes, List<CommentDisplayDTO> comments) {
+    public PostDisplayDTO(String creatorUsername, String title,
+                          String content, List<String> tags,
+                          int likes, LocalDateTime createdAt,
+                          List<CommentDisplayDTO> comments) {
         this.creatorUsername = creatorUsername;
         this.title = title;
         this.content = content;
         this.tags = tags;
         this.likes = likes;
+        this.createdAt = createdAt;
         this.comments = comments;
     }
 
@@ -60,6 +69,14 @@ public class PostDisplayDTO {
 
     public void setLikes(int likes) {
         this.likes = likes;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public List<String> getTags() {

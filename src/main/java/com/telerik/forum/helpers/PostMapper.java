@@ -33,6 +33,7 @@ public class PostMapper {
         postDTO.setTitle(post.getTitle());
         postDTO.setContent(post.getContent());
         postDTO.setCreatorUsername(post.getUser().getUsername());
+        postDTO.setCreatedAt(post.getCreatedAt());
 
         List<String> tags = new ArrayList<>();
         for (Tag tag : post.getTags()) {
@@ -61,6 +62,7 @@ public class PostMapper {
 
         commentDTO.setCommentContent(comment.getContent());
         commentDTO.setCreatorUsername(comment.getUser().getUsername());
+        commentDTO.setCreatedAt(comment.getCreatedAt());
 
         return commentDTO;
     }

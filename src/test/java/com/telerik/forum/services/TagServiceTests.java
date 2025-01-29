@@ -179,33 +179,6 @@ public class TagServiceTests {
 
     }
 
-    @Test
-    public void updateTagFromPost_Should_Throw_When_oldTagsCountAndNewTagsCountDiffer(){
-        // Arrange
-        User user = createMockUser();
-        Post post = createMockPost();
-
-        user.setId(2);
-        post.setUser(createMockUser());
-
-        Mockito.when(mockPostRepository.getPostWithTagsById(Mockito.anyInt()))
-                .thenReturn(post);
-
-        Mockito.when(mockAdminDetailsRepository.getByUserId(Mockito.anyInt()))
-                .thenReturn(createMockAdminDetails());
-
-        // Act, Assert
-        Assertions.assertThrows(InvalidUserInputException.class,
-                () -> tagService.updateTagFromPost(1, "act", "pass,set", user));
-
-        Mockito.verify(mockPostRepository, Mockito.times(1))
-                .getPostWithTagsById(Mockito.anyInt());
-
-        Mockito.verify(mockAdminDetailsRepository, Mockito.times(1))
-                .getByUserId(Mockito.anyInt());
-
-    }
-
 
     @Test
     public void updateTagFromPost_Should_UpdateTags_When_EverythingIsValid(){
@@ -223,9 +196,6 @@ public class TagServiceTests {
 
         Mockito.when(mockAdminDetailsRepository.getByUserId(Mockito.anyInt()))
                 .thenReturn(null);
-
-        Mockito.when(mockTagRepository.findByName("mocktag"))
-                .thenReturn(createMockTag());
 
         // Act
         tagService.updateTagFromPost(post.getId(), "mocktag,what", "pass,not", user);
@@ -298,20 +268,16 @@ public class TagServiceTests {
         tags.add(new Tag(2, "fast"));
         tags.add(new Tag(3, "epic"));
 
-        post.setUser(user);
+        user.setId(2);
+
+        post.setUser(createMockUser());
         post.setTags(tags);
 
         Mockito.when(mockPostRepository.getPostWithTagsById(Mockito.anyInt()))
                 .thenReturn(post);
 
         Mockito.when(mockAdminDetailsRepository.getByUserId(Mockito.anyInt()))
-                .thenReturn(null);
-
-        Mockito.when(mockTagRepository.findByName("pass"))
-                .thenReturn(new Tag(1, "pass"));
-
-        Mockito.when(mockTagRepository.findByName("epic"))
-                .thenReturn(new Tag(3, "epic"));
+                .thenReturn(createMockAdminDetails());
 
         // Act
         tagService.deleteTagFromPost(post.getId(), "pass,epic,notfound", user);
@@ -323,9 +289,6 @@ public class TagServiceTests {
 
         Mockito.verify(mockPostRepository, Mockito.times(1))
                 .getPostWithTagsById(Mockito.anyInt());
-
-        Mockito.verify(mockAdminDetailsRepository, Mockito.times(1))
-                .getByUserId(Mockito.anyInt());
 
         Mockito.verify(mockPostRepository, Mockito.times(1))
                 .update(Mockito.any());

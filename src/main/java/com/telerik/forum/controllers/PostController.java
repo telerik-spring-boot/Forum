@@ -88,17 +88,16 @@ public class PostController {
             authenticationHelper.tryGetUser(headers);
 
             return postMapper.postToPostDisplayDTO(postService.getByIdWithCommentsAndLikesAndTags(postId));
-
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }catch (UnauthorizedOperationException e) {
+        } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
     }
 
     @PostMapping
     public PostDisplayDTO createPost(@RequestHeader HttpHeaders headers,
-                                     @RequestBody PostCreateDTO userInput) {
+                                     @Valid @RequestBody PostCreateDTO userInput) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
 
@@ -106,7 +105,6 @@ public class PostController {
             postService.createPost(post, userRequest);
 
             return postMapper.postToPostDisplayDTO(post);
-
         } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
@@ -115,7 +113,7 @@ public class PostController {
     @PostMapping("/{postId}/comments")
     public PostDisplayDTO addCommentToPost(@RequestHeader HttpHeaders headers,
                                            @PathVariable int postId,
-                                           @RequestBody CommentCreateDTO userInput) {
+                                           @Valid @RequestBody CommentCreateDTO userInput) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
 
@@ -150,7 +148,7 @@ public class PostController {
     @PutMapping("/{postId}")
     public PostDisplayDTO updatePost(@RequestHeader HttpHeaders headers,
                                      @PathVariable int postId,
-                                     @RequestBody PostCreateDTO userInput) {
+                                     @Valid @RequestBody PostCreateDTO userInput) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
 
@@ -200,7 +198,7 @@ public class PostController {
     @PutMapping("/{postId}/tags")
     public PostDisplayDTO UpdateTagsToPost(@RequestHeader HttpHeaders headers,
                                            @PathVariable int postId,
-                                           @RequestBody TagUpdateDTO userInput) {
+                                           @Valid @RequestBody TagUpdateDTO userInput) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
 
@@ -218,7 +216,7 @@ public class PostController {
     public PostDisplayDTO updateComment(@RequestHeader HttpHeaders headers,
                                         @PathVariable int postId,
                                         @PathVariable int commentId,
-                                        @RequestBody CommentCreateDTO userInput) {
+                                        @Valid @RequestBody CommentCreateDTO userInput) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
 
@@ -230,6 +228,8 @@ public class PostController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (InvalidUserInputException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
@@ -250,7 +250,7 @@ public class PostController {
     @DeleteMapping("/{postId}/tags")
     public PostDisplayDTO removeTagsFromPost(@RequestHeader HttpHeaders headers,
                                              @PathVariable int postId,
-                                             @RequestBody TagCreateAndDeleteDTO userInput) {
+                                             @Valid @RequestBody TagCreateAndDeleteDTO userInput) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
 
@@ -267,7 +267,7 @@ public class PostController {
     @DeleteMapping("/{postId}/comments/{commentId}")
     public PostDisplayDTO deleteComment(@RequestHeader HttpHeaders headers,
                                         @PathVariable int postId,
-                                        @PathVariable int commentId) {
+                                        @Valid @PathVariable int commentId) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
 
@@ -278,7 +278,10 @@ public class PostController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (InvalidUserInputException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
+
     }
 
 }

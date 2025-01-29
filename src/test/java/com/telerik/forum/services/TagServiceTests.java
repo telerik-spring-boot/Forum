@@ -10,6 +10,7 @@ import com.telerik.forum.models.user.User;
 import com.telerik.forum.repositories.admin.AdminDetailsRepository;
 import com.telerik.forum.repositories.post.PostRepository;
 import com.telerik.forum.repositories.tag.TagRepository;
+import com.telerik.forum.services.tag.TagService;
 import com.telerik.forum.services.tag.TagServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static com.telerik.forum.DummyObjectProvider.*;
@@ -35,6 +38,9 @@ public class TagServiceTests {
 
     @Mock
     private AdminDetailsRepository mockAdminDetailsRepository;
+
+    @Mock
+    private TagService selfProxy;
 
     @InjectMocks
     private TagServiceImpl tagService;
@@ -292,6 +298,47 @@ public class TagServiceTests {
 
         Mockito.verify(mockPostRepository, Mockito.times(1))
                 .update(Mockito.any());
+
+    }
+
+    @Test
+    public void deleteOrphanedTags_Should_DeleteTags_When_Called(){
+        // Arrange
+        List<Tag> tags = new ArrayList<>();
+        Tag tag = new Tag(1, "pass");
+        tags.add(tag);
+
+        Mockito.when(mockTagRepository.getOrphanedTags())
+                .thenReturn(tags);
+
+        Mockito.doAnswer((invocation) -> tags.remove(tag)).when(mockTagRepository).deleteTag(tag);
+
+        // Act, Assert
+        Assertions.assertDoesNotThrow(() -> tagService.deleteOrphanedTags());
+
+        Mockito.verify(mockTagRepository, Mockito.times(1))
+                .getOrphanedTags();
+
+        Mockito.verify(mockTagRepository, Mockito.times(1))
+                .deleteTag(tag);
+
+    }
+
+    @Test
+    public void scheduledDeleteOrphanedTags_Should_DeleteTags_When_TimeComes(){
+        // Arrange
+        List<Tag> tags = new ArrayList<>();
+        Tag tag = new Tag(1, "pass");
+        tags.add(tag);
+
+        Mockito.doAnswer((invocation) -> tags.remove(tag)).when(selfProxy).deleteOrphanedTags();
+
+        //Act
+        tagService.scheduledDeleteOrphanedTags();
+
+        // Assert
+        Mockito.verify(selfProxy, Mockito.times(1))
+                .deleteOrphanedTags();
 
     }
 

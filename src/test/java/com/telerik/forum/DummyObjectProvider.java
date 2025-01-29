@@ -1,5 +1,7 @@
 package com.telerik.forum;
 
+import com.telerik.forum.models.dtos.postDTOs.PostCreateDTO;
+import com.telerik.forum.models.dtos.tagDTOs.TagCreateAndDeleteDTO;
 import com.telerik.forum.models.post.Comment;
 import com.telerik.forum.models.post.Like;
 import com.telerik.forum.models.post.Post;
@@ -83,4 +85,14 @@ public class DummyObjectProvider {
 
         return like;
     }
+
+    public static PostCreateDTO createMockPostCreateDTO(){
+        PostCreateDTO postCreateDTO = new PostCreateDTO();
+
+        postCreateDTO.setTitle("This is the title of a mock post.");
+        postCreateDTO.setContent("This is the content of a mock post that is passing the validation requirements.");
+
+        return postCreateDTO;
+    }
+
 }

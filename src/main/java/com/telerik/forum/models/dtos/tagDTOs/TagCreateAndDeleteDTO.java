@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 public class TagCreateAndDeleteDTO {
 
     @NotBlank
-    @Size(min = 4, max = 200, message = "Post tags must be between 4 and 200 symbols.")
+    @Size(min =1, max = 200, message = "Post tags must be between 4 and 200 symbols.")
     @Pattern(regexp = "^\\w+(,\\w+)*$", message = "The input must be a single word or words separated by commas without spaces.")
     private String tags;
 

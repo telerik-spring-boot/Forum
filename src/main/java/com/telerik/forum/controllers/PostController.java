@@ -19,6 +19,7 @@ import com.telerik.forum.services.comment.CommentService;
 import com.telerik.forum.services.like.LikeService;
 import com.telerik.forum.services.post.PostService;
 import com.telerik.forum.services.tag.TagService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -127,7 +128,7 @@ public class PostController {
     @PostMapping("/{postId}/tags")
     public PostDisplayDTO addTagsToPost(@RequestHeader HttpHeaders headers,
                                         @PathVariable int postId,
-                                        @RequestBody TagCreateAndDeleteDTO userInput) {
+                                        @Valid @RequestBody TagCreateAndDeleteDTO userInput) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
             tagService.addTagToPost(postId, userInput.getTags(), userRequest);

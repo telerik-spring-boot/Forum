@@ -1,5 +1,6 @@
 package com.telerik.forum.configurations;
 
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.models.*;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
@@ -12,13 +13,21 @@ import io.swagger.v3.oas.models.parameters.RequestBody;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.responses.ApiResponses;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
-import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import io.swagger.v3.oas.annotations.security.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+//@SecurityScheme(
+//
+//        name = "bearerAuth",
+//        scheme = "bearer",
+//        type = SecuritySchemeType.HTTP,
+//        bearerFormat = "JWT"
+//
+//)
 @Configuration
 public class SwaggerConfiguration {
 
@@ -40,11 +49,17 @@ public class SwaggerConfiguration {
 
     private Components getComponentWithAllSchemas() {
         return new Components()
-                .addSecuritySchemes("basicAuth", new SecurityScheme()
-                        .type(SecurityScheme.Type.HTTP)
+                .addSecuritySchemes("basicAuth", new io.swagger.v3.oas.models.security.SecurityScheme()
+                        .type(io.swagger.v3.oas.models.security.SecurityScheme.Type.HTTP)
                         .scheme("basic")
                         .description("Enter username and password for basic authentication.")
                 )
+                .addSecuritySchemes("bearerAuth", new io.swagger.v3.oas.models.security.SecurityScheme()
+                        .type(io.swagger.v3.oas.models.security.SecurityScheme.Type.HTTP)
+                        .scheme("bearer")
+                        .bearerFormat("JWT")
+                        .description("Enter bearer token for bearer authentication."))
+
                 .addSchemas("UserDisplayDTO", getUserDisplayeSchema().description("The user will be displayed in the following format.")
                 )
                 .addSchemas("UserCreateDTO", getUserBaseSchema()
@@ -338,6 +353,7 @@ public class SwaggerConfiguration {
                                         .content(getSampleContent("AdminDisplayDTO"))
                                 )
                         )
+                        .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
                 )
         );
 

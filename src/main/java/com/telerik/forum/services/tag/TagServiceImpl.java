@@ -13,10 +13,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.telerik.forum.services.post.PostServiceImpl.BLOCKED_ACCOUNT_MESSAGE;
@@ -30,15 +27,15 @@ public class TagServiceImpl implements TagService {
     private final PostRepository postRepository;
     private final AdminDetailsRepository adminDetailsRepository;
 
-    private final TagService selfProxy;
+    //private final TagService selfProxy;
 
     @Autowired
     public TagServiceImpl(TagRepository tagRepository, PostRepository postRepository,
-                          AdminDetailsRepository adminDetailsRepository, TagService selfProxy) {
+                          AdminDetailsRepository adminDetailsRepository) {
         this.tagRepository = tagRepository;
         this.postRepository = postRepository;
         this.adminDetailsRepository = adminDetailsRepository;
-        this.selfProxy = selfProxy;
+        //this.selfProxy = selfProxy;
     }
 
     @Override
@@ -154,18 +151,18 @@ public class TagServiceImpl implements TagService {
         post.getTags().removeAll(tagsToRemove);
     }
 
-    @Transactional
     public void deleteOrphanedTags() {
         List<Tag> orphanedTags = tagRepository.getOrphanedTags();
 
-        for (Tag tag : orphanedTags) {
-            tagRepository.deleteTag(tag);
-        }
+        List<Tag> orphanedTagsCopy = new ArrayList<>(orphanedTags);
+
+        orphanedTagsCopy.forEach(tagRepository::deleteTag);
+
     }
 
     @Scheduled(fixedRate = 86400000) // 24 hours
     public void scheduledDeleteOrphanedTags() {
-        selfProxy.deleteOrphanedTags();
+        this.deleteOrphanedTags();
     }
 
 }

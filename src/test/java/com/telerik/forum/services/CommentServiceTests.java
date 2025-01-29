@@ -1,6 +1,7 @@
 package com.telerik.forum.services;
 
 import com.telerik.forum.exceptions.EntityNotFoundException;
+import com.telerik.forum.exceptions.InvalidUserInputException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.models.post.Comment;
 import com.telerik.forum.models.post.Post;
@@ -109,6 +110,19 @@ public class CommentServiceTests {
     }
 
     @Test
+    public void addComment_Should_Throw_When_UserIsBlocked(){
+        // Arrange
+        Post post = createMockPost();
+        Comment comment = createMockComment();
+        User user = createMockUser();
+
+        user.setBlocked(true);
+
+        // Act, Assert
+        Assertions.assertThrows(UnauthorizedOperationException.class, () -> commentService.addComment(post.getId(), comment, user));
+    }
+
+    @Test
     public void updateComment_Should_UpdateComment_When_CommentExistsAndUserIsCreatorAndNotBlocked(){
         // Arrange
         User user = createMockUser();
@@ -120,9 +134,6 @@ public class CommentServiceTests {
 
         user.setComments(List.of(comment));
         post.setComments(Set.of(comment));
-
-        Mockito.when(mockCommentRepository.getById(comment.getId()))
-                .thenReturn(comment);
 
         // Act, Assert
         Assertions.assertDoesNotThrow(() -> commentService.updateComment(comment, user));
@@ -143,9 +154,6 @@ public class CommentServiceTests {
         comment.setUser(createMockUser());
         comment.setPost(post);
         post.setComments(Set.of(comment));
-
-        Mockito.when(mockCommentRepository.getById(comment.getId()))
-                .thenReturn(comment);
 
         // Act, Assert
         Assertions.assertThrows(UnauthorizedOperationException.class, () -> commentService.updateComment(comment, user));
@@ -168,9 +176,6 @@ public class CommentServiceTests {
 
         user.setComments(List.of(comment));
         post.setComments(Set.of(comment));
-
-        Mockito.when(mockCommentRepository.getById(comment.getId()))
-                .thenReturn(comment);
 
         // Act, Assert
         Assertions.assertThrows(UnauthorizedOperationException.class, () -> commentService.updateComment(comment, user));
@@ -197,9 +202,6 @@ public class CommentServiceTests {
         Mockito.when(mockCommentRepository.getById(comment.getId()))
                 .thenReturn(comment);
 
-        Mockito.when(mockPostRepository.getPostWithCommentsById(Mockito.anyInt()))
-                .thenReturn(post);
-
         Mockito.when(mockAdminDetailsRepository.getByUserId(Mockito.anyInt()))
                 .thenReturn(createMockAdminDetails());
 
@@ -207,9 +209,6 @@ public class CommentServiceTests {
         commentService.deleteComment(post.getId(), 1, user);
 
         // Assert
-        Mockito.verify(mockPostRepository, Mockito.times(1))
-                .getPostWithCommentsById(Mockito.anyInt());
-
         Mockito.verify(mockAdminDetailsRepository, Mockito.times(1))
                 .getByUserId(Mockito.anyInt());
 
@@ -219,33 +218,34 @@ public class CommentServiceTests {
     }
 
     @Test
-    public void deleteComment_Should_Throw_When_PostDoesNotExist(){
+    public void deleteComment_Should_Throw_When_CommentDoesNotExist(){
         // Arrange
 
-        Mockito.when(mockPostRepository.getPostWithCommentsById(Mockito.anyInt()))
+        Mockito.when(mockCommentRepository.getById(Mockito.anyInt()))
                 .thenReturn(null);
 
         // Act, Assert
         Assertions.assertThrows(EntityNotFoundException.class, () -> commentService.deleteComment(1, 1, createMockUser()));
 
-        Mockito.verify(mockPostRepository, Mockito.times(1))
-                .getPostWithCommentsById(Mockito.anyInt());
-
     }
 
     @Test
-    public void deleteComment_Should_Throw_When_CommentNumberOutOfBounds(){
+    public void deleteComment_Should_Throw_When_CommentIsNotACommentOfThePostProvided(){
         // Arrange
         Post post = createMockPost();
+        Comment comment = createMockComment();
+        comment.setPost(createMockPost());
+        post.setId(2);
 
-        Mockito.when(mockPostRepository.getPostWithCommentsById(Mockito.anyInt()))
-                .thenReturn(post);
+
+        Mockito.when(mockCommentRepository.getById(Mockito.anyInt()))
+                .thenReturn(comment);
 
         // Act, Assert
-        Assertions.assertThrows(EntityNotFoundException.class, () -> commentService.deleteComment(post.getId(), 2, createMockUser()));
+        Assertions.assertThrows(InvalidUserInputException.class, () -> commentService.deleteComment(post.getId(), 1, createMockUser()));
 
-        Mockito.verify(mockPostRepository, Mockito.times(1))
-                .getPostWithCommentsById(Mockito.anyInt());
+        Mockito.verify(mockCommentRepository, Mockito.times(1))
+                .getById(Mockito.anyInt());
 
     }
 
@@ -266,18 +266,12 @@ public class CommentServiceTests {
         Mockito.when(mockCommentRepository.getById(comment.getId()))
                 .thenReturn(comment);
 
-        Mockito.when(mockPostRepository.getPostWithCommentsById(Mockito.anyInt()))
-                .thenReturn(post);
-
         Mockito.when(mockAdminDetailsRepository.getByUserId(Mockito.anyInt()))
                 .thenReturn(null);
 
         // Act, Assert
 
         Assertions.assertThrows(UnauthorizedOperationException.class, () -> commentService.deleteComment(post.getId(), 1, user));
-
-        Mockito.verify(mockPostRepository, Mockito.times(1))
-                .getPostWithCommentsById(Mockito.anyInt());
 
         Mockito.verify(mockAdminDetailsRepository, Mockito.times(1))
                 .getByUserId(Mockito.anyInt());
@@ -304,9 +298,6 @@ public class CommentServiceTests {
         Mockito.when(mockCommentRepository.getById(comment.getId()))
                 .thenReturn(comment);
 
-        Mockito.when(mockPostRepository.getPostWithCommentsById(Mockito.anyInt()))
-                .thenReturn(post);
-
         Mockito.when(mockAdminDetailsRepository.getByUserId(Mockito.anyInt()))
                 .thenReturn(null);
 
@@ -314,9 +305,6 @@ public class CommentServiceTests {
         // Act, Assert
 
         Assertions.assertThrows(UnauthorizedOperationException.class, () -> commentService.deleteComment(post.getId(), 1, user));
-
-        Mockito.verify(mockPostRepository, Mockito.times(1))
-                .getPostWithCommentsById(Mockito.anyInt());
 
         Mockito.verify(mockAdminDetailsRepository, Mockito.times(1))
                 .getByUserId(Mockito.anyInt());

@@ -9,7 +9,9 @@ import com.telerik.forum.repositories.admin.AdminDetailsRepository;
 import com.telerik.forum.repositories.tag.TagRepository;
 import com.telerik.forum.repositories.post.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -23,16 +25,20 @@ import static com.telerik.forum.services.post.PostServiceImpl.BLOCKED_ACCOUNT_ME
 public class TagServiceImpl implements TagService {
 
     private static final String UNAUTHORIZED_MESSAGE = "You are not allowed to edit this post's tags.";
+
     private final TagRepository tagRepository;
     private final PostRepository postRepository;
     private final AdminDetailsRepository adminDetailsRepository;
 
+    private final TagService selfProxy;
+
     @Autowired
     public TagServiceImpl(TagRepository tagRepository, PostRepository postRepository,
-                          AdminDetailsRepository adminDetailsRepository) {
+                          AdminDetailsRepository adminDetailsRepository, TagService selfProxy) {
         this.tagRepository = tagRepository;
         this.postRepository = postRepository;
         this.adminDetailsRepository = adminDetailsRepository;
+        this.selfProxy = selfProxy;
     }
 
     @Override
@@ -148,5 +154,18 @@ public class TagServiceImpl implements TagService {
         post.getTags().removeAll(tagsToRemove);
     }
 
+    @Transactional
+    public void deleteOrphanedTags() {
+        List<Tag> orphanedTags = tagRepository.getOrphanedTags();
+
+        for (Tag tag : orphanedTags) {
+            tagRepository.deleteTag(tag);
+        }
+    }
+
+    @Scheduled(fixedRate = 86400000) // 24 hours
+    public void scheduledDeleteOrphanedTags() {
+        selfProxy.deleteOrphanedTags();
+    }
 
 }

@@ -7,6 +7,8 @@ import java.util.List;
 public interface TagRepository {
     Tag findByName(String name);
 
+    List<Tag> getOrphanedTags();
+
     List<Tag> getAllTags();
 
     void addTag(Tag tag);

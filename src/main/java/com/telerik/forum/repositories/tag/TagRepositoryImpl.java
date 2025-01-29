@@ -30,6 +30,17 @@ public class TagRepositoryImpl implements TagRepository {
     }
 
     @Override
+    public List<Tag> getOrphanedTags() {
+        try (Session session = sessionFactory.openSession()) {
+            Query<Tag> query = session.createQuery(
+                    "FROM Tag t WHERE t.id NOT IN (SELECT DISTINCT pt.id FROM Post p JOIN p.tags pt)",
+                    Tag.class
+            );
+            return query.list();
+        }
+    }
+
+    @Override
     public List<Tag> getAllTags() {
         try(Session session = sessionFactory.openSession()) {
             Query<Tag> query = session.createQuery("from Tag", Tag.class);

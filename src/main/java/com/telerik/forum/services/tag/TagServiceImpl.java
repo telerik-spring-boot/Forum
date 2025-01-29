@@ -1,7 +1,6 @@
 package com.telerik.forum.services.tag;
 
 import com.telerik.forum.exceptions.EntityNotFoundException;
-import com.telerik.forum.exceptions.InvalidUserInputException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.models.post.Tag;
 import com.telerik.forum.models.post.Post;
@@ -13,7 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.telerik.forum.services.post.PostServiceImpl.BLOCKED_ACCOUNT_MESSAGE;
 
@@ -21,7 +23,6 @@ import static com.telerik.forum.services.post.PostServiceImpl.BLOCKED_ACCOUNT_ME
 public class TagServiceImpl implements TagService {
 
     private static final String UNAUTHORIZED_MESSAGE = "You are not allowed to edit this post's tags.";
-    private static final String NON_MATCHING_OLD_AND_NEW_TAGS = "You have not entered the same number of old and new tags.";
     private final TagRepository tagRepository;
     private final PostRepository postRepository;
     private final AdminDetailsRepository adminDetailsRepository;
@@ -61,30 +62,17 @@ public class TagServiceImpl implements TagService {
 
         if(post == null){
             throw new EntityNotFoundException("Post", "id", postId);
-        }//added
+        }
 
         checkPermissions(post, user);
 
-        // bug found try to test it, I made the test to pass but there is a corner case here
         List<String> oldTagList = extractTags(oldTags);
         List<String> newTagList = extractTags(newTags);
 
-        if (oldTagList.size() != newTagList.size()) {
-            throw new InvalidUserInputException(NON_MATCHING_OLD_AND_NEW_TAGS);
-        }
+        removeTagFromPostHelper(oldTagList, post);
 
-        for (int i = 0; i < oldTagList.size(); i++) {
-
-            // this is extremely inefficient -> you already have the tags in the post
-            // think of a way to work with the tags from the post
-            Tag oldTag = tagRepository.findByName(oldTagList.get(i));
-            // plus you are using with raw user input, it might not exist in the database
-
-
-            if (post.getTags().remove(oldTag)) {
-                addTagToPostHelper(newTagList.get(i), post);
-            }
-
+        for (String tagName : newTagList) {
+            addTagToPostHelper(tagName, post);
         }
 
         postRepository.update(post);
@@ -97,19 +85,13 @@ public class TagServiceImpl implements TagService {
 
         if(post == null){
             throw new EntityNotFoundException("Post", "id", postId);
-        }// added
+        }
 
         checkPermissions(post, user);
 
         List<String> tagList = extractTags(tags);
 
-        for (String tagToRemove : tagList) {
-
-            // this is also inefficient, you have all the tags loaded
-            // you are going to the database for each delete
-            // think of a way to work with the tags already loaded in the post
-            removeTagFromPostHelper(tagToRemove, post);
-        }
+        removeTagFromPostHelper(tagList, post);
 
         postRepository.update(post);
     }
@@ -132,6 +114,7 @@ public class TagServiceImpl implements TagService {
     private static List<String> extractTags(String tags) {
         return Arrays.stream(tags.split(","))
                 .map(String::trim)
+                .filter(tag -> !tag.isEmpty())
                 .map(String::toLowerCase)
                 .toList();
     }
@@ -155,13 +138,14 @@ public class TagServiceImpl implements TagService {
         }
     }
 
-    private void removeTagFromPostHelper(String tagToRemove, Post post) {
+    private static void removeTagFromPostHelper(List<String> tagNamesToRemove, Post post) {
+        Set<String> tagNamesToRemoveSet = new HashSet<>(tagNamesToRemove);
 
-        Tag tag = tagRepository.findByName(tagToRemove);
+        Set<Tag> tagsToRemove = post.getTags().stream()
+                .filter(tag -> tagNamesToRemoveSet.contains(tag.getName()))
+                .collect(Collectors.toSet());
 
-        if (tag != null) {
-            post.getTags().remove(tag);
-        }
+        post.getTags().removeAll(tagsToRemove);
     }
 
 

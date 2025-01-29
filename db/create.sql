@@ -18,7 +18,7 @@ CREATE TABLE forum_schema.users
     last_name     VARCHAR(50)          NOT NULL,
     email_address VARCHAR(100)         NOT NULL UNIQUE,
     username      VARCHAR(50)          NOT NULL,
-    password      VARCHAR(50)          NOT NULL,
+    password      VARCHAR(70)          NOT NULL,
     blocked       TINYINT(1) DEFAULT 0 NOT NULL
 );
 

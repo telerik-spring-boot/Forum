@@ -6,6 +6,7 @@ import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.InvalidSortParameterException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.helpers.AuthenticationHelper;
+import com.telerik.forum.helpers.LoginHelper;
 import com.telerik.forum.helpers.UserMapper;
 import com.telerik.forum.models.user.User;
 import com.telerik.forum.models.dtos.userDTOs.*;
@@ -26,14 +27,16 @@ public class UserController {
     private final UserService userService;
     private final AuthenticationHelper authenticationHelper;
     private final UserMapper userMapper;
+    private final LoginHelper loginHelper;
 
     @Autowired
-    public UserController(UserService userService, AuthenticationHelper authenticationHelper, UserMapper userMapper) {
+    public UserController(UserService userService, AuthenticationHelper authenticationHelper,
+                          UserMapper userMapper, LoginHelper loginHelper) {
         this.userService = userService;
         this.authenticationHelper = authenticationHelper;
         this.userMapper = userMapper;
+        this.loginHelper = loginHelper;
     }
-
 
 
     @GetMapping("/{id}")
@@ -63,20 +66,20 @@ public class UserController {
             authenticationHelper.tryGetUser(headers);
             String[] tagArray = null;
 
-            if(tags != null){
+            if (tags != null) {
                 tagArray = tags.split(",");
             }
 
             FilterPostOptions options = new FilterPostOptions(null, title, content, tagArray, minLikes, maxLikes, sortBy, sortOrder);
 
-            User userEntity =  userService.getByIdWithPosts(id, options);
+            User userEntity = userService.getByIdWithPosts(id, options);
 
             return userMapper.userToUserPostsDisplayDTO(userEntity);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        }catch(InvalidSortParameterException e){
+        } catch (InvalidSortParameterException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
@@ -95,7 +98,7 @@ public class UserController {
             return userMapper.userToUserCommentsDisplayDTO(userEntity);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch (UnauthorizedOperationException e){
+        } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
     }
@@ -114,6 +117,17 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+    @PostMapping("/login")
+    public String loginUser(@Valid @RequestBody UserLoginDTO userInput) {
+        try {
+            return loginHelper.login(userInput);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (UnauthorizedOperationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
     }
 

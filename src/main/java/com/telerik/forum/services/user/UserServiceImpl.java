@@ -38,7 +38,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
     @Override
     public User getById(int id) {
         User user = userRepository.getById(id);
@@ -73,7 +72,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public User getByIdWithComments(int id, FilterCommentOptions options){
+    public User getByIdWithComments(int id, FilterCommentOptions options) {
         User user = userRepository.getById(id);
 
         options.getSortBy().ifPresent(SortingHelper::validateSortByFieldComment);
@@ -84,7 +83,7 @@ public class UserServiceImpl implements UserService {
             throw new EntityNotFoundException("User", "id", id);
         }
 
-        List<Comment> comments = commentRepository.getByUserId(id,  options);
+        List<Comment> comments = commentRepository.getByUserId(id, options);
 
         user.setComments(comments);
 
@@ -126,10 +125,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void create(User userInput) {
-        boolean userAlreadyExists = userRepository.getByEmail(userInput.getEmailAddress()) != null;
+        boolean emailAlreadyExists = userRepository.getByEmail(userInput.getEmailAddress()) != null;
+        boolean usernameAlreadyExists = userRepository.getByUsername(userInput.getUsername()) != null;
 
-        if (userAlreadyExists) {
+        if (emailAlreadyExists) {
             throw new DuplicateEntityException("User", "email", userInput.getEmailAddress());
+        }
+
+        if (usernameAlreadyExists) {
+            throw new DuplicateEntityException("User", "username", userInput.getUsername());
         }
 
         userInput.addRole(roleRepository.findByName("USER"));
@@ -175,25 +179,25 @@ public class UserServiceImpl implements UserService {
     private void filterByLikes(List<Post> posts, FilterPostOptions options) {
         List<Post> postsToDelete = new ArrayList<>();
 
-        for(Post post : posts){
+        for (Post post : posts) {
             int totalLikes = post.getLikes().stream()
                     .map(Like::getReaction)
                     .mapToInt(Integer::intValue)
                     .sum();
 
             options.getMinLikes().ifPresent(minLikes -> {
-                if(totalLikes < minLikes){
+                if (totalLikes < minLikes) {
                     postsToDelete.add(post);
                 }
             });
 
             options.getMaxLikes().ifPresent(maxLikes -> {
-                if(totalLikes > maxLikes){
+                if (totalLikes > maxLikes) {
                     postsToDelete.add(post);
                 }
             });
         }
-        if(!postsToDelete.isEmpty()){
+        if (!postsToDelete.isEmpty()) {
             posts.removeAll(postsToDelete);
         }
     }

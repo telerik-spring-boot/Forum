@@ -20,7 +20,7 @@ import static com.telerik.forum.repositories.utilities.SortingHelper.sortingHelp
 
 
 @Repository
-public class UserRepositoryImpl implements UserRepository {
+public class    UserRepositoryImpl implements UserRepository {
 
     private final SessionFactory sessionFactory;
 

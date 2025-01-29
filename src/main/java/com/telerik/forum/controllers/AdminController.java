@@ -40,10 +40,17 @@ public class AdminController {
     }
 
     @GetMapping
-    public List<AdminDisplayDTO> getAllAdmins() {
-        return adminService.getAll().stream()
-                .map(userMapper::AdminToAdminDisplayDTO)
-                .toList();
+    public List<AdminDisplayDTO> getAllAdmins(@RequestHeader HttpHeaders headers) {
+        try {
+            authenticationHelper.tryGetUser(headers);
+            // to be checked for admin rights
+
+            return adminService.getAll().stream()
+                    .map(userMapper::AdminToAdminDisplayDTO)
+                    .toList();
+        } catch (UnauthorizedOperationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        }
     }
 
     @GetMapping("/users")
@@ -71,11 +78,15 @@ public class AdminController {
     }
 
     @GetMapping("/{userId}")
-    public AdminDisplayDTO getAdminByUserId(@PathVariable int userId) {
+    public AdminDisplayDTO getAdminByUserId(@RequestHeader HttpHeaders header, @PathVariable int userId) {
         try {
+            authenticationHelper.tryGetUser(header);
+
             return userMapper.AdminToAdminDisplayDTO(adminService.getByUserId(userId));
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (UnauthorizedOperationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
     }
 

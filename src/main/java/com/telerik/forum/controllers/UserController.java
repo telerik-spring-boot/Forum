@@ -37,11 +37,15 @@ public class UserController {
 
 
     @GetMapping("/{id}")
-    public UserDisplayDTO getUserById(@PathVariable int id) {
+    public UserDisplayDTO getUserById(@RequestHeader HttpHeaders headers, @PathVariable int id) {
         try {
+            authenticationHelper.tryGetUser(headers);
+
             return userMapper.userToUserDisplayDTO(userService.getById(id));
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (UnauthorizedOperationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
     }
 

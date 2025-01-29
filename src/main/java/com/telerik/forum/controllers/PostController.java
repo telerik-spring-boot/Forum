@@ -19,6 +19,7 @@ import com.telerik.forum.services.comment.CommentService;
 import com.telerik.forum.services.like.LikeService;
 import com.telerik.forum.services.post.PostService;
 import com.telerik.forum.services.tag.TagService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -69,11 +70,10 @@ public class PostController {
 
             FilterPostOptions options = new FilterPostOptions(username, title, content, tagArray,
                     minLikes, maxLikes, sortBy, sortOrder);
+
             return postService.getAllPostsWithFilters(options).stream()
                     .map(postMapper::postToPostDisplayDTO)
                     .toList();
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (InvalidSortParameterException e) {
@@ -86,6 +86,7 @@ public class PostController {
                                       @PathVariable int postId) {
         try {
             authenticationHelper.tryGetUser(headers);
+
             return postMapper.postToPostDisplayDTO(postService.getByIdWithCommentsAndLikesAndTags(postId));
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
@@ -96,11 +97,13 @@ public class PostController {
 
     @PostMapping
     public PostDisplayDTO createPost(@RequestHeader HttpHeaders headers,
-                                     @RequestBody PostCreateDTO userInput) {
+                                     @Valid @RequestBody PostCreateDTO userInput) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
+
             Post post = postMapper.dtoToPost(userInput);
             postService.createPost(post, userRequest);
+
             return postMapper.postToPostDisplayDTO(post);
 
         } catch (UnauthorizedOperationException e) {
@@ -111,11 +114,13 @@ public class PostController {
     @PostMapping("/{postId}/comments")
     public PostDisplayDTO addCommentToPost(@RequestHeader HttpHeaders headers,
                                            @PathVariable int postId,
-                                           @RequestBody CommentCreateDTO userInput) {
+                                           @Valid @RequestBody CommentCreateDTO userInput) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
+
             Comment comment = postMapper.dtoToComment(userInput);
             commentService.addComment(postId, comment, userRequest);
+
             return postMapper.postToPostDisplayDTO(postService.getByIdWithCommentsAndLikesAndTags(postId));
         } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
@@ -127,10 +132,12 @@ public class PostController {
     @PostMapping("/{postId}/tags")
     public PostDisplayDTO addTagsToPost(@RequestHeader HttpHeaders headers,
                                         @PathVariable int postId,
-                                        @RequestBody TagCreateAndDeleteDTO userInput) {
+                                        @Valid @RequestBody TagCreateAndDeleteDTO userInput) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
+
             tagService.addTagToPost(postId, userInput.getTags(), userRequest);
+
             return postMapper.postToPostDisplayDTO(postService.getByIdWithCommentsAndLikesAndTags(postId));
         } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
@@ -142,11 +149,13 @@ public class PostController {
     @PutMapping("/{postId}")
     public PostDisplayDTO updatePost(@RequestHeader HttpHeaders headers,
                                      @PathVariable int postId,
-                                     @RequestBody PostCreateDTO userInput) {
+                                     @Valid @RequestBody PostCreateDTO userInput) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
+
             Post post = postMapper.dtoToPost(postId, userInput);
             postService.updatePost(post, userRequest);
+
             return postMapper.postToPostDisplayDTO(post);
         } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
@@ -160,7 +169,9 @@ public class PostController {
                                    @PathVariable int postId) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
+
             likeService.likePost(postId, userRequest);
+
             return postMapper.postToPostDisplayDTO(postService.getByIdWithCommentsAndLikesAndTags(postId));
         } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
@@ -174,7 +185,9 @@ public class PostController {
                                       @PathVariable int postId) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
+
             likeService.dislikePost(postId, userRequest);
+
             return postMapper.postToPostDisplayDTO(postService.getByIdWithCommentsAndLikesAndTags(postId));
         } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
@@ -184,19 +197,19 @@ public class PostController {
     }
 
     @PutMapping("/{postId}/tags")
-    public PostDisplayDTO UpdateTagsToPost(@RequestHeader HttpHeaders headers,
+    public PostDisplayDTO updateTagsToPost(@RequestHeader HttpHeaders headers,
                                            @PathVariable int postId,
-                                           @RequestBody TagUpdateDTO userInput) {
+                                           @Valid @RequestBody TagUpdateDTO userInput) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
+
             tagService.updateTagFromPost(postId, userInput.getOldTags(), userInput.getNewTags(), userRequest);
+
             return postMapper.postToPostDisplayDTO(postService.getByIdWithCommentsAndLikesAndTags(postId));
         } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch (InvalidUserInputException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
@@ -204,11 +217,13 @@ public class PostController {
     public PostDisplayDTO updateComment(@RequestHeader HttpHeaders headers,
                                         @PathVariable int postId,
                                         @PathVariable int commentId,
-                                        @RequestBody CommentCreateDTO userInput) {
+                                        @Valid @RequestBody CommentCreateDTO userInput) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
+
             Comment comment = postMapper.dtoToComment(commentId, userInput, postId);
             commentService.updateComment(comment, userRequest);
+
             return postMapper.postToPostDisplayDTO(postService.getByIdWithCommentsAndLikesAndTags(postId));
         } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
@@ -222,6 +237,7 @@ public class PostController {
                            @PathVariable int postId) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
+
             postService.deletePost(postId, userRequest);
         } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
@@ -233,10 +249,12 @@ public class PostController {
     @DeleteMapping("/{postId}/tags")
     public PostDisplayDTO removeTagsFromPost(@RequestHeader HttpHeaders headers,
                                              @PathVariable int postId,
-                                             @RequestBody TagCreateAndDeleteDTO userInput) {
+                                             @Valid @RequestBody TagCreateAndDeleteDTO userInput) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
+
             tagService.deleteTagFromPost(postId, userInput.getTags(), userRequest);
+
             return postMapper.postToPostDisplayDTO(postService.getByIdWithCommentsAndLikesAndTags(postId));
         } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
@@ -251,7 +269,9 @@ public class PostController {
                                         @PathVariable int commentId) {
         try {
             User userRequest = authenticationHelper.tryGetUser(headers);
+
             commentService.deleteComment(postId, commentId, userRequest);
+
             return postMapper.postToPostDisplayDTO(postService.getByIdWithCommentsAndLikesAndTags(postId));
         } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());

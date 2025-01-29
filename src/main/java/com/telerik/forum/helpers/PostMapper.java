@@ -1,6 +1,6 @@
 package com.telerik.forum.helpers;
 
-import com.telerik.forum.exceptions.EntityNotFoundException;
+import com.telerik.forum.exceptions.InvalidUserInputException;
 import com.telerik.forum.models.post.Comment;
 import com.telerik.forum.models.post.Like;
 import com.telerik.forum.models.post.Post;
@@ -9,6 +9,7 @@ import com.telerik.forum.models.dtos.commentDTOs.CommentCreateDTO;
 import com.telerik.forum.models.dtos.commentDTOs.CommentDisplayDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostCreateDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO;
+import com.telerik.forum.services.comment.CommentService;
 import com.telerik.forum.services.post.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,15 +17,19 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.telerik.forum.services.comment.CommentServiceImpl.INVALID_COMMENT_ID_FOR_POST_MESSAGE;
+
 @Component
 public class PostMapper {
 
     private final PostService postService;
+    private final CommentService commentService;
 
 
     @Autowired
-    public PostMapper(PostService postService) {
+    public PostMapper(PostService postService, CommentService commentService) {
         this.postService = postService;
+        this.commentService = commentService;
     }
 
     public PostDisplayDTO postToPostDisplayDTO(Post post) {
@@ -99,14 +104,12 @@ public class PostMapper {
     }
 
     public Comment dtoToComment(int commentId, CommentCreateDTO dto, int postId) {
-        Post post = postService.getByIdWithComments(postId);
-        int commentSize = post.getComments().size();
-        if (commentId > commentSize) {
-            throw new EntityNotFoundException("Comment", "id", commentId);
+        Comment commentToUpdate = commentService.getComment(commentId);
+
+        if (commentToUpdate.getPost().getId() != postId) {
+            throw new InvalidUserInputException(String.format(INVALID_COMMENT_ID_FOR_POST_MESSAGE,
+                    commentId, postId));
         }
-        //Comment commentToUpdate = post.getComments().get(commentId - 1);
-        Comment commentToUpdate = post.getComments().stream()
-                .toList().get(commentId - 1);
 
         if (dto.getContent() != null) {
             commentToUpdate.setContent(dto.getContent());
@@ -114,5 +117,4 @@ public class PostMapper {
 
         return commentToUpdate;
     }
-
 }

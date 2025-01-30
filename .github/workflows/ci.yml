@@ -43,6 +43,7 @@ jobs:
           echo "DB_URL=${{ secrets.DB_URL }}" >> $GITHUB_ENV
           echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> $GITHUB_ENV
           echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV
+          echo "ENCRYPTION_SECRET_KEY=${{ secrets.ENCRYPTION_SECRET_KEY }}" >> $GITHUB_ENV
 
 
       - name: Run tests with Gradle

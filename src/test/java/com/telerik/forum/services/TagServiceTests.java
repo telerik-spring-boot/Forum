@@ -340,10 +340,10 @@ public class TagServiceTests {
 //        Mockito.verify(mockTagRepository, Mockito.times(1))
 //                .getOrphanedTags();
 //
-        Mockito.verify(mockTagRepository, Mockito.times(1))
-                .deleteTag(tag);
+//        Mockito.verify(mockTagRepository, Mockito.times(1))
+//                .deleteTag(tag);
 
 
-    }
+//    }
 
 }

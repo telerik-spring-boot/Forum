@@ -8,20 +8,20 @@ import java.util.List;
 
 public interface AdminService {
 
-    List<AdminDetails> getAll();
+    List<AdminDetails> getAll(User userRequest);
 
-    List<User> getAllUsers(FilterUserOptions options, int requestUserId);
+    List<User> getAllUsers(FilterUserOptions options, User userRequest);
 
-    AdminDetails getByUserId(int id);
+    AdminDetails getByUserId(int id, User userRequest);
 
-    void blockUser(User userToBeBlocked, int requestUserId);
+    void blockUser(User userToBeBlocked, User userRequest);
 
-    void unblockUser(User userToBeUnblocked, int requestUserId);
+    void unblockUser(User userToBeUnblocked, User userRequest);
 
-    void revokeAdminRights(int userId, int requestUserId);
+    void revokeAdminRights(int userId, User userRequest);
 
-    void giveAdminRights(int userId, String phoneNumber, int requestUserId);
+    void giveAdminRights(int userId, String phoneNumber, User userRequest);
 
-    void update(AdminDetails admin, int requestUserId);
+    void update(AdminDetails admin, User userRequest);
 
 }

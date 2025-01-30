@@ -119,8 +119,8 @@ public class UserMapper {
 
     }
 
-    public AdminDetails dtoToAdmin(int userId, AdminUpdateDTO adminDTO) {
-        AdminDetails admin = adminService.getByUserId(userId);
+    public AdminDetails dtoToAdmin(int userId, AdminUpdateDTO adminDTO, User userRequest) {
+        AdminDetails admin = adminService.getByUserId(userId, userRequest);
 
         admin.setPhoneNumber(adminDTO.getPhoneNumber());
 

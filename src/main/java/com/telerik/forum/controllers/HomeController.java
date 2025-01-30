@@ -5,6 +5,7 @@ import com.telerik.forum.helpers.PostMapper;
 import com.telerik.forum.models.Home;
 import com.telerik.forum.models.filters.FilterUserOptions;
 import com.telerik.forum.models.post.Post;
+import com.telerik.forum.models.user.User;
 import com.telerik.forum.services.admin.AdminService;
 import com.telerik.forum.services.post.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +47,7 @@ public class HomeController {
         home.setMostRecentPosts(postService.getMostRecentPosts(10).stream()
                 .map(postMapper::postToPostDisplayDTO)
                 .collect(Collectors.toSet()));
-        home.setUsersCount(adminService.getAllUsers(new FilterUserOptions(null, null, null, null, null), adminService.getAll().get(0).getUser().getId()).size());
+        home.setUsersCount(adminService.getAllUsers(new FilterUserOptions(null, null, null, null, null), adminService.getAll(null).get(0).getUser()).size());
         List<Post> posts = postService.getAllPosts();
         home.setPostsCount(posts.isEmpty() ? 0 : posts.size());
 

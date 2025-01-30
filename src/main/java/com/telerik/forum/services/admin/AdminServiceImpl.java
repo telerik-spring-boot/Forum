@@ -36,13 +36,13 @@ public class AdminServiceImpl implements AdminService {
 
 
     @Override
-    public List<AdminDetails> getAll() {
+    public List<AdminDetails> getAll(User userRequest) {
         return adminDetailsRepository.getAll();
     }
 
     @Override
-    public List<User> getAllUsers(FilterUserOptions options, int requestUserId){
-        authorization(requestUserId);
+    public List<User> getAllUsers(FilterUserOptions options, User userRequest){
+        authorization(userRequest);
 
         options.getSortBy().ifPresent(SortingHelper::validateSortByFieldUser);
 
@@ -52,7 +52,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public AdminDetails getByUserId(int id) {
+    public AdminDetails getByUserId(int id, User userRequest) {
         AdminDetails adminDetails = adminDetailsRepository.getByUserId(id);
 
         if(adminDetails == null){
@@ -63,8 +63,8 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void blockUser(User userToBeBlocked, int requestUserId) {
-        authorization(requestUserId);
+    public void blockUser(User userToBeBlocked, User userRequest) {
+        authorization(userRequest);
 
         userToBeBlocked.setBlocked(true);
 
@@ -72,8 +72,8 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void unblockUser(User userToBeUnblocked, int requestUserId) {
-        authorization(requestUserId);
+    public void unblockUser(User userToBeUnblocked, User userRequest) {
+        authorization(userRequest);
 
         userToBeUnblocked.setBlocked(false);
 
@@ -82,8 +82,8 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
-    public void revokeAdminRights(int userId, int requestUserId) {
-        authorization(requestUserId);
+    public void revokeAdminRights(int userId, User userRequest) {
+        authorization(userRequest);
 
         User user = userRepository.getByIdWithRoles(userId);
 
@@ -112,8 +112,8 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
-    public void giveAdminRights(int userId, String phoneNumber, int requestUserId) {
-        authorization(requestUserId);
+    public void giveAdminRights(int userId, String phoneNumber, User userRequest) {
+        authorization(userRequest);
 
         User user = userRepository.getByIdWithRoles(userId);
 
@@ -140,8 +140,8 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void update(AdminDetails admin, int requestUserId) {
-        authorization(requestUserId);
+    public void update(AdminDetails admin, User userRequest) {
+        authorization(userRequest);
 
         AdminDetails databaseAdminDetails = adminDetailsRepository.getByUserId(admin.getUser().getId());
 
@@ -158,10 +158,9 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
-    private void authorization(int id){
-        User user = userRepository.getByIdWithRoles(id);
+    private void authorization(User userRequest){
 
-        if(user.isBlocked() || user.getRoles().stream()
+        if(userRequest.isBlocked() || userRequest.getRoles().stream()
                 .noneMatch(role -> role.getName()
                         .equalsIgnoreCase("admin"))){
             throw new UnauthorizedOperationException(PERMISSION_ERROR_MESSAGE);

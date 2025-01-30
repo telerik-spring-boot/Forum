@@ -42,10 +42,9 @@ public class AdminController {
     @GetMapping
     public List<AdminDisplayDTO> getAllAdmins(@RequestHeader HttpHeaders headers) {
         try {
-            User user = authenticationHelper.tryGetUserWithRoles(headers);
-            // to be checked for admin rights
+            User userRequest = authenticationHelper.tryGetUserWithRoles(headers);
 
-            return adminService.getAll().stream()
+            return adminService.getAll(userRequest).stream()
                     .map(userMapper::AdminToAdminDisplayDTO)
                     .toList();
         } catch (UnauthorizedOperationException e) {
@@ -63,7 +62,7 @@ public class AdminController {
         try{
             User userRequest = authenticationHelper.tryGetUserWithRoles(headers);
 
-            return adminService.getAllUsers(new FilterUserOptions(username, emailAddress, firstName, sortBy, sortOrder), userRequest.getId())
+            return adminService.getAllUsers(new FilterUserOptions(username, emailAddress, firstName, sortBy, sortOrder), userRequest)
                     .stream()
                     .map(userMapper::userToUserDisplayDTO)
                     .toList();
@@ -82,7 +81,7 @@ public class AdminController {
         try {
             User userRequest = authenticationHelper.tryGetUserWithRoles(header);
 
-            return userMapper.AdminToAdminDisplayDTO(adminService.getByUserId(userId));
+            return userMapper.AdminToAdminDisplayDTO(adminService.getByUserId(userId, userRequest));
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (UnauthorizedOperationException e) {
@@ -93,11 +92,11 @@ public class AdminController {
     @PostMapping("/users/rights")
     public AdminDisplayDTO createAdmin(@RequestHeader HttpHeaders headers,@Valid @RequestBody AdminCreateDTO adminDTO) {
         try {
-            User userRequest = authenticationHelper.tryGetUser(headers);
+            User userRequest = authenticationHelper.tryGetUserWithRoles(headers);
 
-            adminService.giveAdminRights(adminDTO.getUser_id(), adminDTO.getPhoneNumber(), userRequest.getId());
+            adminService.giveAdminRights(adminDTO.getUser_id(), adminDTO.getPhoneNumber(), userRequest);
 
-            return userMapper.AdminToAdminDisplayDTO(adminService.getByUserId(adminDTO.getUser_id()));
+            return userMapper.AdminToAdminDisplayDTO(adminService.getByUserId(adminDTO.getUser_id(), userRequest));
 
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
@@ -111,9 +110,9 @@ public class AdminController {
     @DeleteMapping("/users/rights/{userId}")
     public void revokeAdminRights(@RequestHeader HttpHeaders headers, @PathVariable int userId) {
         try {
-            User userRequest = authenticationHelper.tryGetUser(headers);
+            User userRequest = authenticationHelper.tryGetUserWithRoles(headers);
 
-            adminService.revokeAdminRights(userId, userRequest.getId());
+            adminService.revokeAdminRights(userId, userRequest);
 
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
@@ -127,11 +126,11 @@ public class AdminController {
     @PutMapping("/{userId}")
     public AdminDisplayDTO updateAdmin(@RequestHeader HttpHeaders headers, @PathVariable int userId, @Valid @RequestBody AdminUpdateDTO adminDTO) {
         try {
-            User userRequest = authenticationHelper.tryGetUser(headers);
+            User userRequest = authenticationHelper.tryGetUserWithRoles(headers);
 
-            AdminDetails admin = userMapper.dtoToAdmin(userId, adminDTO);
+            AdminDetails admin = userMapper.dtoToAdmin(userId, adminDTO, userRequest);
 
-            adminService.update(admin, userRequest.getId());
+            adminService.update(admin, userRequest);
 
             return userMapper.AdminToAdminDisplayDTO(admin);
 
@@ -145,10 +144,10 @@ public class AdminController {
     @PutMapping("/users/{userId}/block")
     public UserDisplayDTO blockUser(@RequestHeader HttpHeaders headers, @PathVariable int userId) {
         try {
-            User userRequest = authenticationHelper.tryGetUser(headers);
+            User userRequest = authenticationHelper.tryGetUserWithRoles(headers);
 
             User userToBlock = userService.getById(userId);
-            adminService.blockUser(userToBlock, userRequest.getId());
+            adminService.blockUser(userToBlock, userRequest);
 
             return userMapper.userToUserDisplayDTO(userToBlock);
 
@@ -162,10 +161,10 @@ public class AdminController {
     @PutMapping("/users/{userId}/unblock")
     public UserDisplayDTO unblockUser(@RequestHeader HttpHeaders headers, @PathVariable int userId) {
         try {
-            User userRequest = authenticationHelper.tryGetUser(headers);
+            User userRequest = authenticationHelper.tryGetUserWithRoles(headers);
 
             User userToUnblock = userService.getById(userId);
-            adminService.unblockUser(userToUnblock, userRequest.getId());
+            adminService.unblockUser(userToUnblock, userRequest);
 
             return userMapper.userToUserDisplayDTO(userToUnblock);
         } catch (EntityNotFoundException e) {

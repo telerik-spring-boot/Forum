@@ -1,5 +1,6 @@
 package com.telerik.forum.helpers;
 
+import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.InvalidUserInputException;
 import com.telerik.forum.models.post.Comment;
 import com.telerik.forum.models.post.Like;
@@ -107,8 +108,7 @@ public class PostMapper {
         Comment commentToUpdate = commentService.getComment(commentId);
 
         if (commentToUpdate.getPost().getId() != postId) {
-            throw new InvalidUserInputException(String.format(INVALID_COMMENT_ID_FOR_POST_MESSAGE,
-                    commentId, postId));
+            throw new EntityNotFoundException("Comment with id: " + commentId + " not found for post with id:  " + postId);
         }
 
         if (dto.getContent() != null) {

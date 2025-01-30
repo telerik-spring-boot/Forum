@@ -231,7 +231,7 @@ public class CommentServiceTests {
     }
 
     @Test
-    public void deleteComment_Should_Throw_When_CommentIsNotACommentOfThePostProvided(){
+    public void deleteComment_Should_Throw_When_CommentNotACommentOfThePostProvided(){
         // Arrange
         Post post = createMockPost();
         Comment comment = createMockComment();
@@ -243,7 +243,7 @@ public class CommentServiceTests {
                 .thenReturn(comment);
 
         // Act, Assert
-        Assertions.assertThrows(InvalidUserInputException.class, () -> commentService.deleteComment(post.getId(), 1, createMockUser()));
+        Assertions.assertThrows(EntityNotFoundException.class, () -> commentService.deleteComment(post.getId(), 1, createMockUser()));
 
         Mockito.verify(mockCommentRepository, Mockito.times(1))
                 .getById(Mockito.anyInt());

@@ -78,8 +78,8 @@ public class CommentServiceImpl implements CommentService {
         }
 
         if (commentToDelete.getPost().getId() != postId) {
-            throw new InvalidUserInputException(String.format(INVALID_COMMENT_ID_FOR_POST_MESSAGE,
-                    commentId, postId));
+            throw new EntityNotFoundException("Comment with id: " + commentId + " not found for post with id:  " + postId);
+
         }
 
         checkCommentDeletePermission(commentToDelete, user);

@@ -196,7 +196,7 @@ public class PostController {
     }
 
     @PutMapping("/{postId}/tags")
-    public PostDisplayDTO UpdateTagsToPost(@RequestHeader HttpHeaders headers,
+    public PostDisplayDTO updateTagsToPost(@RequestHeader HttpHeaders headers,
                                            @PathVariable int postId,
                                            @Valid @RequestBody TagUpdateDTO userInput) {
         try {

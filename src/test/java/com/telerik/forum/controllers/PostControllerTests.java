@@ -270,7 +270,7 @@ public class PostControllerTests {
     @Test
     public void addTagsToPost_Should_ReturnStatusOk_When_UserAuthorizedAndPostExists() throws Exception {
         // Arrange
-        Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
+        Mockito.when(mockAuthenticationHelper.tryGetUserWithRoles(Mockito.any()))
                 .thenReturn(createMockUser());
 
         Mockito.when(mockPostService.getByIdWithCommentsAndLikesAndTags(Mockito.anyInt()))
@@ -301,7 +301,7 @@ public class PostControllerTests {
     @Test
     public void addTagsToPost_Should_ReturnStatusNotFound_When_PostNotFound() throws Exception {
         // Arrange
-        Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
+        Mockito.when(mockAuthenticationHelper.tryGetUserWithRoles(Mockito.any()))
                 .thenReturn(createMockUser());
 
         Mockito.doThrow(EntityNotFoundException.class).when(mockTagService)
@@ -320,7 +320,7 @@ public class PostControllerTests {
     @Test
     public void addTagsToPost_Should_ReturnStatusUnauthorized_When_UserNotAuthorized() throws Exception {
         // Arrange
-        Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
+        Mockito.when(mockAuthenticationHelper.tryGetUserWithRoles(Mockito.any()))
                 .thenThrow(UnauthorizedOperationException.class);
 
         // Act, Assert
@@ -477,7 +477,7 @@ public class PostControllerTests {
     @Test
     public void updateTagsToPost_Should_ReturnStatusOk_When_EverythingIsValid() throws Exception {
         // Arrange
-        Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
+        Mockito.when(mockAuthenticationHelper.tryGetUserWithRoles(Mockito.any()))
                 .thenReturn(createMockUser());
 
         Mockito.when(mockPostService.getByIdWithCommentsAndLikesAndTags(Mockito.anyInt()))
@@ -506,7 +506,7 @@ public class PostControllerTests {
     @Test
     public void updateTagsToPost_Should_ReturnStatusNotFound_When_PostNotFound() throws Exception {
         // Arrange
-        Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
+        Mockito.when(mockAuthenticationHelper.tryGetUserWithRoles(Mockito.any()))
                 .thenReturn(createMockUser());
 
         Mockito.doThrow(EntityNotFoundException.class).when(mockTagService)
@@ -522,7 +522,7 @@ public class PostControllerTests {
     @Test
     public void updateTagsToPost_Should_ReturnStatusUnauthorized_When_UserNotAuthorized() throws Exception {
         // Arrange
-        Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
+        Mockito.when(mockAuthenticationHelper.tryGetUserWithRoles(Mockito.any()))
                 .thenThrow(UnauthorizedOperationException.class);
 
         // Act, Assert
@@ -608,7 +608,7 @@ public class PostControllerTests {
     @Test
     public void deletePost_Should_ReturnStatusUnauthorized_When_UserNotAuthorized() throws Exception {
         // Arrange
-        Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
+        Mockito.when(mockAuthenticationHelper.tryGetUserWithRoles(Mockito.any()))
                 .thenThrow(UnauthorizedOperationException.class);
 
         // Act, Assert
@@ -619,7 +619,7 @@ public class PostControllerTests {
     @Test
     public void deletePost_Should_ReturnStatusNotFound_When_PostDoesNotExist() throws Exception {
         // Arrange
-        Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
+        Mockito.when(mockAuthenticationHelper.tryGetUserWithRoles(Mockito.any()))
                 .thenReturn(createMockUser());
 
         Mockito.doThrow(EntityNotFoundException.class).when(mockPostService)
@@ -633,7 +633,7 @@ public class PostControllerTests {
     @Test
     public void removeTagsFromPost_Should_ReturnStatusOk_When_EverythingIsValid() throws Exception {
         // Arrange
-        Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
+        Mockito.when(mockAuthenticationHelper.tryGetUserWithRoles(Mockito.any()))
                 .thenReturn(createMockUser());
 
         Mockito.when(mockPostService.getByIdWithCommentsAndLikesAndTags(Mockito.anyInt()))
@@ -662,7 +662,7 @@ public class PostControllerTests {
     @Test
     public void removeTagsFromPost_Should_ReturnStatusUnauthorized_When_UserNotAuthorized() throws Exception {
         // Arrange
-        Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
+        Mockito.when(mockAuthenticationHelper.tryGetUserWithRoles(Mockito.any()))
                 .thenThrow(UnauthorizedOperationException.class);
 
         // Act, Assert
@@ -675,7 +675,7 @@ public class PostControllerTests {
     @Test
     public void removeTagsFromPost_Should_ReturnStatusNotFound_When_PostDoesNotExist() throws Exception {
         // Arrange
-        Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
+        Mockito.when(mockAuthenticationHelper.tryGetUserWithRoles(Mockito.any()))
                 .thenReturn(createMockUser());
 
         Mockito.doThrow(EntityNotFoundException.class)
@@ -691,7 +691,7 @@ public class PostControllerTests {
     @Test
     public void deleteComment_Should_ReturnStatusOk_When_EverythingIsValid() throws Exception {
         // Arrange
-        Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
+        Mockito.when(mockAuthenticationHelper.tryGetUserWithRoles(Mockito.any()))
                 .thenReturn(createMockUser());
 
         Mockito.when(mockPostService.getByIdWithCommentsAndLikesAndTags(Mockito.anyInt()))
@@ -709,7 +709,7 @@ public class PostControllerTests {
     @Test
     public void deleteComment_Should_ReturnStatusUnauthorized_When_UserNotAuthorized() throws Exception {
         // Arrange
-        Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
+        Mockito.when(mockAuthenticationHelper.tryGetUserWithRoles(Mockito.any()))
                 .thenThrow(UnauthorizedOperationException.class);
 
         // Act, Assert
@@ -720,7 +720,7 @@ public class PostControllerTests {
     @Test
     public void deleteComment_Should_ReturnStatusNotFound_When_CommentOrPostNotFound() throws Exception {
         // Arrange
-        Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
+        Mockito.when(mockAuthenticationHelper.tryGetUserWithRoles(Mockito.any()))
                 .thenReturn(createMockUser());
 
         Mockito.doThrow(EntityNotFoundException.class).when(mockCommentService)

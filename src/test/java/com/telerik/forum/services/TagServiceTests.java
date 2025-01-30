@@ -6,6 +6,8 @@ import com.telerik.forum.exceptions.InvalidUserInputException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.models.post.Post;
 import com.telerik.forum.models.post.Tag;
+import com.telerik.forum.models.user.AdminDetails;
+import com.telerik.forum.models.user.Role;
 import com.telerik.forum.models.user.User;
 import com.telerik.forum.repositories.admin.AdminDetailsRepository;
 import com.telerik.forum.repositories.post.PostRepository;
@@ -65,8 +67,6 @@ public class TagServiceTests {
         Mockito.when(mockPostRepository.getPostWithTagsById(Mockito.anyInt()))
                 .thenReturn(post);
 
-        Mockito.when(mockAdminDetailsRepository.getByUserId(Mockito.anyInt()))
-                .thenReturn(null);
 
         // Act, Assert
         Assertions.assertThrows(UnauthorizedOperationException.class,
@@ -85,9 +85,6 @@ public class TagServiceTests {
         Mockito.when(mockPostRepository.getPostWithTagsById(Mockito.anyInt()))
                 .thenReturn(post);
 
-        Mockito.when(mockAdminDetailsRepository.getByUserId(Mockito.anyInt()))
-                .thenReturn(createMockAdminDetails());
-
         Mockito.when(mockTagRepository.findByName(Mockito.anyString()))
                 .thenReturn(null);
 
@@ -97,9 +94,6 @@ public class TagServiceTests {
         // Assert
         Mockito.verify(mockPostRepository, Mockito.times(1))
                 .getPostWithTagsById(Mockito.anyInt());
-
-        Mockito.verify(mockAdminDetailsRepository, Mockito.times(1))
-                .getByUserId(Mockito.anyInt());
 
         Mockito.verify(mockTagRepository, Mockito.times(1))
                 .findByName(Mockito.anyString());
@@ -125,9 +119,6 @@ public class TagServiceTests {
         Mockito.when(mockPostRepository.getPostWithTagsById(Mockito.anyInt()))
                 .thenReturn(post);
 
-        Mockito.when(mockAdminDetailsRepository.getByUserId(Mockito.anyInt()))
-                .thenReturn(createMockAdminDetails());
-
         Mockito.when(mockTagRepository.findByName("mocktag"))
                 .thenReturn(createMockTag());
 
@@ -137,9 +128,6 @@ public class TagServiceTests {
         // Assert
         Mockito.verify(mockPostRepository, Mockito.times(1))
                 .getPostWithTagsById(Mockito.anyInt());
-
-        Mockito.verify(mockAdminDetailsRepository, Mockito.times(1))
-                .getByUserId(Mockito.anyInt());
 
         Mockito.verify(mockTagRepository, Mockito.times(1))
                 .findByName("mocktag");
@@ -197,9 +185,6 @@ public class TagServiceTests {
         Mockito.when(mockPostRepository.getPostWithTagsById(Mockito.anyInt()))
                 .thenReturn(post);
 
-        Mockito.when(mockAdminDetailsRepository.getByUserId(Mockito.anyInt()))
-                .thenReturn(null);
-
         // Act
         tagService.updateTagFromPost(post.getId(), "mocktag,what", "pass,not", user);
 
@@ -212,9 +197,6 @@ public class TagServiceTests {
 
         Mockito.verify(mockPostRepository, Mockito.times(1))
                 .getPostWithTagsById(Mockito.anyInt());
-
-        Mockito.verify(mockAdminDetailsRepository, Mockito.times(1))
-                .getByUserId(Mockito.anyInt());
 
         Mockito.verify(mockPostRepository, Mockito.times(1))
                 .update(Mockito.any());
@@ -244,18 +226,12 @@ public class TagServiceTests {
         Mockito.when(mockPostRepository.getPostWithTagsById(Mockito.anyInt()))
                 .thenReturn(post);
 
-        Mockito.when(mockAdminDetailsRepository.getByUserId(Mockito.anyInt()))
-                .thenReturn(null);
-
         // Act, Assert
         Assertions.assertThrows(UnauthorizedOperationException.class,
                 () -> tagService.deleteTagFromPost(post.getId(), "", user));
 
         Mockito.verify(mockPostRepository, Mockito.times(1))
                 .getPostWithTagsById(Mockito.anyInt());
-
-        Mockito.verify(mockAdminDetailsRepository, Mockito.times(1))
-                .getByUserId(Mockito.anyInt());
 
 
     }
@@ -266,21 +242,23 @@ public class TagServiceTests {
         User user = createMockUser();
         Post post = createMockPost();
         Set<Tag> tags = new HashSet<>();
+        Role admin = new Role();
+
+        admin.setName("ADMIN");
+        admin.setId(1);
+
+        user.setId(2);
+        user.addRole(admin);
 
         tags.add(new Tag(1, "pass"));
         tags.add(new Tag(2, "fast"));
         tags.add(new Tag(3, "epic"));
-
-        user.setId(2);
 
         post.setUser(createMockUser());
         post.setTags(tags);
 
         Mockito.when(mockPostRepository.getPostWithTagsById(Mockito.anyInt()))
                 .thenReturn(post);
-
-        Mockito.when(mockAdminDetailsRepository.getByUserId(Mockito.anyInt()))
-                .thenReturn(createMockAdminDetails());
 
         // Act
         tagService.deleteTagFromPost(post.getId(), "pass,epic,notfound", user);

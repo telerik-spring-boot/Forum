@@ -398,9 +398,6 @@ public class PostServiceTests {
         Mockito.when(mockPostRepository.getPostById(1))
                 .thenReturn(post);
 
-        Mockito.when(mockAdminRepository.getByUserId(1))
-                .thenReturn(null);
-
         // Act
         postService.deletePost(post.getId(), user);
 
@@ -422,9 +419,6 @@ public class PostServiceTests {
         Mockito.when(mockPostRepository.getPostById(1))
                 .thenReturn(post);
 
-        Mockito.when(mockAdminRepository.getByUserId(1))
-                .thenReturn(null);
-
         //Act, Assert
         Assertions.assertThrows(UnauthorizedOperationException.class, () -> postService.deletePost(post.getId(), user));
 
@@ -445,9 +439,6 @@ public class PostServiceTests {
         Mockito.when(mockPostRepository.getPostById(1))
                 .thenReturn(post);
 
-        Mockito.when(mockAdminRepository.getByUserId(1))
-                .thenReturn(null);
-
         //Act, Assert
         Assertions.assertThrows(UnauthorizedOperationException.class, () -> postService.deletePost(post.getId(), createMockUser()));
 
@@ -467,9 +458,6 @@ public class PostServiceTests {
 
         Mockito.when(mockPostRepository.getPostById(1))
                 .thenReturn(post);
-
-        Mockito.when(mockAdminRepository.getByUserId(1))
-                .thenReturn(adminDetails);
 
         // Act
         postService.deletePost(post.getId(), adminDetails.getUser());

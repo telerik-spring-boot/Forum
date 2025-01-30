@@ -5,6 +5,7 @@ import com.telerik.forum.exceptions.InvalidUserInputException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.models.post.Comment;
 import com.telerik.forum.models.post.Post;
+import com.telerik.forum.models.user.Role;
 import com.telerik.forum.models.user.User;
 import com.telerik.forum.repositories.admin.AdminDetailsRepository;
 import com.telerik.forum.repositories.comment.CommentRepository;
@@ -191,7 +192,13 @@ public class CommentServiceTests {
         User user = createMockUser();
         Comment comment = createMockComment();
         Post post = createMockPost();
+        Role admin = new Role();
+
+        admin.setName("ADMIN");
+        admin.setId(1);
+
         user.setId(2);
+        user.addRole(admin);
 
         comment.setUser(createMockUser());
         comment.setPost(post);
@@ -202,16 +209,10 @@ public class CommentServiceTests {
         Mockito.when(mockCommentRepository.getById(comment.getId()))
                 .thenReturn(comment);
 
-        Mockito.when(mockAdminDetailsRepository.getByUserId(Mockito.anyInt()))
-                .thenReturn(createMockAdminDetails());
-
         // Act
         commentService.deleteComment(post.getId(), 1, user);
 
         // Assert
-        Mockito.verify(mockAdminDetailsRepository, Mockito.times(1))
-                .getByUserId(Mockito.anyInt());
-
         Mockito.verify(mockCommentRepository, Mockito.times(1))
                 .delete(1);
 
@@ -266,15 +267,9 @@ public class CommentServiceTests {
         Mockito.when(mockCommentRepository.getById(comment.getId()))
                 .thenReturn(comment);
 
-        Mockito.when(mockAdminDetailsRepository.getByUserId(Mockito.anyInt()))
-                .thenReturn(null);
-
         // Act, Assert
 
         Assertions.assertThrows(UnauthorizedOperationException.class, () -> commentService.deleteComment(post.getId(), 1, user));
-
-        Mockito.verify(mockAdminDetailsRepository, Mockito.times(1))
-                .getByUserId(Mockito.anyInt());
 
         Mockito.verify(mockCommentRepository, Mockito.times(0))
                 .delete(1);
@@ -298,16 +293,10 @@ public class CommentServiceTests {
         Mockito.when(mockCommentRepository.getById(comment.getId()))
                 .thenReturn(comment);
 
-        Mockito.when(mockAdminDetailsRepository.getByUserId(Mockito.anyInt()))
-                .thenReturn(null);
-
 
         // Act, Assert
 
         Assertions.assertThrows(UnauthorizedOperationException.class, () -> commentService.deleteComment(post.getId(), 1, user));
-
-        Mockito.verify(mockAdminDetailsRepository, Mockito.times(1))
-                .getByUserId(Mockito.anyInt());
 
         Mockito.verify(mockCommentRepository, Mockito.times(0))
                 .delete(1);

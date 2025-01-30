@@ -39,7 +39,9 @@ public class DummyObjectProvider {
 
         adminDetails.setId(1);
         User user = createMockUser();
-        user.addRole(new Role("ADMIN"));
+        Role role = new Role("ADMIN");
+        role.setId(1);
+        user.addRole(role);
         adminDetails.setUser(user);
         adminDetails.setPhoneNumber("123456789");
 

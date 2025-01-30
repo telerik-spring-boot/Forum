@@ -1,5 +1,6 @@
 package com.telerik.forum.services;
 
+import com.telerik.forum.models.user.AdminDetails;
 import com.telerik.forum.models.user.User;
 import com.telerik.forum.repositories.comment.CommentRepository;
 import com.telerik.forum.repositories.post.PostRepository;
@@ -14,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static com.telerik.forum.DummyObjectProvider.createMockAdminDetails;
 import static com.telerik.forum.DummyObjectProvider.createMockUser;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,12 +42,16 @@ public class UserServiceTests {
     public void getById_Should_ReturnUser_When_IdIsValid(){
         // Arrange
         User user = createMockUser();
+        user.setId(2);
+
+        AdminDetails adminDetails = createMockAdminDetails();
+
 
         Mockito.when(mockUserRepository.getById(Mockito.anyInt()))
                 .thenReturn(user);
 
         // Act
-        User returnedUser = userService.getById(1);
+        User returnedUser = userService.getById(1, adminDetails.getUser());
 
         // Assert
         Assertions.assertEquals(user, returnedUser);

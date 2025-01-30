@@ -29,9 +29,6 @@ jobs:
       - name: Grant execute permission for Gradle wrapper
         run: chmod +x gradlew
 
-      - name: Clear Gradle cache
-        run: rm -rf ~/.gradle/caches
-
 
       - name: Cache Gradle dependencies
         uses: actions/cache@v3
@@ -48,10 +45,6 @@ jobs:
           echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> $GITHUB_ENV
           echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV
           echo "ENCRYPTION_SECRET_KEY=${{ secrets.ENCRYPTION_SECRET_KEY }}" >> $GITHUB_ENV
-
-
-      - name: Check Mockito version
-        run: ./gradlew dependencyInsight --dependency mockito-core --configuration testRuntimeClasspath
 
       - name: Run tests with Gradle
         run: ./gradlew test --no-daemon

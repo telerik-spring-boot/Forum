@@ -1,6 +1,6 @@
 package com.telerik.forum.helpers;
 
-import com.telerik.forum.configurations.JwtUtil;
+import com.telerik.forum.configurations.jwt.JwtUtil;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.models.dtos.userDTOs.UserLoginDTO;
 import com.telerik.forum.models.user.User;
@@ -31,6 +31,7 @@ public class LoginHelper {
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new UnauthorizedOperationException("Invalid username or password");
         }
+
         return jwtUtil.generateToken(username);
     }
 }

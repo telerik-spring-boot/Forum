@@ -1,4 +1,4 @@
-package com.telerik.forum.configurations;
+package com.telerik.forum.configurations.jwt;
 
 import com.telerik.forum.models.user.User;
 import com.telerik.forum.services.user.UserService;

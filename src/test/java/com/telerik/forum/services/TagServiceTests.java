@@ -39,9 +39,6 @@ public class TagServiceTests {
     @Mock
     private AdminDetailsRepository mockAdminDetailsRepository;
 
-    @Mock
-    private TagService selfProxy;
-
     @InjectMocks
     private TagServiceImpl tagService;
 
@@ -331,14 +328,21 @@ public class TagServiceTests {
         Tag tag = new Tag(1, "pass");
         tags.add(tag);
 
-        Mockito.doAnswer((invocation) -> tags.remove(tag)).when(selfProxy).deleteOrphanedTags();
+        Mockito.when(mockTagRepository.getOrphanedTags())
+                .thenReturn(tags);
 
-        //Act
-        tagService.scheduledDeleteOrphanedTags();
+        Mockito.doAnswer((invocation) -> tags.remove(tag)).when(mockTagRepository).deleteTag(tag);
 
-        // Assert
-        Mockito.verify(selfProxy, Mockito.times(1))
-                .deleteOrphanedTags();
+
+        // Act, Assert
+        Assertions.assertDoesNotThrow(() -> tagService.scheduledDeleteOrphanedTags());
+
+        Mockito.verify(mockTagRepository, Mockito.times(1))
+                .getOrphanedTags();
+
+        Mockito.verify(mockTagRepository, Mockito.times(1))
+                .deleteTag(tag);
+
 
     }
 

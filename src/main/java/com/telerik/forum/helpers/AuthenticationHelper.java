@@ -1,15 +1,12 @@
 package com.telerik.forum.helpers;
 
 
-import com.telerik.forum.configurations.JwtUtil;
-import com.telerik.forum.exceptions.EntityNotFoundException;
+import com.telerik.forum.configurations.jwt.JwtUtil;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.models.user.User;
 import com.telerik.forum.services.user.UserService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
-
-import java.util.Base64;
 
 
 //TODO to be updated -> inserted for basic logic handling

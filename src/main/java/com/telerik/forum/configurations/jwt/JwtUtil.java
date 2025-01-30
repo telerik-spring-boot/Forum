@@ -1,7 +1,11 @@
-package com.telerik.forum.configurations;
+package com.telerik.forum.configurations.jwt;
 
 
 import com.telerik.forum.models.user.User;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -11,17 +15,22 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Objects;
 
 @Component
 public class JwtUtil {
 
-    //This should be saved in the application.properties file
-    private static final String SECRET_KEY = Base64.getEncoder().encodeToString(
-            "thisisaverysecureandlongsecretkey!".getBytes(StandardCharsets.UTF_8)
-    );
+    private final String SECRET_KEY;
+
+    @Autowired
+    public JwtUtil(Environment env) {
+        SECRET_KEY = Base64.getEncoder().encodeToString(Objects.requireNonNull(env.getProperty("ENCRYPTION_SECRET_KEY")).getBytes(StandardCharsets.UTF_8));
+    }
+
+
 
     public String generateToken(String username) {
-        // Decode the Base64 key before using it
+
         Key key = Keys.hmacShaKeyFor(Base64.getDecoder().decode(SECRET_KEY));
 
         return Jwts.builder()
@@ -31,8 +40,6 @@ public class JwtUtil {
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
-
-
 
 
     public String extractUsername(String token) {

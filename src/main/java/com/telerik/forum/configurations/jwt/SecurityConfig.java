@@ -1,4 +1,4 @@
-package com.telerik.forum.configurations;
+package com.telerik.forum.configurations.jwt;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

@@ -298,52 +298,52 @@ public class TagServiceTests {
 
     }
 
-//    @Test
-//    public void deleteOrphanedTags_Should_DeleteTags_When_Called(){
-//        // Arrange
-//        List<Tag> tags = new ArrayList<>();
-//        Tag tag = new Tag(1, "pass");
-//        tags.add(tag);
-//
-//        Mockito.when(mockTagRepository.getOrphanedTags())
-//                .thenReturn(tags);
-//
-//        Mockito.doAnswer((invocation) -> tags.remove(tag)).when(mockTagRepository).deleteTag(tag);
-//
-//        // Act, Assert
-//        Assertions.assertDoesNotThrow(() -> tagService.deleteOrphanedTags());
-//
-//        Mockito.verify(mockTagRepository, Mockito.times(1))
-//                .getOrphanedTags();
-//
-//        Mockito.verify(mockTagRepository, Mockito.times(1))
-//                .deleteTag(tag);
-//
-//    }
-//
-//    @Test
-//    public void scheduledDeleteOrphanedTags_Should_DeleteTags_When_TimeComes(){
-//        // Arrange
-//        List<Tag> tags = new ArrayList<>();
-//        Tag tag = new Tag(1, "pass");
-//        tags.add(tag);
-//
-//        Mockito.when(mockTagRepository.getOrphanedTags())
-//                .thenReturn(tags);
-//
-//        Mockito.doAnswer((invocation) -> tags.remove(tag)).when(mockTagRepository).deleteTag(tag);
-//
-//
-//        // Act, Assert
-//        Assertions.assertDoesNotThrow(() -> tagService.scheduledDeleteOrphanedTags());
-//
-//        Mockito.verify(mockTagRepository, Mockito.times(1))
-//                .getOrphanedTags();
-//
-//        Mockito.verify(mockTagRepository, Mockito.times(1))
-//                .deleteTag(tag);
+    @Test
+    public void deleteOrphanedTags_Should_DeleteTags_When_Called(){
+        // Arrange
+        List<Tag> tags = new ArrayList<>();
+        Tag tag = new Tag(1, "pass");
+        tags.add(tag);
+
+        Mockito.when(mockTagRepository.getOrphanedTags())
+                .thenReturn(tags);
+
+        Mockito.doAnswer((invocation) -> tags.remove(tag)).when(mockTagRepository).deleteTag(tag);
+
+        // Act, Assert
+        Assertions.assertDoesNotThrow(() -> tagService.deleteOrphanedTags());
+
+        Mockito.verify(mockTagRepository, Mockito.times(1))
+                .getOrphanedTags();
+
+        Mockito.verify(mockTagRepository, Mockito.times(1))
+                .deleteTag(tag);
+
+    }
+
+    @Test
+    public void scheduledDeleteOrphanedTags_Should_DeleteTags_When_TimeComes(){
+        // Arrange
+        List<Tag> tags = new ArrayList<>();
+        Tag tag = new Tag(1, "pass");
+        tags.add(tag);
+
+        Mockito.when(mockTagRepository.getOrphanedTags())
+                .thenReturn(tags);
+
+        Mockito.doAnswer((invocation) -> tags.remove(tag)).when(mockTagRepository).deleteTag(tag);
 
 
-//    }
+        // Act, Assert
+        Assertions.assertDoesNotThrow(() -> tagService.scheduledDeleteOrphanedTags());
+
+        Mockito.verify(mockTagRepository, Mockito.times(1))
+                .getOrphanedTags();
+
+        Mockito.verify(mockTagRepository, Mockito.times(1))
+                .deleteTag(tag);
+
+
+    }
 
 }

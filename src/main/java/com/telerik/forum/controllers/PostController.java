@@ -133,7 +133,7 @@ public class PostController {
                                         @PathVariable int postId,
                                         @Valid @RequestBody TagCreateAndDeleteDTO userInput) {
         try {
-            User userRequest = authenticationHelper.tryGetUser(headers);
+            User userRequest = authenticationHelper.tryGetUserWithRoles(headers);
 
             tagService.addTagToPost(postId, userInput.getTags(), userRequest);
 
@@ -200,7 +200,7 @@ public class PostController {
                                            @PathVariable int postId,
                                            @Valid @RequestBody TagUpdateDTO userInput) {
         try {
-            User userRequest = authenticationHelper.tryGetUser(headers);
+            User userRequest = authenticationHelper.tryGetUserWithRoles(headers);
 
             tagService.updateTagFromPost(postId, userInput.getOldTags(), userInput.getNewTags(), userRequest);
 
@@ -237,7 +237,7 @@ public class PostController {
     public void deletePost(@RequestHeader HttpHeaders headers,
                            @PathVariable int postId) {
         try {
-            User userRequest = authenticationHelper.tryGetUser(headers);
+            User userRequest = authenticationHelper.tryGetUserWithRoles(headers);
 
             postService.deletePost(postId, userRequest);
         } catch (UnauthorizedOperationException e) {
@@ -252,7 +252,7 @@ public class PostController {
                                              @PathVariable int postId,
                                              @Valid @RequestBody TagCreateAndDeleteDTO userInput) {
         try {
-            User userRequest = authenticationHelper.tryGetUser(headers);
+            User userRequest = authenticationHelper.tryGetUserWithRoles(headers);
 
             tagService.deleteTagFromPost(postId, userInput.getTags(), userRequest);
 
@@ -269,7 +269,7 @@ public class PostController {
                                         @PathVariable int postId,
                                         @Valid @PathVariable int commentId) {
         try {
-            User userRequest = authenticationHelper.tryGetUser(headers);
+            User userRequest = authenticationHelper.tryGetUserWithRoles(headers);
 
             commentService.deleteComment(postId, commentId, userRequest);
 

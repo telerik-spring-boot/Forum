@@ -6,12 +6,10 @@ import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.models.post.Comment;
 import com.telerik.forum.models.post.Post;
 import com.telerik.forum.models.user.User;
-import com.telerik.forum.repositories.admin.AdminDetailsRepository;
 import com.telerik.forum.repositories.comment.CommentRepository;
 import com.telerik.forum.repositories.post.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 
 
 import static com.telerik.forum.services.post.PostServiceImpl.BLOCKED_ACCOUNT_MESSAGE;
@@ -23,15 +21,13 @@ public class CommentServiceImpl implements CommentService {
     public static final String INVALID_COMMENT_ID_FOR_POST_MESSAGE = "Comment with id %d does not correspond to post with id%d";
 
     private final CommentRepository commentRepository;
-    private final AdminDetailsRepository adminRepository;
     private final PostRepository postRepository;
 
 
     @Autowired
-    public CommentServiceImpl(CommentRepository commentRepository, AdminDetailsRepository adminRepository,
+    public CommentServiceImpl(CommentRepository commentRepository,
                               PostRepository postRepository) {
         this.commentRepository = commentRepository;
-        this.adminRepository = adminRepository;
         this.postRepository = postRepository;
 
     }
@@ -53,7 +49,7 @@ public class CommentServiceImpl implements CommentService {
 
         Post post = postRepository.getPostWithCommentsById(postId);
 
-        if(post == null){
+        if (post == null) {
             throw new EntityNotFoundException("Post", "id", postId);
         }
 
@@ -77,11 +73,11 @@ public class CommentServiceImpl implements CommentService {
     public void deleteComment(int postId, int commentId, User user) {
         Comment commentToDelete = commentRepository.getById(commentId);
 
-        if(commentToDelete == null ){
+        if (commentToDelete == null) {
             throw new EntityNotFoundException("Post", "id", postId);
         }
 
-        if(commentToDelete.getPost().getId() != postId){
+        if (commentToDelete.getPost().getId() != postId) {
             throw new InvalidUserInputException(String.format(INVALID_COMMENT_ID_FOR_POST_MESSAGE,
                     commentId, postId));
         }
@@ -92,7 +88,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     private void checkCommentCreatePermission(User user) {
-        if (user.isBlocked()){
+        if (user.isBlocked()) {
             throw new UnauthorizedOperationException(BLOCKED_ACCOUNT_MESSAGE);
         }
     }
@@ -108,7 +104,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     private void checkCommentDeletePermission(Comment comment, User user) {
-        boolean isAdmin = adminRepository.getByUserId(user.getId()) != null;
+        boolean isAdmin = user.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"));
 
         if (!(comment.getUser().equals(user) || isAdmin)) {
             throw new UnauthorizedOperationException(UNAUTHORIZED_DELETE_MESSAGE);

@@ -46,8 +46,8 @@ jobs:
           echo "ENCRYPTION_SECRET_KEY=${{ secrets.ENCRYPTION_SECRET_KEY }}" >> $GITHUB_ENV
 
 
-      - name: Print dependency tree
-        run: ./gradlew dependencies
+      - name: Check Mockito version
+        run: ./gradlew dependencyInsight --dependency mockito-core
 
       - name: Run tests with Gradle
         run: ./gradlew test --no-daemon

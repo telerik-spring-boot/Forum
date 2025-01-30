@@ -21,6 +21,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -35,22 +36,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class PostControllerTests {
 
-    @MockitoBean
+    @MockBean
     private PostService mockPostService;
 
-    @MockitoBean
+    @MockBean
     private AuthenticationHelper mockAuthenticationHelper;
 
-    @MockitoBean
+    @MockBean
     private PostMapper mockPostMapper;
 
-    @MockitoBean
+    @MockBean
     private CommentService mockCommentService;
 
-    @MockitoBean
+    @MockBean
     private LikeService mockLikeService;
 
-    @MockitoBean
+    @MockBean
     private TagService mockTagService;
 
     @Autowired

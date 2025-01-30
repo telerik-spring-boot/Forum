@@ -5,13 +5,11 @@ import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.models.post.Tag;
 import com.telerik.forum.models.post.Post;
 import com.telerik.forum.models.user.User;
-import com.telerik.forum.repositories.admin.AdminDetailsRepository;
 import com.telerik.forum.repositories.tag.TagRepository;
 import com.telerik.forum.repositories.post.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -25,24 +23,18 @@ public class TagServiceImpl implements TagService {
 
     private final TagRepository tagRepository;
     private final PostRepository postRepository;
-    private final AdminDetailsRepository adminDetailsRepository;
-
-    //private final TagService selfProxy;
 
     @Autowired
-    public TagServiceImpl(TagRepository tagRepository, PostRepository postRepository,
-                          AdminDetailsRepository adminDetailsRepository) {
+    public TagServiceImpl(TagRepository tagRepository, PostRepository postRepository) {
         this.tagRepository = tagRepository;
         this.postRepository = postRepository;
-        this.adminDetailsRepository = adminDetailsRepository;
-        //this.selfProxy = selfProxy;
     }
 
     @Override
     public void addTagToPost(int postId, String tags, User user) {
         Post post = postRepository.getPostWithTagsById(postId);
 
-        if(post == null){
+        if (post == null) {
             throw new EntityNotFoundException("Post", "id", postId);
         }
 
@@ -63,7 +55,7 @@ public class TagServiceImpl implements TagService {
     public void updateTagFromPost(int postId, String oldTags, String newTags, User user) {
         Post post = postRepository.getPostWithTagsById(postId);
 
-        if(post == null){
+        if (post == null) {
             throw new EntityNotFoundException("Post", "id", postId);
         }
 
@@ -86,7 +78,7 @@ public class TagServiceImpl implements TagService {
     public void deleteTagFromPost(int postId, String tags, User user) {
         Post post = postRepository.getPostWithTagsById(postId);
 
-        if(post == null){
+        if (post == null) {
             throw new EntityNotFoundException("Post", "id", postId);
         }
 
@@ -102,7 +94,7 @@ public class TagServiceImpl implements TagService {
 
     private void checkPermissions(Post post, User user) {
 
-        boolean isAdmin = adminDetailsRepository.getByUserId(user.getId()) != null;
+        boolean isAdmin = user.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"));
 
         if (!(post.getUser().equals(user) || isAdmin)) {
             throw new UnauthorizedOperationException(UNAUTHORIZED_MESSAGE);

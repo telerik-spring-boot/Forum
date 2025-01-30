@@ -6,7 +6,6 @@ import com.telerik.forum.models.post.Like;
 import com.telerik.forum.models.post.Post;
 import com.telerik.forum.models.user.User;
 import com.telerik.forum.models.filters.FilterPostOptions;
-import com.telerik.forum.repositories.admin.AdminDetailsRepository;
 import com.telerik.forum.repositories.post.PostRepository;
 import com.telerik.forum.repositories.utilities.SortingHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +22,12 @@ public class PostServiceImpl implements PostService {
     private static final String UNAUTHORIZED_UPDATE_MESSAGE = "You do not have permission to update this post!";
 
     private final PostRepository postRepository;
-    private final AdminDetailsRepository adminRepository;
+
 
     @Autowired
-    public PostServiceImpl(PostRepository postRepository,
-                           AdminDetailsRepository adminRepository) {
+    public PostServiceImpl(PostRepository postRepository) {
         this.postRepository = postRepository;
-        this.adminRepository = adminRepository;
+
     }
 
     @Override
@@ -156,7 +154,7 @@ public class PostServiceImpl implements PostService {
     private void checkPostDeletePermission(int postId, User user) {
         Post post = getById(postId);
 
-        boolean isAdmin = adminRepository.getByUserId(user.getId()) != null;
+        boolean isAdmin = user.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"));
 
         if (!(post.getUser().equals(user) || isAdmin)) {
             throw new UnauthorizedOperationException(UNAUTHORIZED_DELETE_MESSAGE);

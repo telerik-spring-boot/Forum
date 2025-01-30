@@ -35,11 +35,9 @@ public class User {
     @Column(name = "blocked")
     private boolean blocked;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private  List<Post> posts = new ArrayList<>();
 
-    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private  List<Comment> comments = new ArrayList<>();
 

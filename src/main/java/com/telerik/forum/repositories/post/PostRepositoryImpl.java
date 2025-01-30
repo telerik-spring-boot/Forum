@@ -1,9 +1,9 @@
 package com.telerik.forum.repositories.post;
 
+import com.telerik.forum.models.filters.FilterPostOptions;
 import com.telerik.forum.models.post.Like;
 import com.telerik.forum.models.post.Post;
 import com.telerik.forum.models.post.Tag;
-import com.telerik.forum.models.filters.FilterPostOptions;
 import jakarta.persistence.criteria.*;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
@@ -214,14 +214,14 @@ public class PostRepositoryImpl implements PostRepository {
 
             List<Predicate> predicates = new ArrayList<>();
 
-            if (userId !=-1) {
+            if (userId != -1) {
                 predicates.add(criteriaBuilder.equal(root.get("user").get("id"), userId));
             }
-            else{
-                options.getCreatorUsername().ifPresent(username -> {
-                    predicates.add(criteriaBuilder.like(root.get("user").get("username"), "%" + username + "%"));
-                });
-            }
+
+            options.getCreatorUsername().ifPresent(username -> {
+                predicates.add(criteriaBuilder.like(root.get("user").get("username"), "%" + username + "%"));
+            });
+
             options.getTitle().ifPresent(title -> {
                 predicates.add(criteriaBuilder.like(root.get("title"), "%" + title + "%"));
             });

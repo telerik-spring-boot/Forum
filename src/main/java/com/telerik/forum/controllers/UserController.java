@@ -83,7 +83,6 @@ public class UserController {
     @PostMapping
     public UserDisplayDTO createUser(@Valid @RequestBody UserCreateDTO userInput) {
 
-
         User user = userMapper.dtoToUser(userInput);
 
         userService.create(user);
@@ -103,7 +102,7 @@ public class UserController {
         userService.update(userToBeUpdated, userRequest);
 
         return userMapper.userToUserDisplayDTO(userToBeUpdated);
-        
+
     }
 
     @DeleteMapping("/{id}")

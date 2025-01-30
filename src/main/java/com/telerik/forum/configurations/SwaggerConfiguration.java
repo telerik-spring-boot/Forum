@@ -4,10 +4,7 @@ import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.models.*;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.media.ArraySchema;
-import io.swagger.v3.oas.models.media.Content;
-import io.swagger.v3.oas.models.media.MediaType;
-import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.*;
 import io.swagger.v3.oas.models.parameters.Parameter;
 import io.swagger.v3.oas.models.parameters.RequestBody;
 import io.swagger.v3.oas.models.responses.ApiResponse;
@@ -49,11 +46,6 @@ public class SwaggerConfiguration {
 
     private Components getComponentWithAllSchemas() {
         return new Components()
-                .addSecuritySchemes("basicAuth", new io.swagger.v3.oas.models.security.SecurityScheme()
-                        .type(io.swagger.v3.oas.models.security.SecurityScheme.Type.HTTP)
-                        .scheme("basic")
-                        .description("Enter username and password for basic authentication.")
-                )
                 .addSecuritySchemes("bearerAuth", new io.swagger.v3.oas.models.security.SecurityScheme()
                         .type(io.swagger.v3.oas.models.security.SecurityScheme.Type.HTTP)
                         .scheme("bearer")
@@ -159,6 +151,13 @@ public class SwaggerConfiguration {
                 .addSchemas("TagCreateAndDeleteDTO", new Schema<>().type("object")
                         .addProperty("tags", getTagSchema("Tags separated by a comma between 4 and 200 symbols."))
                 )
+                .addSchemas("UserLoginDTO", new Schema<>().type("object")
+                        .addProperty("username", new Schema<>()
+                                .description("Username")
+                                .example("george_bush"))
+                        .addProperty("password", new Schema<> ()
+                                .description("Password")
+                                .example("<PASSWORD>")))
                 .addSchemas("TagUpdateDTO", new Schema<>().type("object")
                         .addProperty("tags", getTagSchema("Old name of tags to be replaced separated by a comma between 4 and 200 symbols."))
                         .addProperty("tags", getTagSchema("New name of tags to be replaced separated by a comma between 4 and 200 symbols."))
@@ -190,11 +189,26 @@ public class SwaggerConfiguration {
         paths.addPathItem("/home", new PathItem()
                 .get(new Operation()
                         .summary("Home page")
-                        .addTagsItem("Home page")
+                        .addTagsItem("Anonymous access")
                         .responses(new ApiResponses()
                                 .addApiResponse("200", new ApiResponse()
                                         .description("Successful operation.")
                                         .content(getSampleContent("Home"))))));
+
+        paths.addPathItem("/login", new PathItem()
+                .post(new Operation()
+                        .summary("Login page")
+                        .addTagsItem("Anonymous access")
+                        .requestBody(getRequestBody("UserLoginDTO"))
+                        .responses(new ApiResponses()
+                                .addApiResponse("200", new ApiResponse()
+                                        .description("Successful operation.")
+                                        .content(new Content()
+                                                .addMediaType("application/json", new MediaType()
+                                                .schema(new StringSchema().example("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMjM0NTY3ODkwfQ.Dksj1OiIJmWs1i8eD_SFLjOCcxw3H8GGWwpzQG95MG0"))))
+                                )
+                                .addApiResponse("404", new ApiResponse().description("User not found"))
+                                .addApiResponse("401", new ApiResponse().description("Unauthorized operation")))));
 
         addUserPathItems(paths);
 
@@ -219,8 +233,7 @@ public class SwaggerConfiguration {
                                         .content(getSampleContent("PostDisplayDTO"))
                                 )
                         )
-                        .security(List.of(new SecurityRequirement().addList("basicAuth"), new SecurityRequirement().addList("bearerAuth")))
-                )
+                        .security(List.of(new SecurityRequirement().addList("bearerAuth"))))
                 .post(new Operation()
                         .summary("Create a new post")
                         .description("This endpoint creates a new post.")
@@ -228,9 +241,7 @@ public class SwaggerConfiguration {
                         .parameters(List.of(getHeaderParameter()))
                         .requestBody(getRequestBody("PostCreateDTO"))
                         .responses(successNotFoundUnauthorizedResponses("PostDisplayDTO"))
-                        .security(List.of(new SecurityRequirement().addList("basicAuth"), new SecurityRequirement().addList("bearerAuth")))
-
-                )
+                        .security(List.of(new SecurityRequirement().addList("bearerAuth"))))
         );
 
         paths.addPathItem("/api/posts/{postId}", new PathItem()
@@ -240,9 +251,7 @@ public class SwaggerConfiguration {
                         .addTagsItem("Post CRUD operations")
                         .parameters(List.of(getPathIdParameter("postId")))
                         .responses(successNotFoundResponses("PostDisplayDTO"))
-                        .security(List.of(new SecurityRequirement().addList("basicAuth"), new SecurityRequirement().addList("bearerAuth")))
-
-                )
+                        .security(List.of(new SecurityRequirement().addList("bearerAuth"))))
                 .put(new Operation()
                         .summary("Update a post by postId")
                         .description("This endpoint updates a post by postId.")
@@ -250,18 +259,14 @@ public class SwaggerConfiguration {
                         .parameters(List.of(getHeaderParameter(), getPathIdParameter("postId")))
                         .requestBody(getRequestBody("PostCreateDTO"))
                         .responses(successNotFoundUnauthorizedResponses("PostDisplayDTO"))
-                        .security(List.of(new SecurityRequirement().addList("basicAuth"), new SecurityRequirement().addList("bearerAuth")))
-
-                )
+                        .security(List.of(new SecurityRequirement().addList("bearerAuth"))))
                 .delete(new Operation()
                         .summary("Delete a post by postId")
                         .description("This endpoint deletes a post by postId.")
                         .addTagsItem("Post CRUD operations")
                         .parameters(List.of(getHeaderParameter(), getPathIdParameter("postId")))
                         .responses(successNotFoundUnauthorizedResponses(null))
-                        .security(List.of(new SecurityRequirement().addList("basicAuth"), new SecurityRequirement().addList("bearerAuth")))
-
-                )
+                        .security(List.of(new SecurityRequirement().addList("bearerAuth"))))
         );
 
         paths.addPathItem("/api/posts/{postId}/like", new PathItem()
@@ -271,9 +276,7 @@ public class SwaggerConfiguration {
                         .addTagsItem("Post content management")
                         .parameters(List.of(getHeaderParameter(), getPathIdParameter("postId")))
                         .responses(successNotFoundUnauthorizedResponses("PostDisplayDTO"))
-                        .security(List.of(new SecurityRequirement().addList("basicAuth"), new SecurityRequirement().addList("bearerAuth")))
-
-                )
+                        .security(List.of(new SecurityRequirement().addList("bearerAuth"))))
         );
 
         paths.addPathItem("/api/posts/{postId}/dislike", new PathItem()
@@ -283,9 +286,7 @@ public class SwaggerConfiguration {
                         .addTagsItem("Post content management")
                         .parameters(List.of(getHeaderParameter(), getPathIdParameter("postId")))
                         .responses(successNotFoundUnauthorizedResponses("PostDisplayDTO"))
-                        .security(List.of(new SecurityRequirement().addList("basicAuth"), new SecurityRequirement().addList("bearerAuth")))
-
-                )
+                        .security(List.of(new SecurityRequirement().addList("bearerAuth"))))
         );
 
         paths.addPathItem("/api/posts/{postId}/comments", new PathItem()
@@ -296,9 +297,7 @@ public class SwaggerConfiguration {
                         .parameters(List.of(getHeaderParameter(), getPathIdParameter("postId")))
                         .requestBody(getRequestBody("CommentCreateDTO"))
                         .responses(successNotFoundUnauthorizedResponses("PostDisplayDTO"))
-                        .security(List.of(new SecurityRequirement().addList("basicAuth"), new SecurityRequirement().addList("bearerAuth")))
-
-                )
+                        .security(List.of(new SecurityRequirement().addList("bearerAuth"))))
         );
 
         paths.addPathItem("/api/posts/{postId}/comments/{commentId}", new PathItem()
@@ -309,18 +308,14 @@ public class SwaggerConfiguration {
                         .parameters(List.of(getHeaderParameter(), getPathIdParameter("postId"), getPathIdParameter("commentId")))
                         .requestBody(getRequestBody("CommentCreateDTO"))
                         .responses(successNotFoundUnauthorizedResponses("PostDisplayDTO"))
-                        .security(List.of(new SecurityRequirement().addList("basicAuth"), new SecurityRequirement().addList("bearerAuth")))
-
-                )
+                        .security(List.of(new SecurityRequirement().addList("bearerAuth"))))
                 .delete(new Operation()
                         .summary("Delete a comment by comment number of a post by postId")
                         .description("This endpoint deletes a comment of a post by comment number.")
                         .addTagsItem("Post content management")
                         .parameters(List.of(getHeaderParameter(), getPathIdParameter("postId"), getPathIdParameter("commentId")))
                         .responses(successNotFoundUnauthorizedResponses("PostDisplayDTO"))
-                        .security(List.of(new SecurityRequirement().addList("basicAuth"), new SecurityRequirement().addList("bearerAuth")))
-
-                )
+                        .security(List.of(new SecurityRequirement().addList("bearerAuth"))))
         );
 
         paths.addPathItem("/api/posts/{postId}/tags", new PathItem()
@@ -331,9 +326,7 @@ public class SwaggerConfiguration {
                         .parameters(List.of(getHeaderParameter(), getPathIdParameter("postId")))
                         .requestBody(getRequestBody("TagCreateAndDeleteDTO"))
                         .responses(successNotFoundUnauthorizedResponses("PostDisplayDTO"))
-                        .security(List.of(new SecurityRequirement().addList("basicAuth"), new SecurityRequirement().addList("bearerAuth")))
-
-                )
+                        .security(List.of(new SecurityRequirement().addList("bearerAuth"))))
                 .put(new Operation()
                         .summary("Update tags for a post by postId")
                         .description("This endpoint updates tags names for a post by postId.")
@@ -342,9 +335,7 @@ public class SwaggerConfiguration {
                         .requestBody(getRequestBody("TagUpdateDTO"))
                         .responses(successNotFoundUnauthorizedResponses("PostDisplayDTO")
                                 .addApiResponse("400", new ApiResponse().description("Bad Request")))
-                        .security(List.of(new SecurityRequirement().addList("basicAuth"), new SecurityRequirement().addList("bearerAuth")))
-
-                )
+                        .security(List.of(new SecurityRequirement().addList("bearerAuth"))))
                 .delete(new Operation()
                         .summary("Delete a tag for a post by postId")
                         .description("This endpoint deletes a tag for a post by postId.")
@@ -352,9 +343,7 @@ public class SwaggerConfiguration {
                         .parameters(List.of(getHeaderParameter(), getPathIdParameter("postId")))
                         .requestBody(getRequestBody("TagCreateAndDeleteDTO"))
                         .responses(successNotFoundUnauthorizedResponses("PostDisplayDTO"))
-                        .security(List.of(new SecurityRequirement().addList("basicAuth"), new SecurityRequirement().addList("bearerAuth")))
-
-                )
+                        .security(List.of(new SecurityRequirement().addList("bearerAuth"))))
         );
 
 
@@ -372,9 +361,7 @@ public class SwaggerConfiguration {
                                         .content(getSampleContent("AdminDisplayDTO"))
                                 )
                         )
-                        .security(List.of(new SecurityRequirement().addList("basicAuth"), new SecurityRequirement().addList("bearerAuth")))
-
-                )
+                        .security(List.of(new SecurityRequirement().addList("bearerAuth"))))
         );
 
         paths.addPathItem("/api/admins/users", new PathItem()
@@ -397,9 +384,7 @@ public class SwaggerConfiguration {
                                 .addApiResponse("404", new ApiResponse().description("User not found"))
                                 .addApiResponse("401", new ApiResponse().description("Unauthorized operation"))
                         )
-                        .security(List.of(new SecurityRequirement().addList("basicAuth"), new SecurityRequirement().addList("bearerAuth")))
-
-                )
+                        .security(List.of(new SecurityRequirement().addList("bearerAuth"))))
         );
 
 
@@ -410,9 +395,7 @@ public class SwaggerConfiguration {
                         .addTagsItem("Admin CRUD operations")
                         .parameters(List.of(getPathIdParameter("userId")))
                         .responses(successNotFoundResponses("AdminDisplayDTO"))
-                        .security(List.of(new SecurityRequirement().addList("basicAuth"), new SecurityRequirement().addList("bearerAuth")))
-
-                )
+                        .security(List.of(new SecurityRequirement().addList("bearerAuth"))))
                 .put(new Operation()
                         .summary("Update user by ID")
                         .description("This endpoint updates an admin by their ID.")
@@ -420,9 +403,7 @@ public class SwaggerConfiguration {
                         .parameters(List.of(getHeaderParameter(),getPathIdParameter("userId")))
                         .requestBody(getRequestBody("AdminUpdateDTO"))
                         .responses(successNotFoundUnauthorizedResponses("AdminDisplayDTO"))
-                        .security(List.of(new SecurityRequirement().addList("basicAuth"), new SecurityRequirement().addList("bearerAuth")))
-
-                )
+                        .security(List.of(new SecurityRequirement().addList("bearerAuth"))))
         );
 
         paths.addPathItem("/api/admins/users/rights", new PathItem()
@@ -433,9 +414,7 @@ public class SwaggerConfiguration {
                         .requestBody(getRequestBody("AdminCreateDTO"))
                         .parameters(List.of(getHeaderParameter()))
                         .responses(successNotFoundUnauthorizedAdminRoleManagementResponses("AdminDisplayDTO"))
-                        .security(List.of(new SecurityRequirement().addList("basicAuth"), new SecurityRequirement().addList("bearerAuth")))
-
-                )
+                        .security(List.of(new SecurityRequirement().addList("bearerAuth"))))
         );
 
         paths.addPathItem("/api/admins/users/rights/{userId}", new PathItem()
@@ -445,9 +424,7 @@ public class SwaggerConfiguration {
                         .addTagsItem("Admin user management")
                         .parameters(List.of(getHeaderParameter(), getPathIdParameter("userId")))
                         .responses(successNotFoundUnauthorizedAdminRoleManagementResponses(null))
-                        .security(List.of(new SecurityRequirement().addList("basicAuth"), new SecurityRequirement().addList("bearerAuth")))
-
-                )
+                        .security(List.of(new SecurityRequirement().addList("bearerAuth"))))
         );
 
         paths.addPathItem("/api/admins/users/{userId}/block", new PathItem()
@@ -457,9 +434,7 @@ public class SwaggerConfiguration {
                         .addTagsItem("Admin user management")
                         .parameters(List.of(getHeaderParameter(), getPathIdParameter("userId")))
                         .responses(successNotFoundUnauthorizedResponses("UserDisplayDTO"))
-                        .security(List.of(new SecurityRequirement().addList("basicAuth"), new SecurityRequirement().addList("bearerAuth")))
-
-                )
+                        .security(List.of(new SecurityRequirement().addList("bearerAuth"))))
         );
 
         paths.addPathItem("/api/admins/users/{userId}/unblock", new PathItem()
@@ -469,9 +444,7 @@ public class SwaggerConfiguration {
                         .addTagsItem("Admin user management")
                         .parameters(List.of(getHeaderParameter(), getPathIdParameter("userId")))
                         .responses(successNotFoundUnauthorizedResponses("UserDisplayDTO"))
-                        .security(List.of(new SecurityRequirement().addList("basicAuth"), new SecurityRequirement().addList("bearerAuth")))
-
-                )
+                        .security(List.of(new SecurityRequirement().addList("bearerAuth"))))
         );
     }
 
@@ -483,8 +456,7 @@ public class SwaggerConfiguration {
                         .addTagsItem("User CRUD operations")
                         .parameters(List.of(getPathIdParameter("id")))
                         .responses(successNotFoundResponses("UserDisplayDTO"))
-                        .security(List.of(new SecurityRequirement().addList("basicAuth"), new SecurityRequirement().addList("bearerAuth")))
-                )
+                        .security(List.of(new SecurityRequirement().addList("bearerAuth"))))
                 .put(new Operation()
                         .summary("Update user by ID")
                         .description("This endpoint updates a user by their ID.")
@@ -492,18 +464,14 @@ public class SwaggerConfiguration {
                         .parameters(List.of(getHeaderParameter(),getPathIdParameter("id")))
                         .requestBody(getRequestBody("UserUpdateDTO"))
                         .responses(successNotFoundUnauthorizedDuplicateResponses())
-                        .security(List.of(new SecurityRequirement().addList("basicAuth"), new SecurityRequirement().addList("bearerAuth")))
-
-                )
+                        .security(List.of(new SecurityRequirement().addList("bearerAuth"))))
                 .delete(new Operation()
                         .summary("Delete user by ID")
                         .description("This endpoint deletes a user by their ID.")
                         .addTagsItem("User CRUD operations")
                         .parameters(List.of(getHeaderParameter(),getPathIdParameter("id")))
                         .responses(successNotFoundUnauthorizedResponses(null))
-                        .security(List.of(new SecurityRequirement().addList("basicAuth"), new SecurityRequirement().addList("bearerAuth")))
-
-                )
+                        .security(List.of(new SecurityRequirement().addList("bearerAuth"))))
         );
 
         paths.addPathItem("/api/users", new PathItem()
@@ -513,9 +481,7 @@ public class SwaggerConfiguration {
                         .addTagsItem("User CRUD operations")
                         .requestBody(getRequestBody("UserCreateDTO"))
                         .responses(successNotFoundDuplicateResponses())
-                        .security(List.of(new SecurityRequirement().addList("basicAuth"), new SecurityRequirement().addList("bearerAuth")))
-
-                )
+                        .security(List.of(new SecurityRequirement().addList("bearerAuth"))))
         );
 
         paths.addPathItem("/api/users/{id}/comments", new PathItem()
@@ -526,9 +492,7 @@ public class SwaggerConfiguration {
                         .parameters(getCommentParameters())
                         .responses(successNotFoundUnauthorizedResponses("UserCommentsDisplayDTO")
                                 .addApiResponse("400", new ApiResponse().description("Bad Request")))
-                        .security(List.of(new SecurityRequirement().addList("basicAuth"), new SecurityRequirement().addList("bearerAuth")))
-
-        )
+                        .security(List.of(new SecurityRequirement().addList("bearerAuth"))))
         );
 
         paths.addPathItem("/api/users/{id}/posts", new PathItem()
@@ -539,9 +503,7 @@ public class SwaggerConfiguration {
                         .parameters(getPostParameters())
                         .responses(successNotFoundUnauthorizedResponses("UserPostsDisplayDTO")
                                 .addApiResponse("400", new ApiResponse().description("Bad Request")))
-                        .security(List.of(new SecurityRequirement().addList("basicAuth"), new SecurityRequirement().addList("bearerAuth")))
-
-                )
+                        .security(List.of(new SecurityRequirement().addList("bearerAuth"))))
         );
 
     }

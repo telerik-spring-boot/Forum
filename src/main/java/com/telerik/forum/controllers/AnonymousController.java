@@ -1,39 +1,45 @@
 package com.telerik.forum.controllers;
 
 
+import com.telerik.forum.exceptions.EntityNotFoundException;
+import com.telerik.forum.exceptions.UnauthorizedOperationException;
+import com.telerik.forum.helpers.LoginHelper;
 import com.telerik.forum.helpers.PostMapper;
 import com.telerik.forum.models.Home;
+import com.telerik.forum.models.dtos.userDTOs.UserLoginDTO;
 import com.telerik.forum.models.filters.FilterUserOptions;
 import com.telerik.forum.models.post.Post;
-import com.telerik.forum.models.user.User;
 import com.telerik.forum.services.admin.AdminService;
 import com.telerik.forum.services.post.PostService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/home")
-public class HomeController {
+@RequestMapping()
+public class AnonymousController {
 
 
     private static final String CORE_FEATURE_URL = "http://localhost:8080/swagger-ui/index.html";
     private final AdminService adminService;
     private final PostService postService;
     private final PostMapper postMapper;
+    private final LoginHelper loginHelper;
 
     @Autowired
-    public HomeController(AdminService adminService, PostService postService, PostMapper postMapper) {
+    public AnonymousController(AdminService adminService, PostService postService, PostMapper postMapper, LoginHelper loginHelper) {
         this.adminService = adminService;
         this.postService = postService;
         this.postMapper = postMapper;
+        this.loginHelper = loginHelper;
     }
 
-    @GetMapping
+    @GetMapping("/home")
     public Home homePage() {
         Home home = new Home();
 
@@ -52,5 +58,16 @@ public class HomeController {
         home.setPostsCount(posts.isEmpty() ? 0 : posts.size());
 
         return home;
+    }
+
+    @PostMapping("/login")
+    public String loginUser(@Valid @RequestBody UserLoginDTO userInput) {
+        try {
+            return loginHelper.login(userInput);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (UnauthorizedOperationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        }
     }
 }

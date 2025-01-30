@@ -27,15 +27,13 @@ public class UserController {
     private final UserService userService;
     private final AuthenticationHelper authenticationHelper;
     private final UserMapper userMapper;
-    private final LoginHelper loginHelper;
 
     @Autowired
     public UserController(UserService userService, AuthenticationHelper authenticationHelper,
-                          UserMapper userMapper, LoginHelper loginHelper) {
+                          UserMapper userMapper) {
         this.userService = userService;
         this.authenticationHelper = authenticationHelper;
         this.userMapper = userMapper;
-        this.loginHelper = loginHelper;
     }
 
 
@@ -120,16 +118,6 @@ public class UserController {
         }
     }
 
-    @PostMapping("/login")
-    public String loginUser(@Valid @RequestBody UserLoginDTO userInput) {
-        try {
-            return loginHelper.login(userInput);
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch (UnauthorizedOperationException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        }
-    }
 
     @PutMapping("/{id}")
     public UserDisplayDTO updateUser(@RequestHeader HttpHeaders headers, @PathVariable int id, @Valid @RequestBody UserUpdateDTO userInput) {

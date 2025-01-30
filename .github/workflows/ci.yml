@@ -16,10 +16,6 @@ jobs:
       matrix:
         java-version: [17]
 
-    env:
-      ACTIONS_STEP_DEBUG: true
-      ACTIONS_RUNNER_DEBUG: true
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -50,7 +46,5 @@ jobs:
           echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV
           echo "ENCRYPTION_SECRET_KEY=${{ secrets.ENCRYPTION_SECRET_KEY }}" >> $GITHUB_ENV
 
-      - name: Run Tests with Debugging
-        run: ./gradlew test --stacktrace --info
-#      - name: Run tests with Gradle
-#        run: ./gradlew test --no-daemon
+      - name: Run tests with Gradle
+        run: ./gradlew test --no-daemon

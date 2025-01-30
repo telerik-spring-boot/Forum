@@ -146,7 +146,7 @@ public class AdminController {
         try {
             User userRequest = authenticationHelper.tryGetUserWithRoles(headers);
 
-            User userToBlock = userService.getById(userId);
+            User userToBlock = userService.getById(userId, userRequest);
             adminService.blockUser(userToBlock, userRequest);
 
             return userMapper.userToUserDisplayDTO(userToBlock);
@@ -163,7 +163,7 @@ public class AdminController {
         try {
             User userRequest = authenticationHelper.tryGetUserWithRoles(headers);
 
-            User userToUnblock = userService.getById(userId);
+            User userToUnblock = userService.getById(userId, userRequest);
             adminService.unblockUser(userToUnblock, userRequest);
 
             return userMapper.userToUserDisplayDTO(userToUnblock);

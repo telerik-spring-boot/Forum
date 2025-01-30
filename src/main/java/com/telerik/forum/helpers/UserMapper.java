@@ -44,8 +44,8 @@ public class UserMapper {
         return user;
     }
 
-    public User dtoToUser(int id, UserUpdateDTO dto) {
-        User user = userService.getById(id);
+    public User dtoToUser(int id, UserUpdateDTO dto, User userRequest) {
+        User user = userService.getById(id, userRequest);
 
         if(dto.getEmailAddress() != null) {
             user.setEmailAddress(dto.getEmailAddress());

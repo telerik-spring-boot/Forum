@@ -3,6 +3,7 @@ package com.telerik.forum.services.user;
 import com.telerik.forum.exceptions.DuplicateEntityException;
 import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
+import com.telerik.forum.models.filters.Sortable;
 import com.telerik.forum.models.post.Comment;
 import com.telerik.forum.models.post.Like;
 import com.telerik.forum.models.post.Post;
@@ -39,7 +40,9 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public User getById(int id) {
+    public User getById(int id, User userRequest) {
+        authorizationBlocked(userRequest);
+
         User user = userRepository.getById(id);
 
         if (user == null) {
@@ -50,16 +53,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getByIdWithPosts(int id, FilterPostOptions options) {
-        User user = userRepository.getById(id);
+    public User getByIdWithPosts(int id, FilterPostOptions options, User userRequest) {
+        authorizationBlocked(userRequest);
 
-        options.getSortBy().ifPresent(SortingHelper::validateSortByFieldPost);
-
-        options.getSortOrder().ifPresent(SortingHelper::validateSortOrderField);
-
-        if (user == null) {
-            throw new EntityNotFoundException("User", "id", id);
-        }
+        User user = getUserValidationAndSortingValidation(id, options);
 
         List<Post> posts = postRepository.getPostsWithCommentsByUserId(id, options);
 
@@ -71,17 +68,12 @@ public class UserServiceImpl implements UserService {
     }
 
 
+
     @Override
-    public User getByIdWithComments(int id, FilterCommentOptions options) {
-        User user = userRepository.getById(id);
+    public User getByIdWithComments(int id, FilterCommentOptions options, User userRequest) {
+        authorizationBlocked(userRequest);
 
-        options.getSortBy().ifPresent(SortingHelper::validateSortByFieldComment);
-
-        options.getSortOrder().ifPresent(SortingHelper::validateSortOrderField);
-
-        if (user == null) {
-            throw new EntityNotFoundException("User", "id", id);
-        }
+        User user = getUserValidationAndSortingValidation(id, options);
 
         List<Comment> comments = commentRepository.getByUserId(id, options);
 
@@ -90,19 +82,10 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-    @Override
-    public User getByEmail(String email) {
-        User user = userRepository.getByEmail(email);
-
-        if (user == null) {
-            throw new EntityNotFoundException("User", "email", email);
-        }
-
-        return user;
-    }
 
     @Override
     public User getByUsername(String username) {
+
         User user = userRepository.getByUsername(username);
 
         if (user == null) {
@@ -114,6 +97,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getByUsernameWithRoles(String username) {
+
         User user = userRepository.getByUsernameWithRoles(username);
 
         if (user == null) {
@@ -123,20 +107,11 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-    @Override
-    public User getByFirstName(String firstName) {
-        User user = userRepository.getByFirstName(firstName);
-
-        if (user == null) {
-            throw new EntityNotFoundException("User", "firstName", firstName);
-        }
-
-        return user;
-    }
 
     @Override
     public void create(User userInput) {
         boolean emailAlreadyExists = userRepository.getByEmail(userInput.getEmailAddress()) != null;
+
         boolean usernameAlreadyExists = userRepository.getByUsername(userInput.getUsername()) != null;
 
         if (emailAlreadyExists) {
@@ -153,8 +128,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void update(User userInput, int requestUserId) {
-        authorization(userInput, requestUserId);
+    public void update(User userInput, User userRequest) {
+        authorization(userInput.getId(), userRequest);
 
         User userToUpdate = userRepository.getByEmail(userInput.getEmailAddress());
 
@@ -170,19 +145,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void delete(int id, int requestUserId) {
-        authorization(userRepository.getById(id), requestUserId);
+    public void delete(int id, User userRequest) {
+        authorization(id, userRequest);
 
         userRepository.delete(id);
     }
 
-    private void authorization(User userInput, int requestUserId) {
-        User user = userRepository.getByIdWithRoles(requestUserId);
-        boolean isAdmin = user.getRoles().stream()
+    private void authorizationBlocked(User userRequest) {
+
+        if(userRequest.isBlocked()){
+            throw new UnauthorizedOperationException(PERMISSION_ERROR_MESSAGE);
+        }
+    }
+
+    private void authorization(int id, User userRequest) {
+
+        boolean isAdmin = userRequest.getRoles().stream()
                 .anyMatch(role -> role.getName().equalsIgnoreCase("ADMIN"));
 
-        if (user.isBlocked() ||
-                (!isAdmin && requestUserId != userInput.getId())) {
+        if (userRequest.isBlocked() ||
+                (!isAdmin && userRequest.getId() != id)) {
             throw new UnauthorizedOperationException(PERMISSION_ERROR_MESSAGE);
         }
     }
@@ -211,5 +193,18 @@ public class UserServiceImpl implements UserService {
         if (!postsToDelete.isEmpty()) {
             posts.removeAll(postsToDelete);
         }
+    }
+
+    private <T extends Sortable> User getUserValidationAndSortingValidation(int id, T options) {
+        User user = userRepository.getById(id);
+
+        options.getSortBy().ifPresent(SortingHelper::validateSortByFieldPost);
+
+        options.getSortOrder().ifPresent(SortingHelper::validateSortOrderField);
+
+        if (user == null) {
+            throw new EntityNotFoundException("User", "id", id);
+        }
+        return user;
     }
 }

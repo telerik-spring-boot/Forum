@@ -8,24 +8,20 @@ import com.telerik.forum.models.filters.FilterPostOptions;
 public interface UserService {
 
 
-    User getById(int id);
+    User getById(int id, User userRequest);
 
-    User getByIdWithPosts(int id, FilterPostOptions options);
+    User getByIdWithPosts(int id, FilterPostOptions options, User userRequest);
 
-    User getByIdWithComments(int id, FilterCommentOptions options);
-
-    User getByEmail(String email);
+    User getByIdWithComments(int id, FilterCommentOptions options, User userRequest);
 
     User getByUsername(String username);
 
     User getByUsernameWithRoles(String username);
 
-    User getByFirstName(String firstName);
-
     void create(User userInput);
 
-    void update(User userInput, int requestUserId);
+    void update(User userInput, User userRequest);
 
-    void delete(int id, int requestUserId);
+    void delete(int id, User userRequest);
 
 }

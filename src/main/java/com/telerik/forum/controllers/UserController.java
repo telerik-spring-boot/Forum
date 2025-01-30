@@ -42,9 +42,9 @@ public class UserController {
     @GetMapping("/{id}")
     public UserDisplayDTO getUserById(@RequestHeader HttpHeaders headers, @PathVariable int id) {
         try {
-            authenticationHelper.tryGetUser(headers);
+            User userRequest = authenticationHelper.tryGetUser(headers);
 
-            return userMapper.userToUserDisplayDTO(userService.getById(id));
+            return userMapper.userToUserDisplayDTO(userService.getById(id, userRequest));
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (UnauthorizedOperationException e) {
@@ -63,7 +63,7 @@ public class UserController {
                                             @RequestParam(required = false) String sortOrder,
                                             @PathVariable int id) {
         try {
-            authenticationHelper.tryGetUser(headers);
+            User userRequest = authenticationHelper.tryGetUser(headers);
             String[] tagArray = null;
 
             if (tags != null) {
@@ -72,7 +72,7 @@ public class UserController {
 
             FilterPostOptions options = new FilterPostOptions(null, title, content, tagArray, minLikes, maxLikes, sortBy, sortOrder);
 
-            User userEntity = userService.getByIdWithPosts(id, options);
+            User userEntity = userService.getByIdWithPosts(id, options, userRequest);
 
             return userMapper.userToUserPostsDisplayDTO(userEntity);
         } catch (EntityNotFoundException e) {
@@ -91,9 +91,9 @@ public class UserController {
                                                   @RequestParam(required = false) String sortOrder,
                                                   @PathVariable int id) {
         try {
-            authenticationHelper.tryGetUser(headers);
+            User userRequest = authenticationHelper.tryGetUser(headers);
 
-            User userEntity = userService.getByIdWithComments(id, new FilterCommentOptions(null, commentContent, sortBy, sortOrder));
+            User userEntity = userService.getByIdWithComments(id, new FilterCommentOptions(null, commentContent, sortBy, sortOrder), userRequest);
 
             return userMapper.userToUserCommentsDisplayDTO(userEntity);
         } catch (EntityNotFoundException e) {
@@ -134,13 +134,13 @@ public class UserController {
     @PutMapping("/{id}")
     public UserDisplayDTO updateUser(@RequestHeader HttpHeaders headers, @PathVariable int id, @Valid @RequestBody UserUpdateDTO userInput) {
         try {
-            User userRequest = authenticationHelper.tryGetUser(headers);
+            User userRequest = authenticationHelper.tryGetUserWithRoles(headers);
 
-            User userToBeUpdated = userMapper.dtoToUser(id, userInput);
+            User userToBeUpdated = userMapper.dtoToUser(id, userInput, userRequest);
 
-            userService.update(userToBeUpdated, userRequest.getId());
+            userService.update(userToBeUpdated, userRequest);
 
-            return userMapper.userToUserDisplayDTO(userService.getById(id));
+            return userMapper.userToUserDisplayDTO(userToBeUpdated);
 
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
@@ -154,9 +154,9 @@ public class UserController {
     @DeleteMapping("/{id}")
     public void deleteUser(@RequestHeader HttpHeaders headers, @PathVariable int id) {
         try {
-            User userRequest = authenticationHelper.tryGetUser(headers);
+            User userRequest = authenticationHelper.tryGetUserWithRoles(headers);
 
-            userService.delete(id, userRequest.getId());
+            userService.delete(id, userRequest);
 
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());

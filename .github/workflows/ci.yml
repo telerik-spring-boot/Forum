@@ -51,7 +51,7 @@ jobs:
 
 
       - name: Log Dependencies
-        run: ./gradlew logDependencies --configuration runtimeClasspath
+        run: ./gradlew dependencies --configuration runtimeClasspath
 
       - name: Run tests with Gradle
         run: ./gradlew test --no-daemon

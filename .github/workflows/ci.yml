@@ -51,7 +51,7 @@ jobs:
 
 
       - name: Check Mockito version
-        run: ./gradlew dependencyInsight --dependency mockito-core --configuration testImplementation
+        run: ./gradlew dependencyInsight --dependency mockito-core --configuration testRuntimeClasspath
 
       - name: Run tests with Gradle
         run: ./gradlew test --no-daemon

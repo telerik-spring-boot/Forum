@@ -16,7 +16,6 @@ import static com.telerik.forum.services.post.PostServiceImpl.BLOCKED_ACCOUNT_ME
 public class CommentServiceImpl implements CommentService {
     private static final String UNAUTHORIZED_UPDATE_MESSAGE = "You do not have permission to update this comment!";
     private static final String UNAUTHORIZED_DELETE_MESSAGE = "You do not have permission to delete this comment!";
-    public static final String INVALID_COMMENT_ID_FOR_POST_MESSAGE = "Comment with id %d does not correspond to post with id%d";
 
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;

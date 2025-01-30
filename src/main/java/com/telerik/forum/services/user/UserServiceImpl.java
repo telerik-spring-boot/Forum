@@ -147,7 +147,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(int id, User userRequest) {
         authorization(id, userRequest);
-// TODO: when no user with the given ID exists we throw 500
+
+        User userToDelete = userRepository.getById(id);
+
+        if(userToDelete == null){
+            throw new EntityNotFoundException("User", "id", id);
+        }
+
         userRepository.delete(id);
     }
 

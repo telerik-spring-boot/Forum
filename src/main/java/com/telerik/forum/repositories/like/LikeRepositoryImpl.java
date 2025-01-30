@@ -17,18 +17,6 @@ public class LikeRepositoryImpl implements LikeRepository {
     }
 
 
-//    @Override
-//    public Like getLikeByPostAndUserId(int postId, int userId) {
-//        try (Session session = sessionFactory.openSession()) {
-//            Query<Like> query = session.createQuery(
-//                    "FROM Like l WHERE l.post.id = :postId and l.user.id = :userId",
-//                    Like.class
-//            );
-//            query.setParameter("postId", postId);
-//            query.setParameter("userId", userId);
-//            return query.uniqueResult();
-//        }
-//    }
 
     @Override
     public void create(Like like) {

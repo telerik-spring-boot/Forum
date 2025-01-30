@@ -1,7 +1,6 @@
 package com.telerik.forum.models.user;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.telerik.forum.models.post.Comment;
 import com.telerik.forum.models.post.Post;
 import jakarta.persistence.*;

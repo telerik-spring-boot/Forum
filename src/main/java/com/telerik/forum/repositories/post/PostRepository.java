@@ -29,8 +29,6 @@ public interface PostRepository {
 
     Post getPostWithCommentsAndLikesAndTagsById(int id);
 
-   // List<Post> getPostsAndCommentsbyUserId(int userId);
-
     void create(Post post);
 
     void update(Post post);

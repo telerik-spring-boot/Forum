@@ -18,8 +18,6 @@ public interface PostService {
 
     List<Post> getMostRecentPosts(int limit);
 
-    //List<Post> getPostsByAuthor(User user);
-
     Post getById(int id);
 
     Post getByIdWithComments(int id);

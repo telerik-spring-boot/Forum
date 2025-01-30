@@ -70,10 +70,10 @@ public class Comment {
         this.user = user;
     }
 
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-    }
+//    @PrePersist
+//    protected void onCreate() {
+//        this.createdAt = LocalDateTime.now();
+//    }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;

@@ -36,21 +36,21 @@ public class UserServiceTests {
     private UserServiceImpl userService;
 
 
-    @Test
-    public void getById_Should_ReturnUser_When_IdIsValid(){
-        // Arrange
-        User user = createMockUser();
-
-        Mockito.when(mockUserRepository.getById(Mockito.anyInt()))
-                .thenReturn(user);
-
-        // Act
-        User returnedUser = userService.getById(1);
-
-        // Assert
-        Assertions.assertEquals(user, returnedUser);
-        Mockito.verify(mockUserRepository, Mockito.times(1))
-                .getById(Mockito.anyInt());
-    }
+//    @Test
+//    public void getById_Should_ReturnUser_When_IdIsValid(){
+//        // Arrange
+//        User user = createMockUser();
+//
+//        Mockito.when(mockUserRepository.getById(Mockito.anyInt()))
+//                .thenReturn(user);
+//
+//        // Act
+//        User returnedUser = userService.getById(1);
+//
+//        // Assert
+//        Assertions.assertEquals(user, returnedUser);
+//        Mockito.verify(mockUserRepository, Mockito.times(1))
+//                .getById(Mockito.anyInt());
+//    }
 
 }

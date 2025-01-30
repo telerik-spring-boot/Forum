@@ -10,9 +10,6 @@ import javax.sql.DataSource;
 @SpringBootTest
 class ForumApplicationTests {
 
-    @MockitoBean
-    private DataSource dataSource;
-
     @Test
     void contextLoads() {
     }

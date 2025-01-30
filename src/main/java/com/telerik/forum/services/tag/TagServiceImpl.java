@@ -151,18 +151,18 @@ public class TagServiceImpl implements TagService {
         post.getTags().removeAll(tagsToRemove);
     }
 
-    public void deleteOrphanedTags() {
-        List<Tag> orphanedTags = tagRepository.getOrphanedTags();
-
-        List<Tag> orphanedTagsCopy = new ArrayList<>(orphanedTags);
-
-        orphanedTagsCopy.forEach(tagRepository::deleteTag);
-
-    }
-
-    @Scheduled(fixedRate = 86400000) // 24 hours
-    public void scheduledDeleteOrphanedTags() {
-        this.deleteOrphanedTags();
-    }
+//    public void deleteOrphanedTags() {
+//        List<Tag> orphanedTags = tagRepository.getOrphanedTags();
+//
+//        List<Tag> orphanedTagsCopy = new ArrayList<>(orphanedTags);
+//
+//        orphanedTagsCopy.forEach(tagRepository::deleteTag);
+//
+//    }
+//
+//    @Scheduled(fixedRate = 86400000) // 24 hours
+//    public void scheduledDeleteOrphanedTags() {
+//        this.deleteOrphanedTags();
+//    }
 
 }

@@ -104,7 +104,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     private void checkCommentDeletePermission(Comment comment, User user) {
-        boolean isAdmin = user.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"));
+        boolean isAdmin = checkIfUserIsAdmin(user);
 
         if (!(comment.getUser().equals(user) || isAdmin)) {
             throw new UnauthorizedOperationException(UNAUTHORIZED_DELETE_MESSAGE);
@@ -113,6 +113,10 @@ public class CommentServiceImpl implements CommentService {
         if (user.isBlocked()) {
             throw new UnauthorizedOperationException(BLOCKED_ACCOUNT_MESSAGE);
         }
+    }
+
+    private static boolean checkIfUserIsAdmin(User user) {
+        return user.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"));
     }
 
 }

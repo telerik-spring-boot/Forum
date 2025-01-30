@@ -154,7 +154,7 @@ public class PostServiceImpl implements PostService {
     private void checkPostDeletePermission(int postId, User user) {
         Post post = getById(postId);
 
-        boolean isAdmin = user.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"));
+        boolean isAdmin = checkIfUserIsAdmin(user);
 
         if (!(post.getUser().equals(user) || isAdmin)) {
             throw new UnauthorizedOperationException(UNAUTHORIZED_DELETE_MESSAGE);
@@ -164,6 +164,10 @@ public class PostServiceImpl implements PostService {
             throw new UnauthorizedOperationException(BLOCKED_ACCOUNT_MESSAGE);
         }
 
+    }
+
+    private static boolean checkIfUserIsAdmin(User user) {
+        return user.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"));
     }
 
     private void filterByLikes(List<Post> posts, FilterPostOptions options) {

@@ -113,6 +113,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getByUsernameWithRoles(String username) {
+        User user = userRepository.getByUsernameWithRoles(username);
+
+        if (user == null) {
+            throw new EntityNotFoundException("User", "username", username);
+        }
+
+        return user;
+    }
+
+    @Override
     public User getByFirstName(String firstName) {
         User user = userRepository.getByFirstName(firstName);
 

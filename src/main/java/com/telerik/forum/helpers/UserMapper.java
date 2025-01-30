@@ -11,6 +11,7 @@ import com.telerik.forum.models.dtos.userDTOs.*;
 import com.telerik.forum.services.admin.AdminService;
 import com.telerik.forum.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -22,22 +23,20 @@ public class UserMapper {
     private final UserService userService;
     private final AdminService adminService;
     private final PostMapper postMapper;
-    private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public UserMapper(UserService userService, AdminService adminService,
-                      PostMapper postMapper, PasswordEncoder passwordEncoder) {
+                      PostMapper postMapper) {
         this.userService = userService;
         this.adminService = adminService;
         this.postMapper = postMapper;
-        this.passwordEncoder = passwordEncoder;
     }
 
     public User dtoToUser(UserCreateDTO dto) {
         User user = new User();
 
         user.setUsername(dto.getUsername());
-        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        user.setPassword(new BCryptPasswordEncoder().encode(dto.getPassword()));
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
         user.setEmailAddress(dto.getEmailAddress());
@@ -61,7 +60,7 @@ public class UserMapper {
         }
 
         if(dto.getPassword() != null) {
-            user.setPassword(passwordEncoder.encode(dto.getPassword()));
+            user.setPassword(new BCryptPasswordEncoder().encode(dto.getPassword()));
         }
 
         return user;

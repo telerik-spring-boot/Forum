@@ -21,6 +21,8 @@ public interface UserRepository {
 
     User getByUsername(String username);
 
+    User getByUsernameWithRoles(String username);
+
     User getByFirstName(String firstName);
 
     void create(User user);

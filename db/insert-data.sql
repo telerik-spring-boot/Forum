@@ -1,8 +1,8 @@
 INSERT INTO forum_schema.users (first_name, last_name, email_address, username, password)
-VALUES ('John', 'Doe', 'john.doe@example.com', 'johndoe', 'password123'),
-       ('Jane', 'Smith', 'jane.smith@example.com', 'janesmith', 'securepass'),
-       ('Admin', 'User', 'admin.user@example.com', 'adminuser', 'adminpass'),
-       ('Nophone', 'Andy', 'nophone.andy@example.com', 'nophoneadmin', 'adminpass');
+VALUES ('John', 'Doe', 'john.doe@example.com', 'johndoe', '$2b$12$ZXIe8X5z8z1YwAvFalNH/Ox8zvkMlrDRfnmUW9azqvsBQ3nBJQ6a.'),
+       ('Jane', 'Smith', 'jane.smith@example.com', 'janesmith', '$2b$12$ZS7DW.KZQH0LhLEOrwlYRuMVhPGtqjFfWJpwQnBVM3qaZ4tHV7C4q'),
+       ('Admin', 'User', 'admin.user@example.com', 'adminuser', '$2b$12$ZJDrZSz/gu1QEd8EADjtn.B1FT78w6LCj2AWWiXjnJGjgvI5eUIJK'),
+       ('Nophone', 'Andy', 'nophone.andy@example.com', 'nophoneadmin', '$2b$12$ZJDrZSz/gu1QEd8EADjtn.B1FT78w6LCj2AWWiXjnJGjgvI5eUIJK');
 
 INSERT INTO forum_schema.posts (title, content, user_id)
 VALUES ('Welcome Post', 'This is the first post in the forum!', 1),

@@ -20,8 +20,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -32,26 +32,25 @@ import java.util.List;
 import static com.telerik.forum.DummyObjectProvider.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+@WebMvcTest(controllers = PostController.class)
 public class PostControllerTests {
 
-    @MockBean
+    @MockitoBean
     private PostService mockPostService;
 
-    @MockBean
+    @MockitoBean
     private AuthenticationHelper mockAuthenticationHelper;
 
-    @MockBean
+    @MockitoBean
     private PostMapper mockPostMapper;
 
-    @MockBean
+    @MockitoBean
     private CommentService mockCommentService;
 
-    @MockBean
+    @MockitoBean
     private LikeService mockLikeService;
 
-    @MockBean
+    @MockitoBean
     private TagService mockTagService;
 
     @Autowired

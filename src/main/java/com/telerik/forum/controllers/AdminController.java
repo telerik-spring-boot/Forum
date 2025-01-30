@@ -42,7 +42,7 @@ public class AdminController {
     @GetMapping
     public List<AdminDisplayDTO> getAllAdmins(@RequestHeader HttpHeaders headers) {
         try {
-            authenticationHelper.tryGetUser(headers);
+            User user = authenticationHelper.tryGetUserWithRoles(headers);
             // to be checked for admin rights
 
             return adminService.getAll().stream()
@@ -61,7 +61,7 @@ public class AdminController {
                                             @RequestParam(required = false) String sortBy,
                                             @RequestParam(required = false) String sortOrder) {
         try{
-            User userRequest = authenticationHelper.tryGetUser(headers);
+            User userRequest = authenticationHelper.tryGetUserWithRoles(headers);
 
             return adminService.getAllUsers(new FilterUserOptions(username, emailAddress, firstName, sortBy, sortOrder), userRequest.getId())
                     .stream()
@@ -80,7 +80,7 @@ public class AdminController {
     @GetMapping("/{userId}")
     public AdminDisplayDTO getAdminByUserId(@RequestHeader HttpHeaders header, @PathVariable int userId) {
         try {
-            authenticationHelper.tryGetUser(header);
+            User userRequest = authenticationHelper.tryGetUserWithRoles(header);
 
             return userMapper.AdminToAdminDisplayDTO(adminService.getByUserId(userId));
         } catch (EntityNotFoundException e) {

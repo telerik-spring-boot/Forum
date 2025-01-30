@@ -6,6 +6,7 @@ import com.telerik.forum.models.dtos.userDTOs.UserLoginDTO;
 import com.telerik.forum.models.user.User;
 import com.telerik.forum.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -13,13 +14,11 @@ import org.springframework.stereotype.Component;
 public class LoginHelper {
     private final UserService userService;
     private final JwtUtil jwtUtil;
-    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public LoginHelper(UserService userService, JwtUtil jwtUtil, PasswordEncoder passwordEncoder) {
+    public LoginHelper(UserService userService, JwtUtil jwtUtil) {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
-        this.passwordEncoder = passwordEncoder;
     }
 
     public String login(UserLoginDTO userLoginDTO) {
@@ -28,7 +27,7 @@ public class LoginHelper {
 
         User user = userService.getByUsername(username);
 
-        if (!passwordEncoder.matches(password, user.getPassword())) {
+        if (!new BCryptPasswordEncoder().matches(password, user.getPassword())) {
             throw new UnauthorizedOperationException("Invalid username or password");
         }
 

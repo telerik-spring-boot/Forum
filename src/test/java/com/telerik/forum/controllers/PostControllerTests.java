@@ -23,12 +23,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.assertj.MockMvcTester;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.telerik.forum.DummyObjectProvider.*;
@@ -42,19 +39,19 @@ public class PostControllerTests {
     private PostService mockPostService;
 
     @MockitoBean
-    private  AuthenticationHelper mockAuthenticationHelper;
+    private AuthenticationHelper mockAuthenticationHelper;
 
     @MockitoBean
-    private  PostMapper mockPostMapper;
+    private PostMapper mockPostMapper;
 
     @MockitoBean
-    private  CommentService mockCommentService;
+    private CommentService mockCommentService;
 
     @MockitoBean
-    private  LikeService mockLikeService;
+    private LikeService mockLikeService;
 
     @MockitoBean
-    private  TagService mockTagService;
+    private TagService mockTagService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -68,12 +65,13 @@ public class PostControllerTests {
         Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
                 .thenReturn(createMockUser());
 
+
         Mockito.when(mockPostService.getAllPostsWithFilters(Mockito.any()))
                 .thenReturn(List.of(createMockPost()));
 
         // Act, Assert
         mockMvc.perform(MockMvcRequestBuilders.get("/api/posts")
-                        .param("tags","tag,two"))
+                        .param("tags", "tag,two"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(content().contentType("application/json"));
 
@@ -83,10 +81,10 @@ public class PostControllerTests {
     public void getAllPosts_Should_ReturnStatusBadRequest_When_InvalidSortingParameter() throws Exception {
         // Arrange
         Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
-                        .thenReturn(createMockUser());
+                .thenReturn(createMockUser());
 
         Mockito.when(mockPostService.getAllPostsWithFilters(Mockito.any()))
-                        .thenThrow(InvalidSortParameterException.class);
+                .thenThrow(InvalidSortParameterException.class);
 
         // Act, Assert
         mockMvc.perform(MockMvcRequestBuilders.get("/api/posts"))
@@ -95,7 +93,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void getAllPosts_Should_ReturnStatusUnauthorized_When_UserIsNotAuthorized() throws Exception{
+    public void getAllPosts_Should_ReturnStatusUnauthorized_When_UserIsNotAuthorized() throws Exception {
         // Arrange
         Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
                 .thenThrow(UnauthorizedOperationException.class);
@@ -106,7 +104,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void getPostById_Should_ReturnStatusOk_When_UserAuthorizedAndPostExists() throws Exception{
+    public void getPostById_Should_ReturnStatusOk_When_UserAuthorizedAndPostExists() throws Exception {
         // Arrange
         Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
                 .thenReturn(createMockUser());
@@ -115,7 +113,7 @@ public class PostControllerTests {
                 .thenReturn(createMockPost());
 
         Mockito.when(mockPostMapper.postToPostDisplayDTO(Mockito.any()))
-                        .thenReturn(new PostDisplayDTO());
+                .thenReturn(new PostDisplayDTO());
 
         // Act, Assert
         mockMvc.perform(MockMvcRequestBuilders.get("/api/posts/1"))
@@ -124,7 +122,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void getPostById_Should_ThrowStatusUnauthorized_When_UserNotAuthorized() throws Exception{
+    public void getPostById_Should_ThrowStatusUnauthorized_When_UserNotAuthorized() throws Exception {
         // Arrange
         Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
                 .thenThrow(UnauthorizedOperationException.class);
@@ -135,7 +133,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void getPostById_Should_ThrowStatusNotFound_When_PostDoesNotExist() throws Exception{
+    public void getPostById_Should_ThrowStatusNotFound_When_PostDoesNotExist() throws Exception {
         // Arrange
         Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
                 .thenReturn(createMockUser());
@@ -149,7 +147,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void createPost_Should_ReturnStatusOk_When_UserAuthorizedAndNotBlocked() throws Exception{
+    public void createPost_Should_ReturnStatusOk_When_UserAuthorizedAndNotBlocked() throws Exception {
         // Arrange
         Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
                 .thenReturn(createMockAdminDetails().getUser());
@@ -166,15 +164,15 @@ public class PostControllerTests {
 
         // Act, Assert
         mockMvc.perform(MockMvcRequestBuilders.post("/api/posts")
-                .contentType("application/json")
-                .content(objectMapper.writeValueAsString(createMockPostCreateDTO())))
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(createMockPostCreateDTO())))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(content().contentType("application/json"));
 
     }
 
     @Test
-    public void createPost_Should_ReturnStatusBadRequest_When_RequestBodyInvalid() throws Exception{
+    public void createPost_Should_ReturnStatusBadRequest_When_RequestBodyInvalid() throws Exception {
         // Arrange
         PostCreateDTO postCreateDTO = createMockPostCreateDTO();
         postCreateDTO.setContent("invalid");
@@ -188,7 +186,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void createPost_Should_Return_StatusUnauthorized_When_ValidRequestBodyButUnauthorized() throws Exception{
+    public void createPost_Should_Return_StatusUnauthorized_When_ValidRequestBodyButUnauthorized() throws Exception {
         // Arrange
         Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
                 .thenThrow(UnauthorizedOperationException.class);
@@ -203,7 +201,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void addCommentToPost_Should_ReturnStatusOk_When_UserAuthorizedAndPostExists() throws Exception{
+    public void addCommentToPost_Should_ReturnStatusOk_When_UserAuthorizedAndPostExists() throws Exception {
         // Arrange
         Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
                 .thenReturn(createMockUser());
@@ -230,7 +228,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void addCommentToPost_Should_ReturnStatusBadRequest_When_BodyIsInvalid() throws Exception{
+    public void addCommentToPost_Should_ReturnStatusBadRequest_When_BodyIsInvalid() throws Exception {
         // Arrange, Act, Assert
         mockMvc.perform(MockMvcRequestBuilders.post("/api/posts/1/comments")
                         .contentType("application/json")
@@ -239,7 +237,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void addCommentToPost_Should_ReturnStatusNotFound_When_PostNotFound() throws Exception{
+    public void addCommentToPost_Should_ReturnStatusNotFound_When_PostNotFound() throws Exception {
         // Arrange
         Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
                 .thenReturn(createMockUser());
@@ -258,10 +256,10 @@ public class PostControllerTests {
     }
 
     @Test
-    public void addCommentToPost_Should_ReturnStatusUnauthorized_When_UserNotAuthorized() throws Exception{
+    public void addCommentToPost_Should_ReturnStatusUnauthorized_When_UserNotAuthorized() throws Exception {
         // Arrange
         Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
-                        .thenThrow(UnauthorizedOperationException.class);
+                .thenThrow(UnauthorizedOperationException.class);
 
         // Act, Assert
         mockMvc.perform(MockMvcRequestBuilders.post("/api/posts/1/comments")
@@ -272,7 +270,7 @@ public class PostControllerTests {
 
 
     @Test
-    public void addTagsToPost_Should_ReturnStatusOk_When_UserAuthorizedAndPostExists() throws Exception{
+    public void addTagsToPost_Should_ReturnStatusOk_When_UserAuthorizedAndPostExists() throws Exception {
         // Arrange
         Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
                 .thenReturn(createMockUser());
@@ -294,7 +292,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void addTagsToPost_Should_ReturnStatusBadRequest_When_BodyIsInvalid() throws Exception{
+    public void addTagsToPost_Should_ReturnStatusBadRequest_When_BodyIsInvalid() throws Exception {
         // Arrange, Act, Assert
         mockMvc.perform(MockMvcRequestBuilders.post("/api/posts/1/tags")
                         .contentType("application/json")
@@ -303,13 +301,13 @@ public class PostControllerTests {
     }
 
     @Test
-    public void addTagsToPost_Should_ReturnStatusNotFound_When_PostNotFound() throws Exception{
+    public void addTagsToPost_Should_ReturnStatusNotFound_When_PostNotFound() throws Exception {
         // Arrange
         Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
                 .thenReturn(createMockUser());
 
         Mockito.doThrow(EntityNotFoundException.class).when(mockTagService)
-                        .addTagToPost(Mockito.anyInt(), Mockito.any(), Mockito.any());
+                .addTagToPost(Mockito.anyInt(), Mockito.any(), Mockito.any());
 
         Mockito.doThrow(EntityNotFoundException.class)
                 .when(mockCommentService).addComment(Mockito.anyInt(), Mockito.any(), Mockito.any());
@@ -322,7 +320,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void addTagsToPost_Should_ReturnStatusUnauthorized_When_UserNotAuthorized() throws Exception{
+    public void addTagsToPost_Should_ReturnStatusUnauthorized_When_UserNotAuthorized() throws Exception {
         // Arrange
         Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
                 .thenThrow(UnauthorizedOperationException.class);
@@ -335,7 +333,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void updatePost_Should_ReturnStatusOk_When_UserAuthorizedAndPostExists() throws Exception{
+    public void updatePost_Should_ReturnStatusOk_When_UserAuthorizedAndPostExists() throws Exception {
         // Arrange
         Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
                 .thenReturn(createMockUser());
@@ -355,7 +353,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void updatePost_Should_ReturnStatusBadRequest_When_InvalidBody() throws Exception{
+    public void updatePost_Should_ReturnStatusBadRequest_When_InvalidBody() throws Exception {
         // Arrange, Act, Assert
         mockMvc.perform(MockMvcRequestBuilders.put("/api/posts/1")
                         .contentType("application/json")
@@ -364,7 +362,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void updatePost_Should_ReturnStatusUnauthorized_When_UserNotAuthorized() throws Exception{
+    public void updatePost_Should_ReturnStatusUnauthorized_When_UserNotAuthorized() throws Exception {
         // Arrange
         Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
                 .thenThrow(UnauthorizedOperationException.class);
@@ -377,7 +375,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void updatePost_Should_ReturnStatusNotFound_When_PostDoesNotExist() throws Exception{
+    public void updatePost_Should_ReturnStatusNotFound_When_PostDoesNotExist() throws Exception {
         // Arrange
         Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
                 .thenReturn(createMockUser());
@@ -393,7 +391,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void likePost_Should_ReturnStatusOk_When_UserAuthorizedAndPostExists() throws Exception{
+    public void likePost_Should_ReturnStatusOk_When_UserAuthorizedAndPostExists() throws Exception {
         // Arrange
         Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
                 .thenReturn(createMockUser());
@@ -411,7 +409,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void likePost_Should_ReturnStatusUnauthorized_When_UserNotAuthorized() throws Exception{
+    public void likePost_Should_ReturnStatusUnauthorized_When_UserNotAuthorized() throws Exception {
         // Arrange
         Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
                 .thenThrow(UnauthorizedOperationException.class);
@@ -422,7 +420,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void likePost_Should_ReturnStatusNotFound_When_PostNotFound() throws Exception{
+    public void likePost_Should_ReturnStatusNotFound_When_PostNotFound() throws Exception {
         // Arrange
         Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
                 .thenReturn(createMockUser());
@@ -436,7 +434,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void dislikePost_Should_ReturnStatusOk_When_UserAuthorizedAndPostExists() throws Exception{
+    public void dislikePost_Should_ReturnStatusOk_When_UserAuthorizedAndPostExists() throws Exception {
         // Arrange
         Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
                 .thenReturn(createMockUser());
@@ -454,7 +452,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void dislikePost_Should_ReturnStatusUnauthorized_When_UserNotAuthorized() throws Exception{
+    public void dislikePost_Should_ReturnStatusUnauthorized_When_UserNotAuthorized() throws Exception {
         // Arrange
         Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
                 .thenThrow(UnauthorizedOperationException.class);
@@ -465,7 +463,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void dislikePost_Should_ReturnStatusNotFound_When_PostNotFound() throws Exception{
+    public void dislikePost_Should_ReturnStatusNotFound_When_PostNotFound() throws Exception {
         // Arrange
         Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
                 .thenReturn(createMockUser());
@@ -479,7 +477,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void updateTagsToPost_Should_ReturnStatusOk_When_EverythingIsValid() throws Exception{
+    public void updateTagsToPost_Should_ReturnStatusOk_When_EverythingIsValid() throws Exception {
         // Arrange
         Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
                 .thenReturn(createMockUser());
@@ -499,7 +497,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void updateTagsToPost_Should_ReturnStatusBadRequest_When_InvalidBody() throws Exception{
+    public void updateTagsToPost_Should_ReturnStatusBadRequest_When_InvalidBody() throws Exception {
         // Arrange, Act, Assert
         mockMvc.perform(MockMvcRequestBuilders.put("/api/posts/1/tags")
                         .contentType("application/json")
@@ -508,7 +506,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void updateTagsToPost_Should_ReturnStatusNotFound_When_PostNotFound() throws Exception{
+    public void updateTagsToPost_Should_ReturnStatusNotFound_When_PostNotFound() throws Exception {
         // Arrange
         Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
                 .thenReturn(createMockUser());
@@ -524,7 +522,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void updateTagsToPost_Should_ReturnStatusUnauthorized_When_UserNotAuthorized() throws Exception{
+    public void updateTagsToPost_Should_ReturnStatusUnauthorized_When_UserNotAuthorized() throws Exception {
         // Arrange
         Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
                 .thenThrow(UnauthorizedOperationException.class);
@@ -537,7 +535,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void updateComment_Should_ReturnStatusOk_When_EverythingIsValid() throws Exception{
+    public void updateComment_Should_ReturnStatusOk_When_EverythingIsValid() throws Exception {
         // Arrange
         Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
                 .thenReturn(createMockUser());
@@ -560,7 +558,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void updateComment_Should_ReturnStatusBadRequest_When_InvalidBody() throws Exception{
+    public void updateComment_Should_ReturnStatusBadRequest_When_InvalidBody() throws Exception {
         // Arrange, Act, Assert
         mockMvc.perform(MockMvcRequestBuilders.put("/api/posts/1/comments/1")
                         .contentType("application/json")
@@ -570,7 +568,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void updateComment_Should_ReturnStatusUnauthorized_When_UserNotAuthorized() throws Exception{
+    public void updateComment_Should_ReturnStatusUnauthorized_When_UserNotAuthorized() throws Exception {
         // Arrange
         Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
                 .thenThrow(UnauthorizedOperationException.class);
@@ -583,7 +581,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void updateComment_Should_ReturnStatusNotFound_When_CommentOrPostDoesNotExist() throws Exception{
+    public void updateComment_Should_ReturnStatusNotFound_When_CommentOrPostDoesNotExist() throws Exception {
         // Arrange
         Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
                 .thenReturn(createMockUser());
@@ -599,7 +597,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void deletePost_Should_ReturnStatusOk_When_EverythingIsValid() throws Exception{
+    public void deletePost_Should_ReturnStatusOk_When_EverythingIsValid() throws Exception {
         // Arrange
         Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
                 .thenReturn(createMockUser());
@@ -610,7 +608,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void deletePost_Should_ReturnStatusUnauthorized_When_UserNotAuthorized() throws Exception{
+    public void deletePost_Should_ReturnStatusUnauthorized_When_UserNotAuthorized() throws Exception {
         // Arrange
         Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
                 .thenThrow(UnauthorizedOperationException.class);
@@ -621,7 +619,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void deletePost_Should_ReturnStatusNotFound_When_PostDoesNotExist() throws Exception{
+    public void deletePost_Should_ReturnStatusNotFound_When_PostDoesNotExist() throws Exception {
         // Arrange
         Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
                 .thenReturn(createMockUser());
@@ -635,7 +633,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void removeTagsFromPost_Should_ReturnStatusOk_When_EverythingIsValid() throws Exception{
+    public void removeTagsFromPost_Should_ReturnStatusOk_When_EverythingIsValid() throws Exception {
         // Arrange
         Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
                 .thenReturn(createMockUser());
@@ -655,7 +653,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void removeTagsFromPost_Should_ReturnStatusBadRequest_When_InvalidBody() throws Exception{
+    public void removeTagsFromPost_Should_ReturnStatusBadRequest_When_InvalidBody() throws Exception {
         // Arrange, Act, Assert
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/posts/1/tags")
                         .contentType("application/json")
@@ -664,7 +662,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void removeTagsFromPost_Should_ReturnStatusUnauthorized_When_UserNotAuthorized() throws Exception{
+    public void removeTagsFromPost_Should_ReturnStatusUnauthorized_When_UserNotAuthorized() throws Exception {
         // Arrange
         Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
                 .thenThrow(UnauthorizedOperationException.class);
@@ -677,7 +675,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void removeTagsFromPost_Should_ReturnStatusNotFound_When_PostDoesNotExist() throws Exception{
+    public void removeTagsFromPost_Should_ReturnStatusNotFound_When_PostDoesNotExist() throws Exception {
         // Arrange
         Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
                 .thenReturn(createMockUser());
@@ -693,7 +691,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void deleteComment_Should_ReturnStatusOk_When_EverythingIsValid() throws Exception{
+    public void deleteComment_Should_ReturnStatusOk_When_EverythingIsValid() throws Exception {
         // Arrange
         Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
                 .thenReturn(createMockUser());
@@ -722,7 +720,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void deleteComment_Should_ReturnStatusNotFound_When_CommentOrPostNotFound() throws Exception{
+    public void deleteComment_Should_ReturnStatusNotFound_When_CommentOrPostNotFound() throws Exception {
         // Arrange
         Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
                 .thenReturn(createMockUser());

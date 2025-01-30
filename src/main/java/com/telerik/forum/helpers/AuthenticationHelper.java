@@ -2,9 +2,11 @@ package com.telerik.forum.helpers;
 
 
 import com.telerik.forum.configurations.jwt.JwtUtil;
+import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.models.user.User;
 import com.telerik.forum.services.user.UserService;
+import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
@@ -55,16 +57,27 @@ public class AuthenticationHelper {
 //    }
 
     public User tryGetUser(HttpHeaders headers) {
+        return userService.getByUsername(validateTokenAndReturnUsername(headers));
+    }
+
+    public User tryGetUserWithRoles(HttpHeaders headers) {
+        return userService.getByUsernameWithRoles(validateTokenAndReturnUsername(headers));
+    }
+
+    private String validateTokenAndReturnUsername(HttpHeaders headers){
         String authorizationHeader = headers.getFirst(HttpHeaders.AUTHORIZATION);
 
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-          throw new UnauthorizedOperationException("Missing or invalid token");
+            throw new UnauthorizedOperationException("Invalid authorization.");
         }
 
-        String token = authorizationHeader.substring(7);
+        try {
+            String token = authorizationHeader.substring(7);
 
-        String username= jwtUtil.extractUsername(token);
+            return jwtUtil.extractUsername(token);
+        } catch (EntityNotFoundException | JwtException e) {
+            throw new UnauthorizedOperationException("Invalid token");
+        }
 
-        return userService.getByUsername(username);
     }
 }

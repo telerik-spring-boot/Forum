@@ -30,13 +30,13 @@ Follow these steps to set up and run the application:
 1. Clone repo from Github
 2. Create a local application.properties file in src/main/resources (application-test.properties) and add the following variables to it:
    
-DB_USERNAME=forum-user 
+DB_USERNAME=george_bush
 
-DB_PASSWORD=password123 
+DB_PASSWORD=password 
 
 DB_URL=jdbc:mariadb://localhost:3306/forum_schema
 
-ENCRYPTION_SECRET_KEY="thisisaverysecureandlongsecretkey!"
+ENCRYPTION_SECRET_KEY="unbreakablepasswordkeyanditsalsoverylong@"
 
 4. Run ForumApplication
    

@@ -1,24 +1,21 @@
 package com.telerik.forum.controllers;
 
 
-import com.telerik.forum.exceptions.*;
 import com.telerik.forum.helpers.AuthenticationHelper;
 import com.telerik.forum.helpers.UserMapper;
-import com.telerik.forum.models.user.AdminDetails;
-import com.telerik.forum.models.user.User;
 import com.telerik.forum.models.dtos.adminDTOs.AdminCreateDTO;
 import com.telerik.forum.models.dtos.adminDTOs.AdminDisplayDTO;
 import com.telerik.forum.models.dtos.adminDTOs.AdminUpdateDTO;
 import com.telerik.forum.models.dtos.userDTOs.UserDisplayDTO;
 import com.telerik.forum.models.filters.FilterUserOptions;
+import com.telerik.forum.models.user.AdminDetails;
+import com.telerik.forum.models.user.User;
 import com.telerik.forum.services.admin.AdminService;
 import com.telerik.forum.services.user.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -41,136 +38,90 @@ public class AdminController {
 
     @GetMapping
     public List<AdminDisplayDTO> getAllAdmins(@RequestHeader HttpHeaders headers) {
-        try {
-            User userRequest = authenticationHelper.tryGetUserWithRoles(headers);
 
-            return adminService.getAll(userRequest).stream()
-                    .map(userMapper::AdminToAdminDisplayDTO)
-                    .toList();
-        } catch (UnauthorizedOperationException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        }
+        User userRequest = authenticationHelper.tryGetUserWithRoles(headers);
+
+        return adminService.getAll(userRequest).stream().map(userMapper::AdminToAdminDisplayDTO).toList();
+
     }
 
     @GetMapping("/users")
-    public List<UserDisplayDTO> getAllUsers(@RequestHeader HttpHeaders headers,
-                                            @RequestParam(required = false) String username,
-                                            @RequestParam(required = false) String emailAddress,
-                                            @RequestParam(required = false) String firstName,
-                                            @RequestParam(required = false) String sortBy,
-                                            @RequestParam(required = false) String sortOrder) {
-        try{
-            User userRequest = authenticationHelper.tryGetUserWithRoles(headers);
+    public List<UserDisplayDTO> getAllUsers(@RequestHeader HttpHeaders headers, @RequestParam(required = false) String username, @RequestParam(required = false) String emailAddress, @RequestParam(required = false) String firstName, @RequestParam(required = false) String sortBy, @RequestParam(required = false) String sortOrder) {
 
-            return adminService.getAllUsers(new FilterUserOptions(username, emailAddress, firstName, sortBy, sortOrder), userRequest)
-                    .stream()
-                    .map(userMapper::userToUserDisplayDTO)
-                    .toList();
-        }catch (UnauthorizedOperationException e){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        }catch (EntityNotFoundException e){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }catch (InvalidSortParameterException e){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        }
+        User userRequest = authenticationHelper.tryGetUserWithRoles(headers);
+
+        return adminService.getAllUsers(new FilterUserOptions(username, emailAddress, firstName, sortBy, sortOrder), userRequest).stream().map(userMapper::userToUserDisplayDTO).toList();
+
 
     }
 
     @GetMapping("/{userId}")
     public AdminDisplayDTO getAdminByUserId(@RequestHeader HttpHeaders header, @PathVariable int userId) {
-        try {
-            User userRequest = authenticationHelper.tryGetUserWithRoles(header);
 
-            return userMapper.AdminToAdminDisplayDTO(adminService.getByUserId(userId, userRequest));
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch (UnauthorizedOperationException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        }
+        User userRequest = authenticationHelper.tryGetUserWithRoles(header);
+
+        return userMapper.AdminToAdminDisplayDTO(adminService.getByUserId(userId, userRequest));
+
     }
 
     @PostMapping("/users/rights")
-    public AdminDisplayDTO createAdmin(@RequestHeader HttpHeaders headers,@Valid @RequestBody AdminCreateDTO adminDTO) {
-        try {
-            User userRequest = authenticationHelper.tryGetUserWithRoles(headers);
+    public AdminDisplayDTO createAdmin(@RequestHeader HttpHeaders headers, @Valid @RequestBody AdminCreateDTO adminDTO) {
 
-            adminService.giveAdminRights(adminDTO.getUser_id(), adminDTO.getPhoneNumber(), userRequest);
+        User userRequest = authenticationHelper.tryGetUserWithRoles(headers);
 
-            return userMapper.AdminToAdminDisplayDTO(adminService.getByUserId(adminDTO.getUser_id(), userRequest));
+        adminService.giveAdminRights(adminDTO.getUser_id(), adminDTO.getPhoneNumber(), userRequest);
 
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch (DuplicateEntityException e) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
-        } catch (UnauthorizedOperationException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        }
+        return userMapper.AdminToAdminDisplayDTO(adminService.getByUserId(adminDTO.getUser_id(), userRequest));
+
+
     }
 
     @DeleteMapping("/users/rights/{userId}")
     public void revokeAdminRights(@RequestHeader HttpHeaders headers, @PathVariable int userId) {
-        try {
-            User userRequest = authenticationHelper.tryGetUserWithRoles(headers);
 
-            adminService.revokeAdminRights(userId, userRequest);
+        User userRequest = authenticationHelper.tryGetUserWithRoles(headers);
 
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch (UnauthorizedOperationException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        }catch(AdminRoleManagementException e){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
-        }
+        adminService.revokeAdminRights(userId, userRequest);
+
+
     }
 
     @PutMapping("/{userId}")
     public AdminDisplayDTO updateAdmin(@RequestHeader HttpHeaders headers, @PathVariable int userId, @Valid @RequestBody AdminUpdateDTO adminDTO) {
-        try {
-            User userRequest = authenticationHelper.tryGetUserWithRoles(headers);
 
-            AdminDetails admin = userMapper.dtoToAdmin(userId, adminDTO, userRequest);
+        User userRequest = authenticationHelper.tryGetUserWithRoles(headers);
 
-            adminService.update(admin, userRequest);
+        AdminDetails admin = userMapper.dtoToAdmin(userId, adminDTO, userRequest);
 
-            return userMapper.AdminToAdminDisplayDTO(admin);
+        adminService.update(admin, userRequest);
 
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch (UnauthorizedOperationException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        }
+        return userMapper.AdminToAdminDisplayDTO(admin);
+
+
     }
 
     @PutMapping("/users/{userId}/block")
     public UserDisplayDTO blockUser(@RequestHeader HttpHeaders headers, @PathVariable int userId) {
-        try {
-            User userRequest = authenticationHelper.tryGetUserWithRoles(headers);
 
-            User userToBlock = userService.getById(userId, userRequest);
-            adminService.blockUser(userToBlock, userRequest);
+        User userRequest = authenticationHelper.tryGetUserWithRoles(headers);
 
-            return userMapper.userToUserDisplayDTO(userToBlock);
+        User userToBlock = userService.getById(userId, userRequest);
+        adminService.blockUser(userToBlock, userRequest);
 
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch (UnauthorizedOperationException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        }
+        return userMapper.userToUserDisplayDTO(userToBlock);
+
+
     }
 
     @PutMapping("/users/{userId}/unblock")
     public UserDisplayDTO unblockUser(@RequestHeader HttpHeaders headers, @PathVariable int userId) {
-        try {
-            User userRequest = authenticationHelper.tryGetUserWithRoles(headers);
 
-            User userToUnblock = userService.getById(userId, userRequest);
-            adminService.unblockUser(userToUnblock, userRequest);
+        User userRequest = authenticationHelper.tryGetUserWithRoles(headers);
 
-            return userMapper.userToUserDisplayDTO(userToUnblock);
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch (UnauthorizedOperationException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        }
+        User userToUnblock = userService.getById(userId, userRequest);
+        adminService.unblockUser(userToUnblock, userRequest);
+
+        return userMapper.userToUserDisplayDTO(userToUnblock);
+
     }
 }

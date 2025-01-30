@@ -1,7 +1,6 @@
 package com.telerik.forum.services.comment;
 
 import com.telerik.forum.exceptions.EntityNotFoundException;
-import com.telerik.forum.exceptions.InvalidUserInputException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.models.post.Comment;
 import com.telerik.forum.models.post.Post;
@@ -10,7 +9,6 @@ import com.telerik.forum.repositories.comment.CommentRepository;
 import com.telerik.forum.repositories.post.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 
 import static com.telerik.forum.services.post.PostServiceImpl.BLOCKED_ACCOUNT_MESSAGE;
 

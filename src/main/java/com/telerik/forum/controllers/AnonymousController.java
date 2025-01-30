@@ -1,8 +1,6 @@
 package com.telerik.forum.controllers;
 
 
-import com.telerik.forum.exceptions.EntityNotFoundException;
-import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.helpers.LoginHelper;
 import com.telerik.forum.helpers.PostMapper;
 import com.telerik.forum.models.Home;
@@ -13,9 +11,7 @@ import com.telerik.forum.services.admin.AdminService;
 import com.telerik.forum.services.post.PostService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -62,12 +58,8 @@ public class AnonymousController {
 
     @PostMapping("/login")
     public String loginUser(@Valid @RequestBody UserLoginDTO userInput) {
-        try {
-            return loginHelper.login(userInput);
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch (UnauthorizedOperationException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        }
+
+        return loginHelper.login(userInput);
+
     }
 }

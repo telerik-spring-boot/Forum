@@ -2,17 +2,14 @@ package com.telerik.forum.services;
 
 
 import com.telerik.forum.exceptions.EntityNotFoundException;
-import com.telerik.forum.exceptions.InvalidUserInputException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.models.post.Post;
 import com.telerik.forum.models.post.Tag;
-import com.telerik.forum.models.user.AdminDetails;
 import com.telerik.forum.models.user.Role;
 import com.telerik.forum.models.user.User;
 import com.telerik.forum.repositories.admin.AdminDetailsRepository;
 import com.telerik.forum.repositories.post.PostRepository;
 import com.telerik.forum.repositories.tag.TagRepository;
-import com.telerik.forum.services.tag.TagService;
 import com.telerik.forum.services.tag.TagServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

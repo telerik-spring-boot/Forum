@@ -1,7 +1,6 @@
 package com.telerik.forum.services;
 
 import com.telerik.forum.exceptions.EntityNotFoundException;
-import com.telerik.forum.exceptions.InvalidUserInputException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.models.post.Comment;
 import com.telerik.forum.models.post.Post;

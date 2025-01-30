@@ -1,24 +1,17 @@
 package com.telerik.forum.controllers;
 
 
-import com.telerik.forum.exceptions.DuplicateEntityException;
-import com.telerik.forum.exceptions.EntityNotFoundException;
-import com.telerik.forum.exceptions.InvalidSortParameterException;
-import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.helpers.AuthenticationHelper;
-import com.telerik.forum.helpers.LoginHelper;
 import com.telerik.forum.helpers.UserMapper;
-import com.telerik.forum.models.user.User;
 import com.telerik.forum.models.dtos.userDTOs.*;
 import com.telerik.forum.models.filters.FilterCommentOptions;
 import com.telerik.forum.models.filters.FilterPostOptions;
+import com.telerik.forum.models.user.User;
 import com.telerik.forum.services.user.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/users")
@@ -39,15 +32,11 @@ public class UserController {
 
     @GetMapping("/{id}")
     public UserDisplayDTO getUserById(@RequestHeader HttpHeaders headers, @PathVariable int id) {
-        try {
-            User userRequest = authenticationHelper.tryGetUser(headers);
 
-            return userMapper.userToUserDisplayDTO(userService.getById(id, userRequest));
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch (UnauthorizedOperationException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        }
+        User userRequest = authenticationHelper.tryGetUser(headers);
+
+        return userMapper.userToUserDisplayDTO(userService.getById(id, userRequest));
+
     }
 
     @GetMapping("/{id}/posts")
@@ -60,26 +49,20 @@ public class UserController {
                                             @RequestParam(required = false) String sortBy,
                                             @RequestParam(required = false) String sortOrder,
                                             @PathVariable int id) {
-        try {
-            User userRequest = authenticationHelper.tryGetUser(headers);
-            String[] tagArray = null;
 
-            if (tags != null) {
-                tagArray = tags.split(",");
-            }
+        User userRequest = authenticationHelper.tryGetUser(headers);
+        String[] tagArray = null;
 
-            FilterPostOptions options = new FilterPostOptions(null, title, content, tagArray, minLikes, maxLikes, sortBy, sortOrder);
-
-            User userEntity = userService.getByIdWithPosts(id, options, userRequest);
-
-            return userMapper.userToUserPostsDisplayDTO(userEntity);
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch (UnauthorizedOperationException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        } catch (InvalidSortParameterException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        if (tags != null) {
+            tagArray = tags.split(",");
         }
+
+        FilterPostOptions options = new FilterPostOptions(null, title, content, tagArray, minLikes, maxLikes, sortBy, sortOrder);
+
+        User userEntity = userService.getByIdWithPosts(id, options, userRequest);
+
+        return userMapper.userToUserPostsDisplayDTO(userEntity);
+
     }
 
     @GetMapping("/{id}/comments")
@@ -88,70 +71,48 @@ public class UserController {
                                                   @RequestParam(required = false) String sortBy,
                                                   @RequestParam(required = false) String sortOrder,
                                                   @PathVariable int id) {
-        try {
-            User userRequest = authenticationHelper.tryGetUser(headers);
 
-            User userEntity = userService.getByIdWithComments(id, new FilterCommentOptions(null, commentContent, sortBy, sortOrder), userRequest);
+        User userRequest = authenticationHelper.tryGetUser(headers);
 
-            return userMapper.userToUserCommentsDisplayDTO(userEntity);
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch (UnauthorizedOperationException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        }
+        User userEntity = userService.getByIdWithComments(id, new FilterCommentOptions(null, commentContent, sortBy, sortOrder), userRequest);
+
+        return userMapper.userToUserCommentsDisplayDTO(userEntity);
+
     }
 
     @PostMapping
     public UserDisplayDTO createUser(@Valid @RequestBody UserCreateDTO userInput) {
-        try {
 
-            User user = userMapper.dtoToUser(userInput);
 
-            userService.create(user);
+        User user = userMapper.dtoToUser(userInput);
 
-            return userMapper.userToUserDisplayDTO(user);
+        userService.create(user);
 
-        } catch (DuplicateEntityException e) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+        return userMapper.userToUserDisplayDTO(user);
+
     }
 
 
     @PutMapping("/{id}")
     public UserDisplayDTO updateUser(@RequestHeader HttpHeaders headers, @PathVariable int id, @Valid @RequestBody UserUpdateDTO userInput) {
-        try {
-            User userRequest = authenticationHelper.tryGetUserWithRoles(headers);
 
-            User userToBeUpdated = userMapper.dtoToUser(id, userInput, userRequest);
+        User userRequest = authenticationHelper.tryGetUserWithRoles(headers);
 
-            userService.update(userToBeUpdated, userRequest);
+        User userToBeUpdated = userMapper.dtoToUser(id, userInput, userRequest);
 
-            return userMapper.userToUserDisplayDTO(userToBeUpdated);
+        userService.update(userToBeUpdated, userRequest);
 
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch (UnauthorizedOperationException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        } catch (DuplicateEntityException e) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
-        }
+        return userMapper.userToUserDisplayDTO(userToBeUpdated);
+        
     }
 
     @DeleteMapping("/{id}")
     public void deleteUser(@RequestHeader HttpHeaders headers, @PathVariable int id) {
-        try {
-            User userRequest = authenticationHelper.tryGetUserWithRoles(headers);
 
-            userService.delete(id, userRequest);
+        User userRequest = authenticationHelper.tryGetUserWithRoles(headers);
 
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch (UnauthorizedOperationException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        }
+        userService.delete(id, userRequest);
+
     }
-
 
 }

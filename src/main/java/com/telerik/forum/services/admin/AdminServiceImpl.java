@@ -12,6 +12,8 @@ import com.telerik.forum.repositories.user.UserRepository;
 import com.telerik.forum.repositories.utilities.SortingHelper;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -46,14 +48,14 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public List<User> getAllUsers(FilterUserOptions options, User userRequest){
+    public Page<User> getAllUsers(FilterUserOptions options, User userRequest, Pageable pageable){
         authorization(userRequest);
 
         options.getSortBy().ifPresent(SortingHelper::validateSortByFieldUser);
 
         options.getSortOrder().ifPresent(SortingHelper::validateSortOrderField);
 
-        return userRepository.getAll(options);
+        return userRepository.getAll(options, pageable);
     }
 
     @Override

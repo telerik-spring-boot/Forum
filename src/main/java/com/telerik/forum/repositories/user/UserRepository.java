@@ -2,12 +2,14 @@ package com.telerik.forum.repositories.user;
 
 import com.telerik.forum.models.user.User;
 import com.telerik.forum.models.filters.FilterUserOptions;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface UserRepository {
 
-    List<User> getAll(FilterUserOptions options);
+    Page<User> getAll(FilterUserOptions options, Pageable pageable);
 
     List<User> getAll();
 

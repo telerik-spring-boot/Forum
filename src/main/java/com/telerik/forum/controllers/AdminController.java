@@ -3,6 +3,7 @@ package com.telerik.forum.controllers;
 
 import com.telerik.forum.helpers.AuthenticationHelper;
 import com.telerik.forum.helpers.UserMapper;
+import com.telerik.forum.models.dtos.PaginationDTO;
 import com.telerik.forum.models.dtos.adminDTOs.AdminCreateDTO;
 import com.telerik.forum.models.dtos.adminDTOs.AdminDisplayDTO;
 import com.telerik.forum.models.dtos.adminDTOs.AdminUpdateDTO;
@@ -14,6 +15,11 @@ import com.telerik.forum.services.admin.AdminService;
 import com.telerik.forum.services.user.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,12 +52,22 @@ public class AdminController {
     }
 
     @GetMapping("/users")
-    public List<UserDisplayDTO> getAllUsers(@RequestHeader HttpHeaders headers, @RequestParam(required = false) String username, @RequestParam(required = false) String emailAddress, @RequestParam(required = false) String firstName, @RequestParam(required = false) String sortBy, @RequestParam(required = false) String sortOrder) {
+    public PaginationDTO<UserDisplayDTO> getAllUsers(@RequestHeader HttpHeaders headers,
+                                     @RequestParam(required = false) String username,
+                                     @RequestParam(required = false) String emailAddress,
+                                     @RequestParam(required = false) String firstName,
+                                     @RequestParam(required = false) String sortBy,
+                                     @RequestParam(required = false) String sortOrder,
+                                     @PageableDefault(size = 10, page = 0) Pageable pageable) {
+
 
         User userRequest = authenticationHelper.tryGetUserWithRoles(headers);
 
-        return adminService.getAllUsers(new FilterUserOptions(username, emailAddress, firstName, sortBy, sortOrder), userRequest).stream().map(userMapper::userToUserDisplayDTO).toList();
+        Page<User> usersPage = adminService.getAllUsers(new FilterUserOptions(username, emailAddress, firstName, sortBy, sortOrder), userRequest, pageable);
 
+        List<UserDisplayDTO> users = usersPage.getContent().stream().map(userMapper::userToUserDisplayDTO).toList();
+
+        return new PaginationDTO<>(users, usersPage.getNumber(), usersPage.getSize(), usersPage.getTotalElements(), usersPage.getTotalPages());
 
     }
 

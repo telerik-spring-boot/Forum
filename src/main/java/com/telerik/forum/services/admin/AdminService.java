@@ -3,6 +3,8 @@ package com.telerik.forum.services.admin;
 import com.telerik.forum.models.user.AdminDetails;
 import com.telerik.forum.models.user.User;
 import com.telerik.forum.models.filters.FilterUserOptions;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -12,7 +14,7 @@ public interface AdminService {
 
     List<User> getAllUsers();
 
-    List<User> getAllUsers(FilterUserOptions options, User userRequest);
+    Page<User> getAllUsers(FilterUserOptions options, User userRequest, Pageable pageable);
 
     AdminDetails getByUserId(int id, User userRequest);
 

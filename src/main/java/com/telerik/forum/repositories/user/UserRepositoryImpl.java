@@ -11,6 +11,9 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -41,7 +44,7 @@ public class  UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<User> getAll(FilterUserOptions options) {
+    public Page<User> getAll(FilterUserOptions options, Pageable pageable) {
         try(Session session = sessionFactory.openSession()) {
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
 
@@ -67,9 +70,20 @@ public class  UserRepositoryImpl implements UserRepository {
 
             sortingHelper(criteriaBuilder, root, criteriaQuery, options);
 
-            Query<User> query = session.createQuery(criteriaQuery);
+            CriteriaQuery<Long> countQuery = criteriaBuilder.createQuery(Long.class);
+            Root<User> countRoot = countQuery.from(User.class);
+            countQuery.select(criteriaBuilder.count(countRoot));
 
-            return query.list();
+            countQuery.where(predicates.toArray(new Predicate[0]));
+            Long totalUsers = session.createQuery(countQuery).getSingleResult();
+
+            Query<User> query = session.createQuery(criteriaQuery)
+                    .setFirstResult((int) pageable.getOffset())
+                    .setMaxResults(pageable.getPageSize());
+
+
+
+            return new PageImpl<>(query.getResultList(), pageable, totalUsers);
         }
     }
 

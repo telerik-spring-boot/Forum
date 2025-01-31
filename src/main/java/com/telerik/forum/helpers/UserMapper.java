@@ -104,7 +104,7 @@ public class UserMapper {
         return userPostsDisplayDTO;
     }
 
-    public AdminDisplayDTO AdminToAdminDisplayDTO(AdminDetails admin) {
+    public AdminDisplayDTO adminToAdminDisplayDTO(AdminDetails admin) {
         AdminDisplayDTO adminDisplayDTO = new AdminDisplayDTO();
         User userPartOfAdmin = admin.getUser();
 

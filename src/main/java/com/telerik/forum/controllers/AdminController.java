@@ -41,7 +41,7 @@ public class AdminController {
 
         User userRequest = authenticationHelper.tryGetUserWithRoles(headers);
 
-        return adminService.getAll(userRequest).stream().map(userMapper::AdminToAdminDisplayDTO).toList();
+        return adminService.getAll(userRequest).stream().map(userMapper::adminToAdminDisplayDTO).toList();
 
     }
 
@@ -60,7 +60,7 @@ public class AdminController {
 
         User userRequest = authenticationHelper.tryGetUserWithRoles(header);
 
-        return userMapper.AdminToAdminDisplayDTO(adminService.getByUserId(userId, userRequest));
+        return userMapper.adminToAdminDisplayDTO(adminService.getByUserId(userId, userRequest));
 
     }
 
@@ -71,7 +71,7 @@ public class AdminController {
 
         adminService.giveAdminRights(adminDTO.getUser_id(), adminDTO.getPhoneNumber(), userRequest);
 
-        return userMapper.AdminToAdminDisplayDTO(adminService.getByUserId(adminDTO.getUser_id(), userRequest));
+        return userMapper.adminToAdminDisplayDTO(adminService.getByUserId(adminDTO.getUser_id(), userRequest));
 
 
     }
@@ -95,7 +95,7 @@ public class AdminController {
 
         adminService.update(admin, userRequest);
 
-        return userMapper.AdminToAdminDisplayDTO(admin);
+        return userMapper.adminToAdminDisplayDTO(admin);
 
 
     }

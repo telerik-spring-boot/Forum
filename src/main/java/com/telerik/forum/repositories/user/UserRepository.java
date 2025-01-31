@@ -9,6 +9,8 @@ public interface UserRepository {
 
     List<User> getAll(FilterUserOptions options);
 
+    List<User> getAll();
+
     User getById(int id);
 
     User getByIdWithPosts(int id);

@@ -231,6 +231,8 @@ public class UserServiceTests {
         userRequest.setRoles(adminDetails.getUser().getRoles());
 
         Mockito.doNothing().when(mockUserRepository).delete(1);
+        Mockito.when(mockUserRepository.getById(Mockito.anyInt()))
+                .thenReturn(userToDelete);
 
         // Act
         userService.delete(1, userRequest);
@@ -247,6 +249,8 @@ public class UserServiceTests {
         userToDelete.setId(1);
 
         Mockito.doNothing().when(mockUserRepository).delete(1);
+        Mockito.when(mockUserRepository.getById(Mockito.anyInt()))
+                .thenReturn(userToDelete);
 
         // Act
         userService.delete(1, userToDelete);

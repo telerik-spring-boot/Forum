@@ -41,6 +41,11 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    public List<User> getAllUsers() {
+        return userRepository.getAll();
+    }
+
+    @Override
     public List<User> getAllUsers(FilterUserOptions options, User userRequest){
         authorization(userRequest);
 

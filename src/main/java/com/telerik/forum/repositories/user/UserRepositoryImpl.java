@@ -32,6 +32,15 @@ public class  UserRepositoryImpl implements UserRepository {
 
 
     @Override
+    public List<User> getAll(){
+        try(Session session = sessionFactory.openSession()) {
+            Query<User> query = session.createQuery("from User", User.class);
+
+            return query.list();
+        }
+    }
+
+    @Override
     public List<User> getAll(FilterUserOptions options) {
         try(Session session = sessionFactory.openSession()) {
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();

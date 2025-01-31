@@ -49,7 +49,7 @@ public class AnonymousController {
         home.setMostRecentPosts(postService.getMostRecentPosts(10).stream()
                 .map(postMapper::postToPostDisplayDTO)
                 .collect(Collectors.toSet()));
-        home.setUsersCount(adminService.getAllUsers(new FilterUserOptions(null, null, null, null, null), adminService.getAll(null).get(0).getUser()).size());
+        home.setUsersCount(adminService.getAllUsers().size());
         List<Post> posts = postService.getAllPosts();
         home.setPostsCount(posts.isEmpty() ? 0 : posts.size());
 

@@ -10,6 +10,8 @@ public interface AdminService {
 
     List<AdminDetails> getAll(User userRequest);
 
+    List<User> getAllUsers();
+
     List<User> getAllUsers(FilterUserOptions options, User userRequest);
 
     AdminDetails getByUserId(int id, User userRequest);

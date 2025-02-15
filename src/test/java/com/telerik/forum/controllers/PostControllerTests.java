@@ -2,6 +2,7 @@ package com.telerik.forum.controllers;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.telerik.forum.controllers.rest.PostController;
 import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.InvalidSortParameterException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;

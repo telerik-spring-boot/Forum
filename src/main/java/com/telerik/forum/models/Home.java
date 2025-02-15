@@ -12,13 +12,14 @@ public class Home {
 
     private int postsCount;
 
-    private  Set<PostDisplayDTO>  mostCommentedPosts;
+    private Set<PostDisplayDTO> mostCommentedPosts;
 
-    private  Set<PostDisplayDTO>  mostLikedPosts;
+    private Set<PostDisplayDTO> mostLikedPosts;
 
-    private  Set<PostDisplayDTO>  mostRecentPosts;
+    private Set<PostDisplayDTO> mostRecentPosts;
 
-    public Home() {}
+    public Home() {
+    }
 
     public Home(String coreFeatureURL, int usersCount, int postsCount, Set<PostDisplayDTO> mostCommentedPosts,
                 Set<PostDisplayDTO> mostLikedPosts, Set<PostDisplayDTO> mostRecentPosts) {

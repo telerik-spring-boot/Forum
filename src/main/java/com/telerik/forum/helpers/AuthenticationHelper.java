@@ -7,6 +7,7 @@ import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.models.user.User;
 import com.telerik.forum.services.user.UserService;
 import io.jsonwebtoken.JwtException;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
@@ -32,7 +33,7 @@ public class AuthenticationHelper {
         return userService.getByUsernameWithRoles(validateTokenAndReturnUsername(headers));
     }
 
-    private String validateTokenAndReturnUsername(HttpHeaders headers){
+    private String validateTokenAndReturnUsername(HttpHeaders headers) {
         String authorizationHeader = headers.getFirst(HttpHeaders.AUTHORIZATION);
 
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
@@ -44,6 +45,30 @@ public class AuthenticationHelper {
 
             return jwtUtil.extractUsername(token);
         } catch (EntityNotFoundException | JwtException e) {
+            throw new UnauthorizedOperationException(WRONG_CREDENTIALS_ERROR_MESSAGE);
+        }
+
+    }
+
+    public User tryGetUserMvc(HttpSession session) {
+        String currentUser = (String) session.getAttribute("currentUser");
+
+        if (currentUser == null) {
+            throw new UnauthorizedOperationException("The requested resource requires authentication.");
+        }
+
+        return userService.getByUsername(currentUser);
+    }
+
+    public User verifyAuthentication(String username, String password) {
+
+        try {
+            User user = userService.getByUsername(username);
+            if (!user.getPassword().equals(password)) {
+                throw new UnauthorizedOperationException(WRONG_CREDENTIALS_ERROR_MESSAGE);
+            }
+            return user;
+        } catch (EntityNotFoundException e) {
             throw new UnauthorizedOperationException(WRONG_CREDENTIALS_ERROR_MESSAGE);
         }
 

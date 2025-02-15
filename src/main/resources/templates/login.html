@@ -22,34 +22,41 @@
 							                             th:text="#{login.label}">Login</h3></div>
 							<div class="card-body">
 								<form action="#" method="post" th:action="@{/auth/login}" th:object="${login}">
-									<label class="text-danger mb-2" for="username" th:errors="*{username}">Username
-										error
-										placeholder</label>
 									<div class="form-floating mb-3">
 										<input class="form-control" id="username" placeholder="Username"
-										       th:field="*{username}" type="text"/>
+										       th:classappend="${#fields.hasErrors('username')? 'is-invalid' : (formSubmitted != null ? 'is-valid' : '')}"
+										       th:field="*{username}"
+										       type="text"
+										/>
 										<label for="username" th:text="#{user.username.label}"> Username</label>
+										<div class="invalid-feedback"
+										     th:if="${#fields.hasErrors('username') && !#fields.errors('username').contains('Invalid credentials.')}"
+										     th:text="${#fields.errors('username')}">
+										</div>
 									</div>
-
-									<label class="text-danger  mb-2" for="inputPassword"
-									       th:errors="*{password}">Password error
-										placeholder</label>
 									<div class="form-floating mb-3">
 										<input class="form-control" id="inputPassword" placeholder="Enter password"
-										       th:field="*{password}" type="password">
+										       th:classappend="${#fields.hasErrors('password') ? 'is-invalid' : (formSubmitted != null ? 'is-valid' : '')}"
+										       th:field="*{password}"
+										       type="password"
+										/>
 										<label for="inputPassword" th:text="#{user.password.label}">Password</label>
+										<div class="invalid-feedback"
+										     th:if="${#fields.hasErrors('password')}"
+										     th:text="${#fields.errors('password')}">
+										</div>
 									</div>
 
 									<div class="form-check mb-3">
 										<input class="form-check-input" id="inputRememberPassword" type="checkbox"
 										       value=""/>
 										<label class="form-check-label" for="inputRememberPassword"
-										       th:text="#{login.remember.password}">Remember
+										       th:text="#{login.remember-password}">Remember
 											Password</label>
 									</div>
 									<div class="d-flex align-items-center justify-content-between mt-4 mb-0">
 										<a class="small" href="password.html" th:href="@{/auth/password}"
-										   th:text="#{login.forgot.password.label}">Forgot
+										   th:text="#{login.forgot-password.label}">Forgot
 											Password?</a>
 										<input class="btn btn-primary" th:value="#{login.label}" type="submit"
 										       value="Login"/>
@@ -58,7 +65,7 @@
 							</div>
 							<div class="card-footer text-center py-3">
 								<div class="small"><a href="register.html" th:href="@{/auth/register}"
-								                      th:text="#{login.create.account.label}">Need
+								                      th:text="#{login.create-account.label}">Need
 									an account? Sign up!</a></div>
 							</div>
 						</div>

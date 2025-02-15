@@ -6,29 +6,29 @@ import jakarta.validation.constraints.Size;
 
 public class UserCreateDTO {
 
-    @NotBlank
+    @NotBlank(message = "First name is required.")
     @Size(min = 4, max = 32, message = "First name must be between 4 and 32 symbols.")
     private String firstName;
 
-    @NotBlank
+    @NotBlank(message = "Last name is required.")
     @Size(min = 4, max = 32, message = "Last name must be between 4 and 32 symbols.")
     private String lastName;
 
-    @NotBlank
+    @NotBlank(message = "Email address is required.")
     @Size(min = 5, max = 254, message = "Email must be between 5 and 254 symbols.")
-    @Pattern(regexp = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
-            message = "Invalid email address")
+    @Pattern(regexp = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$", message = "Email must be valid.")
     private String emailAddress;
 
-    @NotBlank
+    @NotBlank(message = "Username is required.")
     @Size(min = 4, max = 20, message = "Username must be between 4 and 20 symbols.")
     private String username;
 
-    @NotBlank
+    @NotBlank(message = "Password is required.")
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*(),.?\":{}|<>]).{6,20}$", message = "Password must contain at least one uppercase letter, one lowercase letter, one number, one symbol, and be between 6 to 20 characters long.")
     private String password;
 
-    public UserCreateDTO() {}
+    public UserCreateDTO() {
+    }
 
     public UserCreateDTO(String firstName, String lastName, String emailAddress, String username, String password) {
         this.firstName = firstName;

@@ -1,8 +1,12 @@
 package com.telerik.forum.controllers.mvc;
 
 
+import com.telerik.forum.exceptions.DuplicateEntityException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.helpers.AuthenticationHelper;
+import com.telerik.forum.helpers.UserMapper;
+import com.telerik.forum.models.dtos.userDTOs.UserCreateDTO;
+import com.telerik.forum.models.dtos.userDTOs.UserCreateMvcDTO;
 import com.telerik.forum.models.dtos.userDTOs.UserLoginDTO;
 import com.telerik.forum.models.user.User;
 import com.telerik.forum.services.user.UserService;
@@ -22,10 +26,12 @@ public class AnonymousMvcController {
 
     private final AuthenticationHelper authenticationHelper;
     private final UserService userService;
+    private final UserMapper userMapper;
 
-    public AnonymousMvcController(AuthenticationHelper authenticationHelper, UserService userService) {
+    public AnonymousMvcController(AuthenticationHelper authenticationHelper, UserService userService, UserMapper userMapper) {
         this.authenticationHelper = authenticationHelper;
         this.userService = userService;
+        this.userMapper = userMapper;
     }
 
     @GetMapping("/login")
@@ -36,7 +42,9 @@ public class AnonymousMvcController {
     }
 
     @PostMapping("/login")
-    public String handleLogin(@Valid @ModelAttribute("login") UserLoginDTO userLoginDTO, BindingResult bindingResult, HttpSession session) {
+    public String handleLogin(@Valid @ModelAttribute("login") UserLoginDTO userLoginDTO, BindingResult bindingResult, HttpSession session, Model model) {
+
+        model.addAttribute("formSubmitted", true);
 
         if (bindingResult.hasErrors()) {
             return "login";
@@ -52,7 +60,46 @@ public class AnonymousMvcController {
 
         } catch (UnauthorizedOperationException e) {
             bindingResult.rejectValue("username", "error.login", e.getMessage());
+            bindingResult.rejectValue("password", "error.login", e.getMessage());
             return "login";
+        }
+    }
+
+    @GetMapping("/register")
+    public String showRegisterPage(Model model) {
+        model.addAttribute("register", new UserCreateMvcDTO());
+        return "register";
+    }
+
+    @PostMapping("/register")
+    public String handleRegister(@Valid @ModelAttribute("register") UserCreateMvcDTO userCreateMvcDTO, BindingResult bindingResult, HttpSession session, Model model) {
+
+        model.addAttribute("formSubmitted", true);
+
+        if (bindingResult.hasErrors()) {
+            return "register";
+        }
+
+        if (!userCreateMvcDTO.getPassword().equals(userCreateMvcDTO.getConfirmPassword())) {
+            bindingResult.rejectValue("confirmPassword", "error.register", "Passwords do not match");
+            bindingResult.rejectValue("password", "error.register", "Password do not match");
+            return "register";
+        }
+
+        try {
+            User user = userMapper.dtoToUser(userCreateMvcDTO);
+
+            userService.create(user);
+            session.setAttribute("currentUser", userCreateMvcDTO.getUsername());
+
+            return "redirect:/auth/login";
+
+        } catch (UnauthorizedOperationException e) {
+            bindingResult.rejectValue("username", "error.register", e.getMessage());
+            return "register";
+        } catch (DuplicateEntityException e) {
+            bindingResult.rejectValue("username", "username.register", e.getMessage());
+            return "register";
         }
     }
 

@@ -9,6 +9,7 @@ import com.telerik.forum.services.user.UserService;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -63,14 +64,19 @@ public class AuthenticationHelper {
     public User verifyAuthentication(String username, String password) {
 
         try {
-            User user = userService.getByUsername(username);
-            if (!user.getPassword().equals(password)) {
+            User user = userService.getByUsernameWithRoles(username);
+
+            if (!new BCryptPasswordEncoder().matches(password, user.getPassword())) {
                 throw new UnauthorizedOperationException(WRONG_CREDENTIALS_ERROR_MESSAGE);
             }
+
             return user;
         } catch (EntityNotFoundException e) {
             throw new UnauthorizedOperationException(WRONG_CREDENTIALS_ERROR_MESSAGE);
         }
+    }
 
+    public boolean isAdmin(User user) {
+        return user.getRoles().stream().anyMatch(role -> role.getName().equalsIgnoreCase("ADMIN"));
     }
 }

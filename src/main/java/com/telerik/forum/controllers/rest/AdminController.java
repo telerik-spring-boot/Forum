@@ -1,4 +1,4 @@
-package com.telerik.forum.controllers;
+package com.telerik.forum.controllers.rest;
 
 
 import com.telerik.forum.helpers.AuthenticationHelper;
@@ -16,9 +16,7 @@ import com.telerik.forum.services.user.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
@@ -53,12 +51,12 @@ public class AdminController {
 
     @GetMapping("/users")
     public PaginationDTO<UserDisplayDTO> getAllUsers(@RequestHeader HttpHeaders headers,
-                                     @RequestParam(required = false) String username,
-                                     @RequestParam(required = false) String emailAddress,
-                                     @RequestParam(required = false) String firstName,
-                                     @RequestParam(required = false) String sortBy,
-                                     @RequestParam(required = false) String sortOrder,
-                                     @PageableDefault(size = 10, page = 0) Pageable pageable) {
+                                                     @RequestParam(required = false) String username,
+                                                     @RequestParam(required = false) String emailAddress,
+                                                     @RequestParam(required = false) String firstName,
+                                                     @RequestParam(required = false) String sortBy,
+                                                     @RequestParam(required = false) String sortOrder,
+                                                     @PageableDefault(size = 10, page = 0) Pageable pageable) {
 
 
         User userRequest = authenticationHelper.tryGetUserWithRoles(headers);

@@ -1,4 +1,4 @@
-package com.telerik.forum.controllers;
+package com.telerik.forum.controllers.rest;
 
 
 import com.telerik.forum.helpers.AuthenticationHelper;

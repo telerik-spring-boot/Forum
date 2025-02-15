@@ -1,11 +1,10 @@
-package com.telerik.forum.controllers;
+package com.telerik.forum.controllers.rest;
 
 
 import com.telerik.forum.helpers.LoginHelper;
 import com.telerik.forum.helpers.PostMapper;
 import com.telerik.forum.models.Home;
 import com.telerik.forum.models.dtos.userDTOs.UserLoginDTO;
-import com.telerik.forum.models.filters.FilterUserOptions;
 import com.telerik.forum.models.post.Post;
 import com.telerik.forum.services.admin.AdminService;
 import com.telerik.forum.services.post.PostService;

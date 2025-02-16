@@ -23,6 +23,7 @@ function getLast12Months() {
     return months;
 }
 
+
 // Generate random data for demonstration
 function generateRandomData() {
     return Array.from({length: 12}, () => Math.floor(Math.random() * 40000));
@@ -47,6 +48,7 @@ function extractLastLoginData() {
     return lastLoginData;
 }
 
+
 // Function to convert lastLogin string to 'MMM YYYY' format (e.g., "Feb 2024")
 function formatDateToYearMonth(dateStr) {
     // Split the date string to get "YYYY-MM-DD"
@@ -60,7 +62,7 @@ function formatDateToYearMonth(dateStr) {
     });
 }
 
-// Function to count occurrences of each month in the last 12 months
+// Function to count users active for each month in the last 12 months
 function countLoginsByMonth(lastLoginData) {
     const counts = {};
     const last12Months = getLast12Months();
@@ -79,6 +81,32 @@ function countLoginsByMonth(lastLoginData) {
         }
     });
 
+    // Return counts in the same order as the last12Months array
+    return last12Months.map(month => counts[month]);
+}
+
+const postDatesArray = postDates.substring(1, postDates.length - 1).split(",").map(date => date.trim());
+
+
+// Function to count post created for each month in the last 12 months
+function countCreatedPosts(postDatesArray) {
+    const counts = {};
+    const last12Months = getLast12Months();
+
+    // Count logins for each month
+    postDatesArray.forEach(dateStr => {
+        const monthYear = formatDateToYearMonth(dateStr);
+        console.log(monthYear);
+        if (last12Months.includes(monthYear)) {
+            counts[monthYear] = (counts[monthYear] || 0) + 1;
+        }
+    });
+    // Fill in missing months with 0 logins
+    last12Months.forEach(month => {
+        if (!counts[month]) {
+            counts[month] = 0;
+        }
+    });
     // Return counts in the same order as the last12Months array
     return last12Months.map(month => counts[month]);
 }
@@ -126,8 +154,8 @@ function createLineChart(elementId, label, data, backgroundColor, borderColor) {
                     {
                         ticks: {
                             min: 0,
-                            max: 150,
-                            stepSize: 15,
+                            max: 50,
+                            stepSize: 5,
                             maxTicksLimit: 10,
                         },
                         gridLines: {
@@ -143,7 +171,5 @@ function createLineChart(elementId, label, data, backgroundColor, borderColor) {
     });
 }
 
-console.log(countLoginsByMonth(extractLastLoginData()));
-
 createLineChart("myAreaChart1", "Logged In Users", countLoginsByMonth(extractLastLoginData()), "rgba(2,117,216,0.2)", "rgba(2,117,216,1)");
-createLineChart("myAreaChart2", "Sessions 2", generateRandomData(), "rgba(255,99,132,0.2)", "rgba(255,99,132,1)");
+createLineChart("myAreaChart2", "Created Posts", countCreatedPosts(postDatesArray), "rgba(255,99,132,0.2)", "rgba(255,99,132,1)");

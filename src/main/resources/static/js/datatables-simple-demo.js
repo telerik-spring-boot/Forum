@@ -8,6 +8,7 @@ window.addEventListener('DOMContentLoaded', event => {
     }
 });
 
+
 //
 // document.addEventListener('DOMContentLoaded', function() {
 //   // Initialize the DataTable

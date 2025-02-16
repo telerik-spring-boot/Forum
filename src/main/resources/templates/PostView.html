@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${post.title}">Post Title</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .post-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .comment {
+            margin-left: 40px;
+            padding: 10px;
+            border-left: 2px solid #ddd;
+            margin-top: 10px;
+        }
+        .vote-buttons {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-right: 15px;
+        }
+        .vote-buttons button {
+            border: none;
+            background: none;
+            cursor: pointer;
+        }
+        .vote-buttons .fa {
+            font-size: 1.5em;
+        }
+        .comment-box {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-4">
+    <!-- Post Section -->
+    <div class="post-container">
+        <div class="d-flex">
+            <!-- Voting Section -->
+            <div class="vote-buttons">
+                <a th:href="@{__${requestURI}__/like}">
+                    <i th:classappend="${userReaction == 1} ? 'fa-solid fa-up-long text-success' : 'fa-solid fa-arrow-up-long text-dark'"
+                       class=""></i>
+                </a>
+                <span th:text="${post.likes}">0</span>
+                <a th:href="@{__${requestURI}__/dislike}">
+                    <i th:classappend="${userReaction == -1} ? 'fa-solid fa-down-long text-danger' : 'fa-solid fa-arrow-down-long text-dark'"
+                       class=""></i>
+                </a>
+            </div>
+
+            <!-- Post Content -->
+            <div>
+                <h3 th:text="${post.title}">Post Title</h3>
+                <p class="text-muted">
+                    Posted by <span th:text="${post.creatorUsername}">User</span> on
+                    <span th:text="${#temporals.format(post.createdAt, 'dd-MM-yyyy HH:mm')}">Date</span>
+                </p>
+                <p th:text="${post.content}">Post content goes here...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comment Section -->
+    <h5>Comments</h5>
+
+    <div th:each="comment : ${post.comments}" class="comment">
+        <p class="text-muted">
+            <strong th:text="${comment.creatorUsername}">Username</strong>
+            <span th:text="${#temporals.format(comment.createdAt, 'dd-MM-yyyy HH:mm')}">Date</span>
+        </p>
+        <p th:text="${comment.commentContent}">Comment text...</p>
+    </div>
+
+<!--    &lt;!&ndash; Comment Form &ndash;&gt;-->
+<!--    <div class="comment-box">-->
+<!--        <h6>Add a Comment</h6>-->
+<!--        <form action="#" method="post" th:action="@{/post/{id}/comment(id=${post.id})}">-->
+<!--            <div class="mb-3">-->
+<!--                <textarea name="content" class="form-control" rows="3" placeholder="Write your comment here..." required></textarea>-->
+<!--            </div>-->
+<!--            <button type="submit" class="btn btn-primary">Post Comment</button>-->
+<!--        </form>-->
+<!--    </div>-->
+</div>
+
+</body>
+</html>

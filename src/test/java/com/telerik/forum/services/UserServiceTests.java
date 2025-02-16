@@ -260,4 +260,18 @@ public class UserServiceTests {
                 .delete(Mockito.anyInt());
     }
 
+    @Test
+    public void delete_Should_Throw_When_UserIdInvalid() {
+        // Arrange
+        User userToDelete = createMockUser();
+        AdminDetails adminDetails = createMockAdminDetails();
+        userToDelete.setRoles(adminDetails.getUser().getRoles());
+        userToDelete.setId(1);
+
+        // Assert
+        Assertions.assertThrows(EntityNotFoundException.class, () -> userService.delete(5, userToDelete));
+        Mockito.verify(mockUserRepository, Mockito.times(0))
+                .delete(Mockito.anyInt());
+    }
+
 }

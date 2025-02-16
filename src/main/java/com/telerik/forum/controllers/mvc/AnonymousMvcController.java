@@ -66,6 +66,12 @@ public class AnonymousMvcController {
         }
     }
 
+    @GetMapping("/logout")
+    public String handleLogout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/home";
+    }
+
     @GetMapping("/register")
     public String showRegisterPage(Model model) {
         model.addAttribute("register", new UserCreateMvcDTO());

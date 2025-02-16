@@ -1,6 +1,7 @@
 package com.telerik.forum.controllers.mvc;
 
 
+import com.telerik.forum.configurations.jwt.JwtUtil;
 import com.telerik.forum.exceptions.DuplicateEntityException;
 import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
@@ -8,18 +9,21 @@ import com.telerik.forum.helpers.AuthenticationHelper;
 import com.telerik.forum.helpers.UserMapper;
 import com.telerik.forum.models.dtos.userDTOs.UserCreateMvcDTO;
 import com.telerik.forum.models.dtos.userDTOs.UserLoginDTO;
+import com.telerik.forum.models.dtos.userDTOs.UserPasswordUpdateDTO;
 import com.telerik.forum.models.dtos.userDTOs.UserRetrieveDTO;
 import com.telerik.forum.models.user.User;
 import com.telerik.forum.services.user.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/auth")
@@ -28,11 +32,15 @@ public class AnonymousMvcController {
     private final AuthenticationHelper authenticationHelper;
     private final UserService userService;
     private final UserMapper userMapper;
+    private final JavaMailSender mailSender;
+    private final JwtUtil jwtUtil;
 
-    public AnonymousMvcController(AuthenticationHelper authenticationHelper, UserService userService, UserMapper userMapper) {
+    public AnonymousMvcController(AuthenticationHelper authenticationHelper, UserService userService, UserMapper userMapper, JavaMailSender mailSender, JwtUtil jwtUtil) {
         this.authenticationHelper = authenticationHelper;
         this.userService = userService;
         this.userMapper = userMapper;
+        this.mailSender = mailSender;
+        this.jwtUtil = jwtUtil;
     }
 
     @GetMapping("/login")
@@ -110,14 +118,14 @@ public class AnonymousMvcController {
     }
 
 
-    @GetMapping("/password")
+    @GetMapping("/request-password")
     public String showForgotPassword(Model model) {
         model.addAttribute("user", new UserRetrieveDTO());
 
         return "password";
     }
 
-    @PostMapping("/password")
+    @PostMapping("/request-password")
     public String handlePasswordRetrieval(@Valid @ModelAttribute("user") UserRetrieveDTO userRetrieveDTO, BindingResult bindingResult, Model model) {
 
         model.addAttribute("formSubmitted", true);
@@ -129,12 +137,70 @@ public class AnonymousMvcController {
         try {
             User user = userService.getByUsername(userRetrieveDTO.getUsername());
 
-            // handle logic to send email to the user to create new password
+            SimpleMailMessage mailMessage = new SimpleMailMessage();
+
+            String token = jwtUtil.generateToken(user.getUsername());
+            String resetUrl = "http://localhost:8080/auth/reset-password?token=" + token;
+            mailMessage.setTo(user.getEmailAddress());
+            mailMessage.setSubject("Password retrieval");
+            mailMessage.setText("Hello, " + user.getUsername() + " to reset your password, click on the link: " + resetUrl);
+            mailMessage.setFrom("norep-forum@outlook.com");
+
+            mailSender.send(mailMessage);
 
             return "redirect:/auth/login";
         } catch (EntityNotFoundException e) {
             bindingResult.rejectValue("username", "error.retrieve", e.getMessage());
             return "password";
+        }
+
+    }
+
+    @GetMapping("/reset-password")
+    public String showResetPasswordForm(@RequestParam String token, Model model) {
+
+        try {
+            jwtUtil.extractUsername(token);
+        } catch (UnauthorizedOperationException e) {
+            return "redirect:/auth/login";
+        }
+
+        model.addAttribute("token", token);
+        model.addAttribute("user", new UserPasswordUpdateDTO());
+
+        return "reset-password";
+    }
+
+    @PostMapping("/reset-password")
+    public String resetPassword(@RequestParam String token, @Valid @ModelAttribute("user") UserPasswordUpdateDTO userPasswordUpdateDTO, BindingResult bindingResult, HttpServletRequest request, Model model) {
+
+        model.addAttribute("formSubmitted", true);
+
+        if (bindingResult.hasErrors()) {
+            return "reset-password";
+        }
+
+        if (!userPasswordUpdateDTO.getPassword().equals(userPasswordUpdateDTO.getConfirmPassword())) {
+            bindingResult.rejectValue("confirmPassword", "error.register", "Passwords do not match");
+            bindingResult.rejectValue("password", "error.register", "Password do not match");
+            return "reset-password";
+        }
+
+
+        try {
+            User user = userService.getByUsernameWithRoles(jwtUtil.extractUsername(token));
+
+            user.setPassword(new BCryptPasswordEncoder().encode(userPasswordUpdateDTO.getPassword()));
+
+            userService.update(user, user);
+
+            model.addAttribute("currentURI", request.getRequestURI());
+
+            return "redirect:/auth/login";
+
+        } catch (Exception e) {
+            bindingResult.rejectValue("password", "error.reset", e.getMessage());
+            return "reset-password";
         }
 
     }

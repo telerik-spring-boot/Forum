@@ -1,41 +1,261 @@
-INSERT INTO forum_schema.users (first_name, last_name, email_address, username, password)
+-- INSERT INTO forum_schema.users (first_name, last_name, email_address, username, password)
+-- VALUES ('John', 'Doe', 'john.doe@example.com', 'johndoe',
+--         '$2b$12$ZXIe8X5z8z1YwAvFalNH/Ox8zvkMlrDRfnmUW9azqvsBQ3nBJQ6a.'),
+--        ('Jane', 'Smith', 'jane.smith@example.com', 'janesmith',
+--         '$2b$12$ZS7DW.KZQH0LhLEOrwlYRuMVhPGtqjFfWJpwQnBVM3qaZ4tHV7C4q'),
+--        ('Admin', 'User', 'admin.user@example.com', 'adminuser',
+--         '$2b$12$ZJDrZSz/gu1QEd8EADjtn.B1FT78w6LCj2AWWiXjnJGjgvI5eUIJK'),
+--        ('Nophone', 'Andy', 'nophone.andy@example.com', 'nophoneadmin',
+--         '$2b$12$ZJDrZSz/gu1QEd8EADjtn.B1FT78w6LCj2AWWiXjnJGjgvI5eUIJK');
+
+
+INSERT INTO forum_schema.users (first_name, last_name, email_address, username, password, blocked, last_login)
 VALUES ('John', 'Doe', 'john.doe@example.com', 'johndoe',
-        '$2b$12$ZXIe8X5z8z1YwAvFalNH/Ox8zvkMlrDRfnmUW9azqvsBQ3nBJQ6a.'),
+        '$2y$10$dhjvK/JIRiGs4.Qfvpzr.OsBdyVhn1pdqtwLUZcqk3DItBrv7UwNO', 0, '2024-10-10 20:29:28'),
        ('Jane', 'Smith', 'jane.smith@example.com', 'janesmith',
-        '$2b$12$ZS7DW.KZQH0LhLEOrwlYRuMVhPGtqjFfWJpwQnBVM3qaZ4tHV7C4q'),
-       ('Admin', 'User', 'admin.user@example.com', 'adminuser',
-        '$2b$12$ZJDrZSz/gu1QEd8EADjtn.B1FT78w6LCj2AWWiXjnJGjgvI5eUIJK'),
-       ('Nophone', 'Andy', 'nophone.andy@example.com', 'nophoneadmin',
-        '$2b$12$ZJDrZSz/gu1QEd8EADjtn.B1FT78w6LCj2AWWiXjnJGjgvI5eUIJK');
+        '$2b$12$3dPjrjV5xOmdt82cVTh1A4Fc5prbGGntF8u7s95OKJ6z7riWgR3pK', 0, '2025-01-18 20:29:28'),
+       ('Michael', 'Johnson', 'michael.johnson@example.com', 'mikejohnson',
+        '$2b$12$4dJnmd4drh6c9xa1Vq2szFkD.3PfFZV09ybcuVVwHByJp8NeBR3U6u', 0, '2024-09-25 20:29:28'),
+       ('Emily', 'Davis', 'emily.davis@example.com', 'emilydavis',
+        '$2b$12$6sfVqZCOgf7gtzvq.C47u98P4A2gQJqayZ2gkMcFZPchdbtUG/Zg8', 0, '2025-02-10 20:29:28'),
+       ('William', 'Martinez', 'william.martinez@example.com', 'willmartinez',
+        '$2b$12$3jkvbSY1eyjAX6smZT9rxP7isC.tFuD2SspVYF8/ay4qD7oCw0QQf', 0, '2024-11-28 20:29:28'),
+       ('Olivia', 'Rodriguez', 'olivia.rodriguez@example.com', 'oliviarodriguez',
+        '$2b$12$4Uu3gfhXZauQ4rXl39.j2M2ttXw7yVYZiBqaDCRbn6znNr9j5Y2Xq', 0, '2025-02-11 20:29:28'),
+       ('James', 'Martinez', 'james.martinez@example.com', 'jamesmartinez',
+        '$2b$12$5s0gMlqVuGGpmbQ62t2o56lKFt9DFA9XntLmxJqah2g75l9sXm0zu', 0, '2024-12-30 20:29:28'),
+       ('Sophia', 'Hernandez', 'sophia.hernandez@example.com', 'sophiahernandez',
+        '$2b$12$5zdyKTe2gw92V5i.ayzj/kfIhk27kLdf8JhM8Q0THpo41PyGB3HqS', 0, '2024-12-16 20:29:28'),
+       ('Benjamin', 'Lopez', 'benjamin.lopez@example.com', 'benjaminlopez',
+        '$2b$12$7bY5VFO4gDsgy7qOsGz98Lgu.C7NRBdldc4NmqMyOPaMhO.kpXGMe', 0, '2025-01-07 20:29:28'),
+       ('Charlotte', 'Gonzalez', 'charlotte.gonzalez@example.com', 'charlottegonzalez',
+        '$2b$12$8rU9bWePvvz6N4wb94Ut5bI2ndh5G7cQ5JbX49sQheR68M1mAY1Lm', 0, '2024-10-31 20:29:28'),
+       ('Alexander', 'Wilson', 'alexander.wilson@example.com', 'alexanderwilson',
+        '$2b$12$8y8b0aQWzQhs0sqPmrU7a6a.Wox3N3X6Tp1hHNT2lms02XkFsMN6G', 0, '2024-08-18 20:29:28'),
+       ('Amelia', 'Anderson', 'amelia.anderson@example.com', 'ameliaanderson',
+        '$2b$12$9OqErw9fNQdyIuK5wJY8tt0sQXlYVZlYntmZABu1eq3BrrWQx0B8u', 0, '2024-11-07 20:29:28'),
+       ('Henry', 'Thomas', 'henry.thomas@example.com', 'henrythomas',
+        '$2b$12$9z3RniD1V5G7ffOh.D2hfkn44ZXeF2g45K8GZP64KhR2jTSC4p6Z6e', 0, '2024-11-30 20:29:28'),
+       ('Mia', 'Jackson', 'mia.jackson@example.com', 'miajackson',
+        '$2b$12$0NzwrA5Do9A3EKDFczDWoAKR7NrVphD5RuM3yU.vYug7D4vDdeMmOO', 0, '2025-01-26 20:29:28'),
+       ('Daniel', 'White', 'daniel.white@example.com', 'danielwhite',
+        '$2b$12$1E1fNhlo4ByyF62C.f8XcE40BHpHchdK4cIRtFg9wzXIwwqGZ5Z2K1', 0, '2025-02-06 20:29:28'),
+       ('Ella', 'Lee', 'ella.lee@example.com', 'ellalee',
+        '$2b$12$0rBz1hpAA2HtKfGkJ7DZ5kGup54dpwIQbi8xX33bq17YwpW.cBGqK', 0, '2024-10-07 20:29:28'),
+       ('David', 'Perez', 'david.perez@example.com', 'davidperez',
+        '$2b$12$2XwO5u3K7Z4W0cpT/2D7p1qX6rsph9sh0k9rgfNGQzF7PZ2J0v7aO', 0, '2024-11-03 20:29:28'),
+       ('Lucas', 'Miller', 'lucas.miller@example.com', 'lucasmiller',
+        '$2b$12$3FmjA2ksV1hbrT0s9dV8wOZyswb7HVzYdywzK5bAqbbVUzZ6sKktVx', 0, '2024-08-01 20:29:28'),
+       ('Lily', 'Lopez', 'lily.lopez@example.com', 'lilylopez',
+        '$2b$12$3nd9D4ZyBDy9Ezr8DhM1bGiGV87cb2whZPzQgrJNYpScGbvymTRuC', 0, '2024-08-02 20:29:28'),
+       ('Elijah', 'Garcia', 'elijah.garcia@example.com', 'elijahgarcia',
+        '$2b$12$4kQ2XgZtcOzhpZh1AiDlUwMlzMhlkXkjVnF8hLQ0V6auMJ43g8mMu', 0, '2024-12-19 20:29:28'),
+       ('Avery', 'Baker', 'avery.baker@example.com', 'averybaker',
+        '$2b$12$5F1lAdQ7yUyknxUuCw1Gdb2snHkNzJZffZlDezy9wmwEqPSOx24Lx', 0, '2024-10-13 20:29:28'),
+       ('Grace', 'Scott', 'grace.scott@example.com', 'gracescott',
+        '$2b$12$6vnlgL3IYyyBOQ1WsD9kgvT7hFxKpsQlwmy8CTpL86hPt5BBO23f6K', 0, '2024-11-02 20:29:28'),
+       ('Jack', 'Adams', 'jack.adams@example.com', 'jackadams',
+        '$2b$12$6sWv3lLKhZ6rMl23tRjCPg.PqUNfGeW8h1FZ9vkwgrMwPlTBkzTYi', 0, '2025-01-14 20:29:28'),
+       ('Zoe', 'Nelson', 'zoe.nelson@example.com', 'zoenelson',
+        '$2b$12$7AqTHj13l2kpm1dczJjd.QkpHgjgWzZG2p6nV1lh69hVVh8o91gJe', 0, '2024-09-05 20:29:28'),
+       ('Isaac', 'Carter', 'isaac.carter@example.com', 'isaaccarter',
+        '$2b$12$8v0tSBQuV6gXADz5vXocH4dHkdzpDl1mt2GRxhjfiySoDAc2Fg8Ku', 0, '2024-11-22 20:29:28');
 
-INSERT INTO forum_schema.posts (title, content, user_id)
-VALUES ('Welcome Post', 'This is the first post in the forum!', 1),
-       ('Second Post', 'Another interesting post in the forum.', 2);
+-- INSERT INTO forum_schema.posts (title, content, user_id)
+-- VALUES ('Welcome Post', 'This is the first post in the forum!', 1),
+--        ('Second Post', 'Another interesting post in the forum.', 2);
 
-INSERT INTO forum_schema.comments (content, post_id, user_id)
-VALUES ('This is a comment on the first post.', 1, 3),
-       ('Another comment on the first post.', 1, 2),
-       ('Comment on the second post.', 2, 4);
+INSERT INTO forum_schema.posts (title, content, user_id, created_at)
+VALUES ('Welcome Post', 'This is the first post in the forum!', 17, '2025-01-05 20:32:01'),
+       ('Introduction', 'Feel free to introduce yourself!', 21, '2024-10-29 20:32:01'),
+       ('General Discussion', 'Lets have a discussion about anything!', 14, '2024-07-24 20:32:01'),
+       ('Forum Rules', 'Please read the forum rules carefully.', 14, '2024-08-27 20:32:01'),
+       ('How to Get Started', 'Here is how to get started with the forum.', 18, '2025-01-16 20:32:01'),
+       ('Help Needed', 'If you need any help, ask here!', 21, '2024-11-15 20:32:01'),
+       ('Feature Requests', 'We would love to hear your suggestions for new features.', 12, '2024-10-27 20:32:01'),
+       ('Bug Reports', 'Report any bugs you find here.', 3, '2024-08-03 20:32:01'),
+       ('Upcoming Events', 'Stay updated with upcoming events!', 6, '2024-08-16 20:32:01'),
+       ('Productivity Tips', 'Here are some tips for productivity in the forum.', 12, '2025-01-25 20:32:01'),
+       ('Tech Talk', 'Lets talk tech and everything related!', 16, '2025-01-22 20:32:01'),
+       ('Coding Challenges', 'Join us for some coding challenges.', 20, '2024-12-24 20:32:01'),
+       ('Share Your Ideas', 'Got an idea? Share it with the community!', 6, '2024-12-05 20:32:01'),
+       ('Daily Thoughts', 'Feel free to share your daily thoughts and experiences!', 3, '2025-01-22 20:32:01'),
+       ('Project Updates', 'Keep everyone updated on your projects.', 7, '2025-01-22 20:32:01'),
+       ('New Releases', 'Check out the latest releases in the forum.', 21, '2024-09-20 20:32:01'),
+       ('Community Goals', 'Lets work together to achieve community goals!', 11, '2024-10-04 20:32:01'),
+       ('User Feedback', 'Share your feedback with us.', 15, '2025-01-03 20:32:01'),
+       ('Learning Resources', 'Looking for great learning resources? Share them here.', 5, '2024-12-12 20:32:01'),
+       ('Workshops and Webinars', 'Join us for workshops and webinars!', 17, '2025-02-16 20:32:01'),
+       ('Off-topic Discussions', 'Lets discuss off-topic subjects here.', 16, '2025-01-23 20:32:01'),
+       ('Motivation and Inspiration', 'Share motivational posts or inspirational content!', 11, '2025-02-11 20:32:01'),
+       ('User Stories', 'Tell us about your user stories and experiences!', 17, '2024-08-15 20:32:01'),
+       ('Challenges and Achievements', 'Share your challenges and achievements!', 17, '2024-12-30 20:32:01'),
+       ('Q&A', 'Ask any questions you might have and help others with theirs.', 14, '2024-09-03 20:32:01');
+
+-- INSERT INTO forum_schema.comments (content, post_id, user_id)
+-- VALUES ('This is a comment on the first post.', 1, 3),
+--        ('Another comment on the first post.', 1, 2),
+--        ('Comment on the second post.', 2, 4);
+
+INSERT INTO forum_schema.comments (content, post_id, user_id, created_at)
+VALUES ('Great post! Im really excited to get started on this topic.', 1, 17, '2025-01-11 20:32:01'),
+       ('Thanks for sharing this information. I had no idea about some of these features!', 2, 18,
+        '2025-01-07 20:32:01'),
+       ('I agree with you, this is such an interesting discussion. Lets dive deeper into this.', 3, 15,
+        '2024-08-22 20:32:01'),
+       ('I think we should update the forum rules to include more specific guidelines on posting.', 4, 12,
+        '2024-11-29 20:32:01'),
+       ('This post really helped me understand how to get started! Thanks for the tips!', 5, 18, '2025-01-21 20:32:01'),
+       ('Great discussion! Ive been wanting to talk about this for a while. Lets keep it going.', 6, 20,
+        '2025-01-16 20:32:01'),
+       ('Ive also encountered a similar issue. Looking forward to the solution.', 7, 12, '2024-08-02 20:32:01'),
+       ('I have a suggestion for a new feature. Could we possibly add a search function?', 8, 17,
+        '2025-02-14 20:32:01'),
+       ('Excited about the upcoming events. Hope to see you all there!', 9, 10, '2025-01-28 20:32:01'),
+       ('These productivity tips are awesome! Ill definitely try these out in my own workflow.', 10, 2,
+        '2024-09-12 20:32:01'),
+       ('This tech talk is just what I needed to hear. Lets keep the conversation going.', 11, 19,
+        '2025-02-02 20:32:01'),
+       ('Looking forward to the upcoming webinar. Will it cover advanced topics as well?', 12, 22,
+        '2025-02-01 20:32:01'),
+       ('This is exactly what I was looking for! I need more posts like this to learn.', 13, 24, '2025-01-08 20:32:01'),
+       ('Ive been working on a similar project. Would love to collaborate with others here!', 14, 7,
+        '2025-01-19 20:32:01'),
+       ('Love the updates! Cant wait to try out the new features when they go live.', 15, 25, '2025-01-02 20:32:01'),
+       ('Totally agree with the community goals. Its great to see everyone working together!', 16, 14,
+        '2024-09-21 20:32:01'),
+       ('This is a great place to share resources. Thanks for the learning tips!', 17, 21, '2025-02-06 20:32:01'),
+       ('I hope there will be more off-topic discussions. Sometimes its nice to just relax.', 18, 6,
+        '2024-10-22 20:32:01'),
+       ('I found this post so motivational. Thanks for the inspiration!', 19, 8, '2025-02-04 20:32:01'),
+       ('Any tips on how to stay motivated while working on a long-term project?', 20, 2, '2025-01-05 20:32:01'),
+       ('The workshops have been really helpful. Cant wait for the next one.', 21, 16, '2025-01-11 20:32:01'),
+       ('Great feedback from everyone. Its exciting to see how the community is growing.', 22, 12,
+        '2025-01-01 20:32:01'),
+       ('Does anyone have suggestions for improving the Q&A section? It could be more organized.', 23, 4,
+        '2025-01-14 20:32:01'),
+       ('This is exactly what I needed to hear today. Thank you for the positivity!', 24, 5, '2025-02-15 20:32:01'),
+       ('Looking forward to seeing everyones challenges and achievements. Lets support each other!', 25, 3,
+        '2025-01-17 20:32:01');
 
 INSERT INTO forum_schema.roles(name)
 VALUES ('USER'),
        ('ADMIN');
 
-INSERT INTO forum_schema.user_roles(user_id, role_id)
+-- INSERT INTO forum_schema.user_roles(user_id, role_id)
+-- VALUES (1, 1),
+--        (2, 1),
+--        (3, 1),
+--        (3, 2),
+--        (4, 1),
+--        (4, 2);
+
+INSERT INTO forum_schema.user_roles (user_id, role_id)
 VALUES (1, 1),
+       (1, 2),
        (2, 1),
        (3, 1),
        (3, 2),
        (4, 1),
-       (4, 2);
+       (5, 1),
+       (6, 1),
+       (7, 1),
+       (8, 1),
+       (9, 1),
+       (10, 1),
+       (11, 1),
+       (12, 1),
+       (13, 1),
+       (14, 1),
+       (15, 1),
+       (16, 1),
+       (17, 1),
+       (18, 1),
+       (19, 1),
+       (20, 1),
+       (21, 1),
+       (22, 1),
+       (23, 1),
+       (24, 1),
+       (25, 1),
+       (25, 2);
 
-INSERT INTO forum_schema.admin_details(user_id, phone_number)
-VALUES (3, '123-456-7890');
+INSERT INTO forum_schema.admin_details (user_id, phone_number)
+VALUES (1, '555-0100'),
+       (3, '555-0101'),
+       (25, '555-0102');
 
-INSERT INTO forum_schema.tags(name)
-VALUES ('test');
+-- INSERT INTO forum_schema.tags(name)
+-- VALUES ('test');
 
-INSERT INTO forum_schema.post_tags(post_id, tag_id)
-VALUES (1, 1);
+INSERT INTO forum_schema.tags (name)
+VALUES ('Technology'),
+       ('Health'),
+       ('Science'),
+       ('Business'),
+       ('Lifestyle'),
+       ('Education'),
+       ('Art'),
+       ('Travel'),
+       ('Sports'),
+       ('Music');
 
+-- INSERT INTO forum_schema.post_tags(post_id, tag_id)
+-- VALUES (1, 1);
+
+INSERT INTO forum_schema.post_tags (post_id, tag_id)
+VALUES (1, 1),
+       (1, 2),
+       (2, 3),
+       (3, 4),
+       (4, 5),
+       (5, 6),
+       (6, 7),
+       (7, 8),
+       (8, 9),
+       (9, 10),
+       (10, 1),
+       (11, 2),
+       (12, 3),
+       (13, 4),
+       (14, 5),
+       (15, 6),
+       (16, 7),
+       (17, 8),
+       (18, 9),
+       (19, 10),
+       (20, 1),
+       (21, 2),
+       (22, 3),
+       (23, 4),
+       (24, 5),
+       (25, 6);
+
+
+INSERT INTO forum_schema.likes (user_id, post_id, reaction)
+VALUES (1, 1, 1),
+       (2, 2, 1),
+       (3, 3, 1),
+       (4, 4, 1),
+       (5, 5, 1),
+       (6, 6, 1),
+       (7, 7, 1),
+       (8, 8, 1),
+       (9, 9, 1),
+       (10, 10, 1),
+       (11, 11, 1),
+       (12, 12, 1),
+       (13, 13, 1),
+       (14, 14, 1),
+       (15, 15, 1),
+       (16, 16, 1),
+       (17, 17, 1),
+       (18, 18, 1),
+       (19, 19, 1),
+       (20, 20, 1),
+       (21, 21, -1),
+       (22, 22, -1),
+       (23, 23, -1),
+       (24, 24, 1),
+       (25, 25, -1);
 

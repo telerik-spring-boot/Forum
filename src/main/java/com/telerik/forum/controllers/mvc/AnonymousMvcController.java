@@ -26,6 +26,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDateTime;
+
 @Controller
 @RequestMapping("/auth")
 public class AnonymousMvcController {
@@ -65,6 +67,9 @@ public class AnonymousMvcController {
 
             session.setAttribute("currentUser", userLoginDTO.getUsername());
             session.setAttribute("isAdmin", authenticationHelper.isAdmin(user));
+
+            user.setLastLogin(LocalDateTime.now());
+            userService.update(user, user);
 
             return "redirect:/home";
 

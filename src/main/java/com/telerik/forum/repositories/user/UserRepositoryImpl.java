@@ -1,5 +1,6 @@
 package com.telerik.forum.repositories.user;
 
+import com.telerik.forum.models.dtos.userDTOs.UserDisplayMvcDTO;
 import com.telerik.forum.models.post.Post;
 import com.telerik.forum.models.user.User;
 import com.telerik.forum.models.filters.FilterUserOptions;
@@ -23,7 +24,7 @@ import static com.telerik.forum.repositories.utilities.SortingHelper.sortingHelp
 
 
 @Repository
-public class  UserRepositoryImpl implements UserRepository {
+public class UserRepositoryImpl implements UserRepository {
 
     private final SessionFactory sessionFactory;
 
@@ -35,8 +36,8 @@ public class  UserRepositoryImpl implements UserRepository {
 
 
     @Override
-    public List<User> getAll(){
-        try(Session session = sessionFactory.openSession()) {
+    public List<User> getAll() {
+        try (Session session = sessionFactory.openSession()) {
             Query<User> query = session.createQuery("from User", User.class);
 
             return query.list();
@@ -44,8 +45,23 @@ public class  UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public List<UserDisplayMvcDTO> getAllMvc() {
+        try (Session session = sessionFactory.openSession()) {
+            Query<UserDisplayMvcDTO> query = session.createQuery("""
+                    SELECT new com.telerik.forum.models.dtos.userDTOs.UserDisplayMvcDTO(
+                        CONCAT(u.firstName, ' ', u.lastName),
+                        u.username,
+                        (SELECT COUNT(p) FROM Post p WHERE p.user.id = u.id),
+                        (SELECT COUNT(c) FROM Comment c WHERE c.user.id = u.id),
+                        u.lastLogin) FROM User u
+                    """, UserDisplayMvcDTO.class);
+            return query.list();
+        }
+    }
+
+    @Override
     public Page<User> getAll(FilterUserOptions options, Pageable pageable) {
-        try(Session session = sessionFactory.openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
 
             CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
@@ -82,7 +98,6 @@ public class  UserRepositoryImpl implements UserRepository {
                     .setMaxResults(pageable.getPageSize());
 
 
-
             return new PageImpl<>(query.getResultList(), pageable, totalUsers);
         }
     }
@@ -108,10 +123,9 @@ public class  UserRepositoryImpl implements UserRepository {
     }
 
 
-
     @Override
     public User getByIdWithComments(int id) {
-        try(Session session = sessionFactory.openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             Query<User> query = session.createQuery("SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.comments WHERE u.id = :id", User.class);
 
             query.setParameter("id", id);
@@ -121,7 +135,7 @@ public class  UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User getByIdWithRoles(int id){
+    public User getByIdWithRoles(int id) {
         try (Session session = sessionFactory.openSession()) {
             Query<User> query = session.createQuery("SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.roles WHERE u.id = :id", User.class);
 
@@ -133,10 +147,9 @@ public class  UserRepositoryImpl implements UserRepository {
     }
 
 
-
     @Override
     public User getById(int id) {
-        try(Session session = sessionFactory.openSession()) {
+        try (Session session = sessionFactory.openSession()) {
 
             return session.get(User.class, id);
 
@@ -145,7 +158,7 @@ public class  UserRepositoryImpl implements UserRepository {
 
     @Override
     public User getByEmail(String email) {
-        try(Session session = sessionFactory.openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             Query<User> query = session.createQuery("from User where emailAddress = :email", User.class);
 
             query.setParameter("email", email);
@@ -156,7 +169,7 @@ public class  UserRepositoryImpl implements UserRepository {
 
     @Override
     public User getByUsernameWithRoles(String username) {
-        try(Session session = sessionFactory.openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             Query<User> query = session.createQuery("SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.roles WHERE u.username = :username", User.class);
 
             query.setParameter("username", username);
@@ -168,7 +181,7 @@ public class  UserRepositoryImpl implements UserRepository {
 
     @Override
     public User getByUsername(String username) {
-        try(Session session = sessionFactory.openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             Query<User> query = session.createQuery("from User WHERE username = :username", User.class);
 
             query.setParameter("username", username);
@@ -179,7 +192,7 @@ public class  UserRepositoryImpl implements UserRepository {
 
     @Override
     public User getByFirstName(String firstName) {
-        try(Session session = sessionFactory.openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             Query<User> query = session.createQuery("from User where firstName = :firstName", User.class);
 
             query.setParameter("firstName", firstName);
@@ -212,7 +225,7 @@ public class  UserRepositoryImpl implements UserRepository {
 
     @Override
     public void delete(int id) {
-        try(Session session = sessionFactory.openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
 
             User user = session.get(User.class, id);

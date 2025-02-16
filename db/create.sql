@@ -19,7 +19,8 @@ CREATE TABLE forum_schema.users
     email_address VARCHAR(100)         NOT NULL UNIQUE,
     username      VARCHAR(50)          NOT NULL,
     password      VARCHAR(70)          NOT NULL,
-    blocked       TINYINT(1) DEFAULT 0 NOT NULL
+    blocked       TINYINT(1) DEFAULT 0 NOT NULL,
+    last_login    TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 

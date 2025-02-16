@@ -5,6 +5,7 @@ import com.telerik.forum.models.post.Comment;
 import com.telerik.forum.models.post.Post;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
@@ -34,31 +35,36 @@ public class User {
     @Column(name = "blocked")
     private boolean blocked;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-    private  List<Post> posts = new ArrayList<>();
+    @Column(name = "last_login")
+    private LocalDateTime lastLogin;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-    private  List<Comment> comments = new ArrayList<>();
+    private List<Post> posts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<Comment> comments = new ArrayList<>();
 
 
     @ManyToMany
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name ="role_id")
+            inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles = new HashSet<>();
 
 
-    public User() {}
+    public User() {
+    }
 
-    public User(String firstName, String lastName, String emailAddress, String username, String password, boolean blocked) {
+    public User(String firstName, String lastName, String emailAddress, String username, String password, boolean blocked, LocalDateTime lastLogin) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.emailAddress = emailAddress;
         this.username = username;
         this.password = password;
         this.blocked = blocked;
+        this.lastLogin = lastLogin;
     }
 
     public int getId() {
@@ -121,16 +127,16 @@ public class User {
         return posts;
     }
 
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
+    }
+
     public List<Comment> getComments() {
         return comments;
     }
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
-    }
-
-    public void setPosts(List<Post> posts) {
-        this.posts = posts;
     }
 
     public Set<Role> getRoles() {
@@ -149,6 +155,13 @@ public class User {
         this.roles.remove(role);
     }
 
+    public LocalDateTime getLastLogin() {
+        return lastLogin;
+    }
+
+    public void setLastLogin(LocalDateTime lastLogin) {
+        this.lastLogin = lastLogin;
+    }
 
     @Override
     public boolean equals(Object o) {

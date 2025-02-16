@@ -3,6 +3,7 @@ package com.telerik.forum.services.admin;
 import com.telerik.forum.exceptions.AdminRoleManagementException;
 import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
+import com.telerik.forum.models.dtos.userDTOs.UserDisplayMvcDTO;
 import com.telerik.forum.models.user.AdminDetails;
 import com.telerik.forum.models.user.User;
 import com.telerik.forum.models.filters.FilterUserOptions;
@@ -48,7 +49,12 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Page<User> getAllUsers(FilterUserOptions options, User userRequest, Pageable pageable){
+    public List<UserDisplayMvcDTO> getAllUsersMvc() {
+        return userRepository.getAllMvc();
+    }
+
+    @Override
+    public Page<User> getAllUsers(FilterUserOptions options, User userRequest, Pageable pageable) {
         authorization(userRequest);
 
         options.getSortBy().ifPresent(SortingHelper::validateSortByFieldUser);
@@ -62,8 +68,8 @@ public class AdminServiceImpl implements AdminService {
     public AdminDetails getByUserId(int id, User userRequest) {
         AdminDetails adminDetails = adminDetailsRepository.getByUserId(id);
 
-        if(adminDetails == null){
-            throw new EntityNotFoundException("Admin","user.id", id);
+        if (adminDetails == null) {
+            throw new EntityNotFoundException("Admin", "user.id", id);
         }
 
         return adminDetails;
@@ -94,14 +100,14 @@ public class AdminServiceImpl implements AdminService {
 
         User user = userRepository.getByIdWithRoles(userId);
 
-        if(user == null){
-            throw new EntityNotFoundException("User","user.id", userId);
+        if (user == null) {
+            throw new EntityNotFoundException("User", "user.id", userId);
         }
 
         boolean isAdmin = user.getRoles().stream()
                 .anyMatch(role -> role.getName().equalsIgnoreCase("admin"));
 
-        if(!isAdmin){
+        if (!isAdmin) {
             throw new AdminRoleManagementException(NOT_ADMIN_ERROR_MESSAGE);
         }
 
@@ -111,7 +117,7 @@ public class AdminServiceImpl implements AdminService {
 
         userRepository.update(user);
 
-        if(adminDetails != null && adminDetails.getPhoneNumber() != null ){
+        if (adminDetails != null && adminDetails.getPhoneNumber() != null) {
             adminDetailsRepository.delete(userId);
         }
 
@@ -124,14 +130,14 @@ public class AdminServiceImpl implements AdminService {
 
         User user = userRepository.getByIdWithRoles(userId);
 
-        if(user == null){
-            throw new EntityNotFoundException("User","user.id", userId);
+        if (user == null) {
+            throw new EntityNotFoundException("User", "user.id", userId);
         }
 
         boolean isAdmin = user.getRoles().stream()
                 .anyMatch(role -> role.getName().equalsIgnoreCase("admin"));
 
-        if(isAdmin){
+        if (isAdmin) {
             throw new AdminRoleManagementException(ALREADY_ADMIN_ERROR_MESSAGE);
         }
 
@@ -139,7 +145,7 @@ public class AdminServiceImpl implements AdminService {
 
         userRepository.update(user);
 
-        if(phoneNumber != null){
+        if (phoneNumber != null) {
             AdminDetails adminDetails = new AdminDetails(user, phoneNumber);
 
             adminDetailsRepository.create(adminDetails);
@@ -152,24 +158,24 @@ public class AdminServiceImpl implements AdminService {
 
         AdminDetails databaseAdminDetails = adminDetailsRepository.getByUserId(admin.getUser().getId());
 
-        if(databaseAdminDetails == null) {
+        if (databaseAdminDetails == null) {
             throw new EntityNotFoundException("Admin", "id", admin.getUser().getId());
         }
 
-        if(admin.getPhoneNumber() == null && databaseAdminDetails.getPhoneNumber() != null){
+        if (admin.getPhoneNumber() == null && databaseAdminDetails.getPhoneNumber() != null) {
             adminDetailsRepository.delete(admin.getUser().getId());
-        }else if(databaseAdminDetails.getPhoneNumber() != null){
+        } else if (databaseAdminDetails.getPhoneNumber() != null) {
             adminDetailsRepository.update(admin);
-        }else {
+        } else {
             adminDetailsRepository.create(admin);
         }
     }
 
-    private void authorization(User userRequest){
+    private void authorization(User userRequest) {
 
-        if(userRequest.isBlocked() || userRequest.getRoles().stream()
+        if (userRequest.isBlocked() || userRequest.getRoles().stream()
                 .noneMatch(role -> role.getName()
-                        .equalsIgnoreCase("admin"))){
+                        .equalsIgnoreCase("admin"))) {
             throw new UnauthorizedOperationException(PERMISSION_ERROR_MESSAGE);
 
         }

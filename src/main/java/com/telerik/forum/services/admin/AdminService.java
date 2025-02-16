@@ -1,5 +1,6 @@
 package com.telerik.forum.services.admin;
 
+import com.telerik.forum.models.dtos.userDTOs.UserDisplayMvcDTO;
 import com.telerik.forum.models.user.AdminDetails;
 import com.telerik.forum.models.user.User;
 import com.telerik.forum.models.filters.FilterUserOptions;
@@ -13,6 +14,8 @@ public interface AdminService {
     List<AdminDetails> getAll(User userRequest);
 
     List<User> getAllUsers();
+
+    List<UserDisplayMvcDTO> getAllUsersMvc();
 
     Page<User> getAllUsers(FilterUserOptions options, User userRequest, Pageable pageable);
 

@@ -1,5 +1,6 @@
 package com.telerik.forum.repositories.user;
 
+import com.telerik.forum.models.dtos.userDTOs.UserDisplayMvcDTO;
 import com.telerik.forum.models.user.User;
 import com.telerik.forum.models.filters.FilterUserOptions;
 import org.springframework.data.domain.Page;
@@ -12,6 +13,8 @@ public interface UserRepository {
     Page<User> getAll(FilterUserOptions options, Pageable pageable);
 
     List<User> getAll();
+
+    List<UserDisplayMvcDTO> getAllMvc();
 
     User getById(int id);
 

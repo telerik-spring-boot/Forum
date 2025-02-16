@@ -37,8 +37,8 @@ public class UserDisplayMvcDTO {
         this.name = name;
     }
 
-    public String getLastLogin() {
-        return lastLogin.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    public LocalDateTime getLastLogin() {
+        return lastLogin;
     }
 
     public void setLastLogin(LocalDateTime lastLogin) {

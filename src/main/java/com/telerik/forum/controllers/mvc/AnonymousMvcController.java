@@ -2,12 +2,13 @@ package com.telerik.forum.controllers.mvc;
 
 
 import com.telerik.forum.exceptions.DuplicateEntityException;
+import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.helpers.AuthenticationHelper;
 import com.telerik.forum.helpers.UserMapper;
-import com.telerik.forum.models.dtos.userDTOs.UserCreateDTO;
 import com.telerik.forum.models.dtos.userDTOs.UserCreateMvcDTO;
 import com.telerik.forum.models.dtos.userDTOs.UserLoginDTO;
+import com.telerik.forum.models.dtos.userDTOs.UserRetrieveDTO;
 import com.telerik.forum.models.user.User;
 import com.telerik.forum.services.user.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -72,7 +73,7 @@ public class AnonymousMvcController {
     }
 
     @PostMapping("/register")
-    public String handleRegister(@Valid @ModelAttribute("register") UserCreateMvcDTO userCreateMvcDTO, BindingResult bindingResult, HttpSession session, Model model) {
+    public String handleRegister(@Valid @ModelAttribute("register") UserCreateMvcDTO userCreateMvcDTO, BindingResult bindingResult, Model model) {
 
         model.addAttribute("formSubmitted", true);
 
@@ -90,7 +91,6 @@ public class AnonymousMvcController {
             User user = userMapper.dtoToUser(userCreateMvcDTO);
 
             userService.create(user);
-            session.setAttribute("currentUser", userCreateMvcDTO.getUsername());
 
             return "redirect:/auth/login";
 
@@ -101,6 +101,36 @@ public class AnonymousMvcController {
             bindingResult.rejectValue("username", "username.register", e.getMessage());
             return "register";
         }
+    }
+
+
+    @GetMapping("/password")
+    public String showForgotPassword(Model model) {
+        model.addAttribute("user", new UserRetrieveDTO());
+
+        return "password";
+    }
+
+    @PostMapping("/password")
+    public String handlePasswordRetrieval(@Valid @ModelAttribute("user") UserRetrieveDTO userRetrieveDTO, BindingResult bindingResult, Model model) {
+
+        model.addAttribute("formSubmitted", true);
+
+        if (bindingResult.hasErrors()) {
+            return "password";
+        }
+
+        try {
+            User user = userService.getByUsername(userRetrieveDTO.getUsername());
+
+            // handle logic to send email to the user to create new password
+
+            return "redirect:/auth/login";
+        } catch (EntityNotFoundException e) {
+            bindingResult.rejectValue("username", "error.retrieve", e.getMessage());
+            return "password";
+        }
+
     }
 
 

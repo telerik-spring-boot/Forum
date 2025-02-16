@@ -1,8 +1,11 @@
 package com.telerik.forum.models.dtos.userDTOs;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class UserDisplayMvcDTO {
+
+    private int id;
 
     private String name;
 
@@ -17,7 +20,8 @@ public class UserDisplayMvcDTO {
     public UserDisplayMvcDTO() {
     }
 
-    public UserDisplayMvcDTO(String name, String username, Long postCount, Long commentCount, LocalDateTime lastLogin) {
+    public UserDisplayMvcDTO(int id, String name, String username, Long postCount, Long commentCount, LocalDateTime lastLogin) {
+        this.id = id;
         this.name = name;
         this.username = username;
         this.postCount = postCount;
@@ -33,8 +37,8 @@ public class UserDisplayMvcDTO {
         this.name = name;
     }
 
-    public LocalDateTime getLastLogin() {
-        return lastLogin;
+    public String getLastLogin() {
+        return lastLogin.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
     public void setLastLogin(LocalDateTime lastLogin) {
@@ -63,5 +67,13 @@ public class UserDisplayMvcDTO {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

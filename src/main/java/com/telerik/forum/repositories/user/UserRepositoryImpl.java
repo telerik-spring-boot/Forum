@@ -47,14 +47,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public List<UserDisplayMvcDTO> getAllMvc() {
         try (Session session = sessionFactory.openSession()) {
-            Query<UserDisplayMvcDTO> query = session.createQuery("""
-                    SELECT new com.telerik.forum.models.dtos.userDTOs.UserDisplayMvcDTO(
-                        CONCAT(u.firstName, ' ', u.lastName),
-                        u.username,
-                        (SELECT COUNT(p) FROM Post p WHERE p.user.id = u.id),
-                        (SELECT COUNT(c) FROM Comment c WHERE c.user.id = u.id),
-                        u.lastLogin) FROM User u
-                    """, UserDisplayMvcDTO.class);
+            Query<UserDisplayMvcDTO> query = session.createQuery("SELECT new com.telerik.forum.models.dtos.userDTOs.UserDisplayMvcDTO(u.id, CONCAT(u.firstName, ' ', u.lastName), u.username, (SELECT COUNT(p) FROM Post p WHERE p.user.id = u.id), (SELECT COUNT(c) FROM Comment c WHERE c.user.id = u.id), u.lastLogin) FROM User u", UserDisplayMvcDTO.class);
             return query.list();
         }
     }

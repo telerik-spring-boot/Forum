@@ -58,7 +58,7 @@ public class AuthenticationHelper {
             throw new UnauthorizedOperationException("The requested resource requires authentication.");
         }
 
-        return userService.getByUsername(currentUser);
+        return userService.getByUsernameWithRoles(currentUser);
     }
 
     public User verifyAuthentication(String username, String password) {

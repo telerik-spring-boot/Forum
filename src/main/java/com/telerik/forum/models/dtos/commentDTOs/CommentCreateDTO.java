@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 public class CommentCreateDTO {
 
     @NotBlank
-    @Size(min = 1, max = 200, message = "Comment must be between 1 and 200 symbols.")
+    @Size(min = 1, max = 5, message = "Comment must be between 1 and 200 symbols.")
     private String content;
 
     public CommentCreateDTO() {

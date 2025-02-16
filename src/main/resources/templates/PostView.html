@@ -56,17 +56,17 @@
     <div class="post-container">
         <div class="d-flex">
             <!-- Voting Section -->
-            <div class="vote-buttons">
+            <span class="vote-buttons">
                 <a th:href="@{__${requestURI}__/like}">
                     <i th:classappend="${userReaction == 1} ? 'fa-solid fa-up-long text-success' : 'fa-solid fa-arrow-up-long text-dark'"
                        class=""></i>
                 </a>
-                <span th:text="${post.likes}">0</span>
+                <span th:text="${post.likes + 100000}">0</span>
                 <a th:href="@{__${requestURI}__/dislike}">
                     <i th:classappend="${userReaction == -1} ? 'fa-solid fa-down-long text-danger' : 'fa-solid fa-arrow-down-long text-dark'"
                        class=""></i>
                 </a>
-            </div>
+            </span>
 
             <!-- Post Content -->
             <div>
@@ -79,7 +79,7 @@
                 <!-- Tag List -->
                 <div class="tags-container">
                     <span th:each="tag : ${post.tags}" class="tag">
-                        <span th:text="${tag}"></span>
+                        <span th:text="${tag}">tag</span>
                     </span>
                 </div>
             </div>
@@ -97,16 +97,23 @@
         <p th:text="${comment.commentContent}">Comment text...</p>
     </div>
 
-    <!--    &lt;!&ndash; Comment Form &ndash;&gt;-->
-    <!--    <div class="comment-box">-->
-    <!--        <h6>Add a Comment</h6>-->
-    <!--        <form action="#" method="post" th:action="@{/post/{id}/comment(id=${post.id})}">-->
-    <!--            <div class="mb-3">-->
-    <!--                <textarea name="content" class="form-control" rows="3" placeholder="Write your comment here..." required></textarea>-->
-    <!--            </div>-->
-    <!--            <button type="submit" class="btn btn-primary">Post Comment</button>-->
-    <!--        </form>-->
-    <!--    </div>-->
+    <!-- Comment Form -->
+    <div class="comment-box">
+        <h6>Add a Comment</h6>
+        <form action="#" method="post" th:action="@{__${requestURI}__}" th:object="${commentCreateDto}">
+            <div class="mb-3">
+                <textarea id="textarea" th:field="*{content}" class="form-control" rows="3" placeholder="Write your comment here..."
+                          required></textarea>
+<!--                <div th:if="${#fields.hasErrors('content')}" class="text-danger">-->
+<!--                    <ul>-->
+<!--                        <li th:each="err : ${#fields.errors('content')}" th:text="${err}">error</li>-->
+<!--                    </ul>-->
+<!--                </div>-->
+                <label class="text-danger" for="textarea" th:errors="*{content}">error</label>
+            </div>
+            <button type="submit" class="btn btn-primary">Post Comment</button>
+        </form>
+    </div>
 </div>
 
 </body>

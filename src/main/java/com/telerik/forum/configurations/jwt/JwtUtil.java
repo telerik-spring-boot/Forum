@@ -28,7 +28,6 @@ public class JwtUtil {
     }
 
 
-
     public String generateToken(String username) {
 
         Key key = Keys.hmacShaKeyFor(Base64.getDecoder().decode(SECRET_KEY));
@@ -36,7 +35,7 @@ public class JwtUtil {
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 5)) // 5 minutes for testing
+                .setExpiration(new Date(System.currentTimeMillis() + 1000000 * 60 * 5)) // 5 minutes for testing
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }

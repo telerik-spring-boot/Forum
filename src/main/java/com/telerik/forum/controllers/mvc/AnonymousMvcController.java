@@ -24,6 +24,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/auth")
@@ -126,7 +127,7 @@ public class AnonymousMvcController {
     }
 
     @PostMapping("/request-password")
-    public String handlePasswordRetrieval(@Valid @ModelAttribute("user") UserRetrieveDTO userRetrieveDTO, BindingResult bindingResult, Model model) {
+    public String handlePasswordRetrieval(@Valid @ModelAttribute("user") UserRetrieveDTO userRetrieveDTO, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
 
         model.addAttribute("formSubmitted", true);
 
@@ -141,12 +142,15 @@ public class AnonymousMvcController {
 
             String token = jwtUtil.generateToken(user.getUsername());
             String resetUrl = "http://localhost:8080/auth/reset-password?token=" + token;
+
             mailMessage.setTo(user.getEmailAddress());
             mailMessage.setSubject("Password retrieval");
             mailMessage.setText("Hello, " + user.getUsername() + " to reset your password, click on the link: " + resetUrl);
             mailMessage.setFrom("norep-forum@outlook.com");
 
             mailSender.send(mailMessage);
+
+            redirectAttributes.addFlashAttribute("emailSuccess", true);
 
             return "redirect:/auth/login";
         } catch (EntityNotFoundException e) {
@@ -172,7 +176,7 @@ public class AnonymousMvcController {
     }
 
     @PostMapping("/reset-password")
-    public String resetPassword(@RequestParam String token, @Valid @ModelAttribute("user") UserPasswordUpdateDTO userPasswordUpdateDTO, BindingResult bindingResult, HttpServletRequest request, Model model) {
+    public String resetPassword(@RequestParam String token, @Valid @ModelAttribute("user") UserPasswordUpdateDTO userPasswordUpdateDTO, BindingResult bindingResult, HttpServletRequest request, Model model, RedirectAttributes redirectAttributes) {
 
         model.addAttribute("formSubmitted", true);
 
@@ -196,10 +200,13 @@ public class AnonymousMvcController {
 
             model.addAttribute("currentURI", request.getRequestURI());
 
+            redirectAttributes.addFlashAttribute("changeSuccess", true);
+
             return "redirect:/auth/login";
 
         } catch (Exception e) {
             bindingResult.rejectValue("password", "error.reset", e.getMessage());
+            bindingResult.rejectValue("confirmPassword", "error.reset", e.getMessage());
             return "reset-password";
         }
 

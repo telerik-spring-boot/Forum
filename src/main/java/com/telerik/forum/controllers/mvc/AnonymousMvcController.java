@@ -88,7 +88,7 @@ public class AnonymousMvcController {
     }
 
     @PostMapping("/register")
-    public String handleRegister(@Valid @ModelAttribute("register") UserCreateMvcDTO userCreateMvcDTO, BindingResult bindingResult, Model model) {
+    public String handleRegister(@Valid @ModelAttribute("register") UserCreateMvcDTO userCreateMvcDTO, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
 
         model.addAttribute("formSubmitted", true);
 
@@ -107,6 +107,7 @@ public class AnonymousMvcController {
 
             userService.create(user);
 
+            redirectAttributes.addFlashAttribute("registerSuccess", true);
             return "redirect:/auth/login";
 
         } catch (UnauthorizedOperationException e) {

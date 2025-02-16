@@ -1,5 +1,6 @@
 package com.telerik.forum.repositories.post;
 
+import com.telerik.forum.models.dtos.postDTOs.PostDisplayMvcDTO;
 import com.telerik.forum.models.post.Post;
 import com.telerik.forum.models.filters.FilterPostOptions;
 
@@ -18,6 +19,8 @@ public interface PostRepository {
     List<Post> getMostRecentPosts(int limit);
 
     List<Post> getPostsWithCommentsByUserId(int userId, FilterPostOptions options);
+
+    List<PostDisplayMvcDTO> getPostsCreationDates();
 
     Post getPostById(int id);
 

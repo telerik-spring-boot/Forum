@@ -2,6 +2,7 @@ package com.telerik.forum.services.post;
 
 import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
+import com.telerik.forum.models.dtos.postDTOs.PostDisplayMvcDTO;
 import com.telerik.forum.models.post.Like;
 import com.telerik.forum.models.post.Post;
 import com.telerik.forum.models.user.User;
@@ -28,6 +29,10 @@ public class PostServiceImpl implements PostService {
     public PostServiceImpl(PostRepository postRepository) {
         this.postRepository = postRepository;
 
+    }
+
+    private static boolean checkIfUserIsAdmin(User user) {
+        return user.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"));
     }
 
     @Override
@@ -65,6 +70,10 @@ public class PostServiceImpl implements PostService {
         return postRepository.getMostRecentPosts(limit);
     }
 
+    @Override
+    public List<PostDisplayMvcDTO> getPostsCreationDates() {
+        return postRepository.getPostsCreationDates();
+    }
 
     @Override
     public Post getById(int id) {
@@ -139,7 +148,6 @@ public class PostServiceImpl implements PostService {
         }
     }
 
-
     private void checkPostUpdatePermission(int postId, User user) {
         Post post = getById(postId);
 
@@ -164,10 +172,6 @@ public class PostServiceImpl implements PostService {
             throw new UnauthorizedOperationException(BLOCKED_ACCOUNT_MESSAGE);
         }
 
-    }
-
-    private static boolean checkIfUserIsAdmin(User user) {
-        return user.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"));
     }
 
     private void filterByLikes(List<Post> posts, FilterPostOptions options) {

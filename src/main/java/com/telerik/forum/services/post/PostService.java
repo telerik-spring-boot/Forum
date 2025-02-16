@@ -1,5 +1,6 @@
 package com.telerik.forum.services.post;
 
+import com.telerik.forum.models.dtos.postDTOs.PostDisplayMvcDTO;
 import com.telerik.forum.models.post.Post;
 import com.telerik.forum.models.user.User;
 import com.telerik.forum.models.filters.FilterPostOptions;
@@ -17,6 +18,8 @@ public interface PostService {
     List<Post> getMostLikedPosts(int limit);
 
     List<Post> getMostRecentPosts(int limit);
+
+    List<PostDisplayMvcDTO> getPostsCreationDates();
 
     Post getById(int id);
 

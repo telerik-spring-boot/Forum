@@ -1,5 +1,6 @@
 package com.telerik.forum.repositories.post;
 
+import com.telerik.forum.models.dtos.postDTOs.PostDisplayMvcDTO;
 import com.telerik.forum.models.filters.FilterPostOptions;
 import com.telerik.forum.models.post.Like;
 import com.telerik.forum.models.post.Post;
@@ -27,7 +28,7 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public List<Post> getAllPosts() {
-                try (Session session = sessionFactory.openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             Query<Post> query = session.createQuery
                     ("SELECT DISTINCT p FROM Post p" +
                                     " LEFT JOIN FETCH p.comments " +
@@ -42,6 +43,19 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public List<Post> getAllPostsWithFilters(FilterPostOptions options) {
         return getPostsWithFiltersHelper(-1, options);
+    }
+
+    @Override
+    public List<PostDisplayMvcDTO> getPostsCreationDates() {
+        try (Session session = sessionFactory.openSession()) {
+
+            Query<PostDisplayMvcDTO> query = session.createQuery(
+                    "SELECT new com.telerik.forum.models.dtos.postDTOs.PostDisplayMvcDTO(p.createdAt) FROM Post p",
+                    PostDisplayMvcDTO.class
+            );
+
+            return query.list();
+        }
     }
 
     @Override
@@ -65,10 +79,10 @@ public class PostRepositoryImpl implements PostRepository {
         try (Session session = sessionFactory.openSession()) {
             Query<Integer> postIdQuery = session.createQuery
                     ("SELECT p.id " +
-                            "FROM Post p " +
-                            "LEFT JOIN p.likes l " +
-                            "GROUP BY p.id " +
-                            "ORDER BY SUM(l.reaction) DESC",
+                                    "FROM Post p " +
+                                    "LEFT JOIN p.likes l " +
+                                    "GROUP BY p.id " +
+                                    "ORDER BY SUM(l.reaction) DESC",
                             Integer.class);
 
             postIdQuery.setMaxResults(limit);
@@ -105,7 +119,7 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public List<Post> getPostsWithCommentsByUserId(int userId, FilterPostOptions options){
+    public List<Post> getPostsWithCommentsByUserId(int userId, FilterPostOptions options) {
         return getPostsWithFiltersHelper(userId, options);
     }
 
@@ -203,7 +217,7 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     private List<Post> getPostsWithFiltersHelper(int userId, FilterPostOptions options) {
-        try(Session session = sessionFactory.openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
 
             CriteriaQuery<Post> criteriaQuery = criteriaBuilder.createQuery(Post.class);

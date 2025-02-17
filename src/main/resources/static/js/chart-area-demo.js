@@ -96,7 +96,6 @@ function countCreatedPosts(postDatesArray) {
     // Count logins for each month
     postDatesArray.forEach(dateStr => {
         const monthYear = formatDateToYearMonth(dateStr);
-        console.log(monthYear);
         if (last12Months.includes(monthYear)) {
             counts[monthYear] = (counts[monthYear] || 0) + 1;
         }

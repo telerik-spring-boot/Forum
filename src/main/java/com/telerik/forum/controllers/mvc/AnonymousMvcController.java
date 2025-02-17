@@ -47,7 +47,12 @@ public class AnonymousMvcController {
     }
 
     @GetMapping("/login")
-    public String showLoginPage(Model model) {
+    public String showLoginPage(HttpSession session, Model model) {
+
+        if (session.getAttribute("currentUser") != null) {
+            return "redirect:/home";
+        }
+
         model.addAttribute("login", new UserLoginDTO());
 
         return "login";
@@ -66,6 +71,7 @@ public class AnonymousMvcController {
             User user = authenticationHelper.verifyAuthentication(userLoginDTO.getUsername(), userLoginDTO.getPassword());
 
             session.setAttribute("currentUser", userLoginDTO.getUsername());
+            session.setAttribute("userId", user.getId());
             session.setAttribute("isAdmin", authenticationHelper.isAdmin(user));
 
             user.setLastLogin(LocalDateTime.now());

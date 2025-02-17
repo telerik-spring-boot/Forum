@@ -45,6 +45,7 @@ public class AdminMvcController {
             List<LocalDateTime> postsDates = postService.getPostsCreationDates().stream().map(PostDisplayMvcDTO::getCreatedOn).toList();
 
             model.addAttribute("users", users);
+            model.addAttribute("userId", user.getId());
             model.addAttribute("postDates", postsDates);
 
 

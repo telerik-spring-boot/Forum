@@ -95,7 +95,7 @@ body {
     margin: 0;
     font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     font-size: 1rem;
-    font-weight: 400;
+    font-weight: 500;
     line-height: 1.5;
     color: var(--bs-body-color);
     text-align: var(--bs-body-text-align);
@@ -2787,7 +2787,7 @@ textarea.form-control-lg {
     color: transparent;
 }
 
-.form-floating > .form-control:not(:-moz-placeholder-shown), .form-floating > .datatable-input:not(:-moz-placeholder-shown), .form-floating > .form-control-plaintext:not(:-moz-placeholder-shown) {
+.form-floating > .form-control:not(:placeholder-shown), .form-floating > .datatable-input:not(:placeholder-shown), .form-floating > .form-control-plaintext:not(:placeholder-shown) {
     padding-top: 1.625rem;
     padding-bottom: 0.625rem;
 }
@@ -2810,7 +2810,7 @@ textarea.form-control-lg {
     padding-bottom: 0.625rem;
 }
 
-.form-floating > .form-control:not(:-moz-placeholder-shown) ~ label, .form-floating > .datatable-input:not(:-moz-placeholder-shown) ~ label {
+.form-floating > .form-control:not(:placeholder-shown) ~ label, .form-floating > .datatable-input:not(:placeholder-shown) ~ label {
     opacity: 0.65;
     transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
 }
@@ -2892,6 +2892,7 @@ textarea.form-control-lg {
     font-size: 1.25rem;
     border-radius: 0.5rem;
 }
+
 
 .input-group-sm > .form-control, .input-group-sm > .datatable-input,
 .input-group-sm > .form-select,
@@ -3255,13 +3256,6 @@ textarea.form-control-lg {
     --bs-btn-disabled-border-color: #0d6efd;
 }
 
-/* .hamburger:hover {
-  color: var(--bs-navbar-active-color);
-}
-#navbarDropdown:hover{
-  color: var(--bs-navbar-active-color);
-} */
-
 .btn-secondary {
     --bs-btn-color: #fff;
     --bs-btn-bg: #6c757d;
@@ -3612,13 +3606,12 @@ textarea.form-control-lg {
 
 .dropdown-toggle::after {
     display: inline-block;
-    margin-left: 0.125em;
     vertical-align: 0.2em;
     content: "";
-    border-top: 0.3em solid;
-    border-right: 0.3em solid transparent;
+    border-top: 0.2em solid;
+    border-right: 0.2em solid transparent;
     border-bottom: 0;
-    border-left: 0.3em solid transparent;
+    border-left: 0.2em solid transparent;
 }
 
 .dropdown-toggle:empty::after {
@@ -3710,6 +3703,11 @@ textarea.form-control-lg {
         right: 0;
         left: auto;
     }
+
+    #searchInput {
+        width: 20rem;
+    }
+
 }
 
 @media (min-width: 768px) {
@@ -3734,7 +3732,18 @@ textarea.form-control-lg {
     .nav-item {
         font-size: 1.25rem;
     }
+
+
+    #searchInput {
+        width: 30rem;
+    }
+
+    .search-end {
+        width: 3rem;
+    }
 }
+
+.nav
 
 @media (min-width: 992px) {
     .dropdown-menu-lg-start {
@@ -3753,6 +3762,10 @@ textarea.form-control-lg {
     .dropdown-menu-lg-end[data-bs-popper] {
         right: 0;
         left: auto;
+    }
+
+    #searchInput {
+        width: 40rem;
     }
 }
 
@@ -3775,7 +3788,12 @@ textarea.form-control-lg {
         left: auto;
     }
 
+    #searchInput {
+        width: 50rem;
+    }
+
 }
+
 
 @media (min-width: 1400px) {
 
@@ -3796,6 +3814,7 @@ textarea.form-control-lg {
         right: 0;
         left: auto;
     }
+
 }
 
 .dropup .dropdown-menu[data-bs-popper] {
@@ -4074,7 +4093,7 @@ textarea.form-control-lg {
     --bs-nav-link-padding-y: 0.5rem;
     --bs-nav-link-font-weight: ;
     --bs-nav-link-color: var(--bs-link-color);
-    --bs-nav-link-hover-color: var(--bs-link-hover-color);
+    --bs-nav-link-hover-color: #dee2e6;
     --bs-nav-link-disabled-color: #6c757d;
     display: flex;
     flex-wrap: wrap;
@@ -4088,7 +4107,7 @@ textarea.form-control-lg {
     padding: var(--bs-nav-link-padding-y) var(--bs-nav-link-padding-x);
     font-size: var(--bs-nav-link-font-size);
     font-weight: var(--bs-nav-link-font-weight);
-    color: var(--bs-nav-link-color);
+    color: #adb5bd;
     text-decoration: none;
     transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
 }
@@ -5870,7 +5889,6 @@ textarea.form-control-lg {
     --bs-toast-zindex: 1090;
     position: absolute;
     z-index: var(--bs-toast-zindex);
-    width: -moz-max-content;
     width: max-content;
     max-width: 100%;
     pointer-events: none;
@@ -6158,6 +6176,11 @@ textarea.form-control-lg {
     .modal-fullscreen-md-down .modal-body {
         overflow-y: auto;
     }
+
+    #sidebarToggle {
+        height: 42px !important;
+        width: 42px !important;
+    }
 }
 
 @media (max-width: 991.98px) {
@@ -6366,7 +6389,7 @@ textarea.form-control-lg {
     z-index: var(--bs-popover-zindex);
     display: block;
     max-width: var(--bs-popover-max-width);
-    font-family: var(--bs-font-sans-serif);
+    font-family: var(--bs-font-sans-serif), serif;
     font-style: normal;
     font-weight: 400;
     line-height: 1.5;
@@ -12589,14 +12612,6 @@ body {
     margin: 0;
 }
 
-.sb-topnav.navbar-dark #sidebarToggle {
-    color: rgba(255, 255, 255, 0.5);
-}
-
-.sb-topnav.navbar-light #sidebarToggle {
-    color: #212529;
-}
-
 .sb-sidenav {
     display: flex;
     flex-direction: column;
@@ -12658,15 +12673,15 @@ body {
 }
 
 .sb-sidenav-dark .sb-sidenav-menu .sb-sidenav-menu-heading {
-    color: rgba(255, 255, 255, 0.25);
+    color: #adb5bd;
 }
 
 .sb-sidenav-dark .sb-sidenav-menu .nav-link {
-    color: rgba(255, 255, 255, 0.5);
+    color: #adb5bd;
 }
 
 .sb-sidenav-dark .sb-sidenav-menu .nav-link .sb-nav-link-icon {
-    color: rgba(255, 255, 255, 0.25);
+    color: #adb5bd;
 }
 
 .sb-sidenav-dark .sb-sidenav-menu .nav-link .sb-sidenav-collapse-arrow {
@@ -12919,3 +12934,20 @@ body {
     border-left: 5px solid #007bff; /* Blue left border for better visual separation */
 }
 
+.search-start {
+    border-end-start-radius: 2rem;
+    border-start-start-radius: 2rem;
+}
+
+.search-end {
+    border-end-end-radius: 2rem;
+    border-start-end-radius: 2rem;
+}
+
+#sidebarToggle {
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

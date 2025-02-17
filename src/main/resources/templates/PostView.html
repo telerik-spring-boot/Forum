@@ -61,7 +61,7 @@
                     <i th:classappend="${userReaction == 1} ? 'fa-solid fa-up-long text-success' : 'fa-solid fa-arrow-up-long text-dark'"
                        class=""></i>
                 </a>
-                <span th:text="${post.likes + 100000}">0</span>
+                <span th:text="${post.likes}">0</span>
                 <a th:href="@{__${requestURI}__/dislike}">
                     <i th:classappend="${userReaction == -1} ? 'fa-solid fa-down-long text-danger' : 'fa-solid fa-arrow-down-long text-dark'"
                        class=""></i>
@@ -86,35 +86,127 @@
         </div>
     </div>
 
-    <!-- Comment Section -->
-    <h5>Comments</h5>
+<!--    &lt;!&ndash; Comment Section &ndash;&gt;-->
+<!--    <h5>Comments</h5>-->
 
-    <div th:each="comment : ${post.comments}" class="comment">
-        <p class="text-muted">
-            <strong th:text="${comment.creatorUsername}">Username</strong>
-            <span th:text="${#temporals.format(comment.createdAt, 'dd-MM-yyyy HH:mm')}">Date</span>
-        </p>
-        <p th:text="${comment.commentContent}">Comment text...</p>
+<!--    <div th:each="comment : ${post.comments}" class="comment-box p-3 bg-light border rounded mb-2">-->
+<!--        <p class="text-muted mb-1">-->
+<!--            <strong th:text="${comment.creatorUsername}">Username</strong>-->
+<!--            <span th:text="${#temporals.format(comment.createdAt, 'dd-MM-yyyy HH:mm')}">Date</span>-->
+<!--        </p>-->
+<!--        <p th:text="${comment.commentContent}"-->
+<!--           style="white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word; margin-bottom: 0;">-->
+<!--            Comment text...-->
+<!--        </p>-->
+<!--    </div>-->
+
+    <div class="container mt-4">
+        <!-- Post Section -->
+
+
+
+        <!-- Comment Section -->
+        <h5>Comments</h5>
+
+        <div th:each="comment, iterStat : ${post.comments}" class="comment-box p-3 bg-light border rounded mb-2"
+             th:classappend="${iterStat.index > 3} ? 'd-none extra-comment' : ''">
+            <p class="text-muted mb-1">
+                <strong th:text="${comment.creatorUsername}">Username</strong>
+                <span th:text="${#temporals.format(comment.createdAt, 'dd-MM-yyyy HH:mm')}">Date</span>
+            </p>
+            <!-- Comment content with Show More logic -->
+            <p class="comment-text" th:text="${comment.commentContent}"
+               style="white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word; margin-bottom: 0;">
+                Comment text...
+            </p>
+            <!-- Show More button -->
+            <button class="btn btn-link show-more-btn" style="display: none;">Show More</button>
+        </div>
+
+        <!-- Show More Comments Button (Down Arrow) -->
+        <div class="text-center">
+            <button id="show-more-comments" class="btn btn-link" style="display: none;">
+                <i class="fa fa-arrow-down"></i> Show More Comments
+            </button>
+        </div>
     </div>
 
+
+
+
     <!-- Comment Form -->
-    <div class="comment-box">
+    <div >
         <h6>Add a Comment</h6>
         <form action="#" method="post" th:action="@{__${requestURI}__}" th:object="${commentCreateDto}">
             <div class="mb-3">
-                <textarea id="textarea" th:field="*{content}" class="form-control" rows="3" placeholder="Write your comment here..."
-                          required></textarea>
-<!--                <div th:if="${#fields.hasErrors('content')}" class="text-danger">-->
-<!--                    <ul>-->
-<!--                        <li th:each="err : ${#fields.errors('content')}" th:text="${err}">error</li>-->
-<!--                    </ul>-->
-<!--                </div>-->
-                <label class="text-danger" for="textarea" th:errors="*{content}">error</label>
+            <textarea id="textarea" th:field="*{content}" class="form-control" rows="3" placeholder="Write your comment here..."
+                      th:classappend="${#fields.hasErrors('content') ? 'is-invalid' : ''}" ></textarea>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></div>
             </div>
             <button type="submit" class="btn btn-primary">Post Comment</button>
         </form>
     </div>
 </div>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Function to check if the comment exceeds 2 lines
+        function checkCommentLength(comment) {
+            const lineHeight = parseInt(window.getComputedStyle(comment).lineHeight, 10); // Get line height of the text
+            const maxHeight = lineHeight * 2; // Allow 2 lines of text
+
+            return comment.scrollHeight > maxHeight; // Check if the text is taller than 2 lines
+        }
+
+        // Check if we have more than 4 comments, and show the "Show More Comments" button
+        const comments = document.querySelectorAll(".comment-box");
+        const showMoreButton = document.getElementById("show-more-comments");
+
+        if (comments.length > 4) {
+            showMoreButton.style.display = "block"; // Show the down arrow
+        } else {
+            showMoreButton.style.display = "none"; // Hide the down arrow if there are 4 or fewer comments
+        }
+
+        // Process each comment
+        comments.forEach(comment => {
+            let commentText = comment.querySelector(".comment-text");
+            let originalText = commentText.innerText.trim(); // Original comment text
+            let shortText = originalText.split("\n").slice(0, 2).join("\n"); // Shorten to two lines
+
+            // Check if the comment is longer than 2 lines
+            if (checkCommentLength(commentText)) {
+                commentText.innerText = shortText + "..."; // Show only 2 lines of text
+                let showMoreBtn = comment.querySelector(".show-more-btn");
+                showMoreBtn.style.display = "inline"; // Show the "Show More" button
+
+                // Toggle the full text on button click
+                showMoreBtn.addEventListener("click", function () {
+                    if (commentText.innerText === shortText + "...") {
+                        commentText.innerText = originalText; // Show the full comment
+                        showMoreBtn.innerText = "Show Less"; // Change button text to "Show Less"
+                    } else {
+                        commentText.innerText = shortText + "..."; // Show only 2 lines again
+                        showMoreBtn.innerText = "Show More"; // Change button text to "Show More"
+                    }
+                });
+            } else {
+                // Hide the "Show More" button if the comment doesn't exceed 2 lines
+                let showMoreBtn = comment.querySelector(".show-more-btn");
+                if (showMoreBtn) {
+                    showMoreBtn.style.display = "none";
+                }
+            }
+        });
+
+        // Show More Comments functionality (Down Arrow)
+        showMoreButton.addEventListener("click", function () {
+            document.querySelectorAll(".extra-comment").forEach(comment => {
+                comment.classList.remove("d-none");
+            });
+            this.style.display = "none"; // Hide the button after clicking
+        });
+    });
+</script>
 </body>
 </html>

@@ -29,14 +29,15 @@
 
 </head>
 <body class="sb-nav-fixed">
-<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark" id="navbar">
 	<!-- Navbar-->
 
 	<ul class="navbar-nav d-flex w-100 align-items-center justify-content-start">
 		<li class="nav-item px-3 me-auto">
 			<a class="nav-link d-flex align-items-center" href="index.html">
-				<i class="fas fa-home"></i>
-				<span class="ps-2 pt-1" th:text="#{home.label}"> Home </span></a
+				<img alt="Logo" class="me-2" id="logo" src="../static/favicon.ico"
+				     th:src="@{/favicon.ico}"/>
+				<span class="pt-1" th:text="#{home.label}"> Roamify  </span></a
 			>
 		</li>
 		<li class="nav-item" id="searchInput">
@@ -52,7 +53,7 @@
 				</div>
 			</form>
 		</li>
-		<li class="nav-item dropdown ms-auto ps-3 user-menu">
+		<li class="nav-item dropdown ms-auto ps-3">
 			<a
 					aria-expanded="false"
 					class="nav-link btn btn-dark rounded-circle dropdown-toggle"
@@ -60,7 +61,7 @@
 					href="#"
 					id="navbarDropdown"
 					role="button"
-			><i class="fas fa-user fa-fw"></i
+			><i class="fas fa-user fa-fw pt-md-2 pt-sm-1"></i
 			></a>
 			<ul
 					aria-labelledby="navbarDropdown"
@@ -100,26 +101,47 @@
 			<div class="sb-sidenav-menu">
 
 
-				<div class="nav mx-2">
+				<div class="nav mt-3">
 					<div class="sb-sidenav-menu-heading">Core</div>
 					<a class="nav-link btn btn-dark" href="index.html">
 						<div class="sb-nav-link-icon">
-							<i class="fas fa-tachometer-alt"></i>
+							<i class="fas fa-home"></i>
 						</div>
-						Dashboard
+						Home
 					</a>
-					<div class="sb-sidenav-menu-heading">Interface</div>
+
+					<a class="nav-link btn btn-dark" href="index.html">
+						<div class="sb-nav-link-icon">
+							<i class="fas fa-arrow-trend-up"></i>
+						</div>
+						Trending
+					</a>
+
+					<a class="nav-link btn btn-dark" href="index.html">
+						<div class="sb-nav-link-icon">
+							<i class="fas fa-user-friends"></i>
+						</div>
+						Browse
+					</a>
+
+					<a class="nav-link btn btn-dark" href="index.html">
+						<div class="sb-nav-link-icon">
+							<i class="fas fa-clock-rotate-left"></i>
+						</div>
+						Latest
+					</a>
+				</div>
+				<hr>
+				<div class="nav">
 					<a
-							aria-controls="collapseLayouts"
+							aria-controls="collapseResources"
 							aria-expanded="false"
-							class="nav-link collapsed btn btn-dark" data-bs-target="#collapseLayouts"
+							class="sb-sidenav-menu-heading d-flex justify-content-start nav-link collapsed btn btn-dark"
+							data-bs-target="#collapseResources"
 							data-bs-toggle="collapse"
 							href="#"
 					>
-						<div class="sb-nav-link-icon">
-							<i class="fas fa-columns"></i>
-						</div>
-						Layouts
+						Resources
 						<div class="sb-sidenav-collapse-arrow">
 							<i class="fas fa-angle-down"></i>
 						</div>
@@ -128,108 +150,29 @@
 							aria-labelledby="headingOne"
 							class="collapse"
 							data-bs-parent="#sidenavAccordion"
-							id="collapseLayouts"
+							id="collapseResources"
 					>
-						<nav class="sb-sidenav-menu-nested nav">
-							<a class="nav-link btn btn-dark" href="layout-static.html"
-							>Static Navigation</a
-							>
-							<a class="nav-link btn btn-dark" href="layout-sidenav-light.html"
-							>Light Sidenav</a
-							>
-						</nav>
-					</div>
-					<a
-							aria-controls="collapsePages"
-							aria-expanded="false"
-							class="nav-link collapsed btn btn-dark"
-							data-bs-target="#collapsePages"
-							data-bs-toggle="collapse"
-							href="#"
-					>
-						<div class="sb-nav-link-icon">
-							<i class="fas fa-book-open"></i>
-						</div>
-						Pages
-						<div class="sb-sidenav-collapse-arrow">
-							<i class="fas fa-angle-down"></i>
-						</div>
-					</a>
-					<div
-							aria-labelledby="headingTwo"
-							class="collapse"
-							data-bs-parent="#sidenavAccordion"
-							id="collapsePages"
-					>
-						<nav
-								class="sb-sidenav-menu-nested nav accordion"
-								id="sidenavAccordionPages"
-						>
-							<a
-									aria-controls="pagesCollapseAuth"
-									aria-expanded="false"
-									class="nav-link collapsed  btn btn-dark"
-									data-bs-target="#pagesCollapseAuth"
-									data-bs-toggle="collapse"
-									href="#"
-							>
-								Authentication
-								<div class="sb-sidenav-collapse-arrow">
-									<i class="fas fa-angle-down"></i>
-								</div>
-							</a>
-							<div
-									aria-labelledby="headingOne"
-									class="collapse"
-									data-bs-parent="#sidenavAccordionPages"
-									id="pagesCollapseAuth"
-							>
-								<nav class="sb-sidenav-menu-nested nav">
-									<a class="nav-link btn btn-dark" href="login.html">Login</a>
-									<a class="nav-link btn btn-dark" href="register.html">Register</a>
-									<a class="nav-link btn btn-dark" href="password.html"
-									>Forgot Password</a
-									>
-								</nav>
+						<a class="nav-link btn btn-dark" href="index.html">
+							<div class="sb-nav-link-icon">
+								<i class="fas fa-users-cog"></i>
 							</div>
-							<a
-									aria-controls="pagesCollapseError"
-									aria-expanded="false"
-									class="nav-link collapsed btn btn-dark"
-									data-bs-target="#pagesCollapseError"
-									data-bs-toggle="collapse"
-									href="#"
-							>
-								Error
-								<div class="sb-sidenav-collapse-arrow">
-									<i class="fas fa-angle-down"></i>
-								</div>
-							</a>
-							<div
-									aria-labelledby="headingOne"
-									class="collapse"
-									data-bs-parent="#sidenavAccordionPages"
-									id="pagesCollapseError"
-							>
-								<nav class="sb-sidenav-menu-nested nav">
-									<a class="nav-link btn btn-dark" href="401.html">401 Page</a>
-									<a class="nav-link btn btn-dark" href="404.html">404 Page</a>
-									<a class="nav-link btn btn-dark" href="500.html">500 Page</a>
-								</nav>
+							About
+						</a>
+
+						<a class="nav-link btn btn-dark" href="index.html">
+							<div class="sb-nav-link-icon">
+								<i class="fas fa-question-circle"></i>
 							</div>
-						</nav>
+							Help
+						</a>
+
+						<a class="nav-link btn btn-dark" href="index.html">
+							<div class="sb-nav-link-icon">
+								<i class="fas fa-briefcase"></i>
+							</div>
+							Careers
+						</a>
 					</div>
-					<div class="sb-sidenav-menu-heading">Addons</div>
-					<a class="nav-link btn btn-dark" href="charts.html">
-						<div class="sb-nav-link-icon">
-							<i class="fas fa-chart-area"></i>
-						</div>
-						Charts
-					</a>
-					<a class="nav-link btn btn-dark" href="tables.html">
-						<div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-						Tables
-					</a>
 				</div>
 			</div>
 			<div class="sb-sidenav-footer">

@@ -154,8 +154,8 @@ function createLineChart(elementId, label, data, backgroundColor, borderColor) {
                     {
                         ticks: {
                             min: 0,
-                            max: 50,
-                            stepSize: 5,
+                            max: Math.round(Math.max(...data) * 120 / 100),
+                            stepSize: Math.round(Math.max(...data) * 120 / 100 / 10),
                             maxTicksLimit: 10,
                         },
                         gridLines: {

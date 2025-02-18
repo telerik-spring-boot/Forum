@@ -59,7 +59,7 @@ VALUES ('John', 'Doe', 'john.doe@example.com', 'johndoe',
        ('Zoe', 'Nelson', 'zoe.nelson@example.com', 'zoenelson',
         '$2b$12$7AqTHj13l2kpm1dczJjd.QkpHgjgWzZG2p6nV1lh69hVVh8o91gJe', 0, '2024-09-05 20:29:28'),
        ('Isaac', 'Carter', 'isaac.carter@example.com', 'isaaccarter',
-        '$2b$12$8v0tSBQuV6gXADz5vXocH4dHkdzpDl1mt2GRxhjfiySoDAc2Fg8Ku', 0, '2024-11-22 20:29:28');
+        '$2b$12$8v0tSBQuV6gXADz5vXocH4dHkdzpDl1mt2GRxhjfiySoDAc2Fg8Ku', 1, '2024-11-22 20:29:28');
 
 -- INSERT INTO forum_schema.posts (title, content, user_id)
 -- VALUES ('Welcome Post', 'This is the first post in the forum!', 1),

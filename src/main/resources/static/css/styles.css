@@ -12965,3 +12965,18 @@ body {
 #logo {
     height: 50px;
 }
+
+.container {
+    height: 22px;
+}
+
+tr:hover td div #dropdownMenu {
+    display: flex !important;
+    align-self: center;
+    width: 100%;
+    height: 100%;
+}
+
+tr td {
+    align-content: center;
+}

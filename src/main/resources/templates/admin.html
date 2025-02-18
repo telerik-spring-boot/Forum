@@ -249,12 +249,83 @@
 							</tfoot>
 							<tbody>
 							<tr th:each="user : ${users}">
-								<td th:text="${user.name}"></td>
-								<td th:text="${user.username}"></td>
-								<td th:text="${user.postCount}"></td>
-								<td th:text="${user.commentCount}"></td>
-								<td th:text="${#temporals.format(user.lastLogin, 'yyyy-MM-dd HH:mm')}"></td>
-								<td> Edit</td>
+								<td th:text="${user.name}"> Name</td>
+								<td th:text="${user.username}"> Username</td>
+								<td th:text="${user.postCount}"> Post Count</td>
+								<td th:text="${user.commentCount}"> Comment Count</td>
+								<td th:text="${#temporals.format(user.lastLogin, 'yyyy-MM-dd HH:mm')}"> Last Login</td>
+								<td class="options">
+									<div class="container">
+										<div class="dropdown d-none" id="dropdownMenu">
+											<button aria-expanded="false"
+											        class="btn dropdown-toggle border-0 w-100 align-self-center"
+											        data-bs-toggle="dropdown" id="dropdownMenuButton"
+											        type="button">
+											</button>
+											<ul aria-labelledby="dropdownMenuButton" class="dropdown-menu">
+												<li>
+													<form class="d-inline" method="post"
+													      th:action="@{/admin/users/{id}/block(id=${user.id})}">
+														<input name="_method" type="hidden" value="put"/>
+														<button class="dropdown-item" th:unless="${user.blocked}"
+														        type="submit"><span
+																th:text="#{block.label}">Block</span>
+														</button>
+													</form>
+												<li>
+													<form class="d-inline" method="post"
+													      th:action="@{/admin/users/{id}/unblock(id=${user.id})}">
+														<input name="_method" type="hidden" value="put"/>
+														<button class="dropdown-item" th:if="${user.blocked}"
+														        type="submit"><span
+																th:text="#{unblock.label}">Unblock</span>
+														</button>
+													</form>
+												</li>
+												<li>
+													<form class="d-inline" method="post"
+													      th:action="@{/admin/users/{id}/grant(id=${user.id})}">
+														<input name="_method" type="hidden" value="put"/>
+														<button class="dropdown-item" th:unless="${user.admin}"
+														        type="submit"><span
+																th:text="#{grant-admin.label}">Grant Admin</span>
+														</button>
+													</form>
+												</li>
+												<li>
+													<form class="d-inline" method="post"
+													      th:action="@{/admin/users/{id}/revoke(id=${user.id})}">
+														<input name="_method" type="hidden" value="put"/>
+														<button class="dropdown-item" th:if="${user.admin}"
+														        type="submit"><span
+																th:text="#{revoke-admin.label}">Revoke Admin</span>
+														</button>
+													</form>
+												</li>
+												<li>
+													<form class="d-inline" method="post"
+													      th:action="@{/admin/users/{id}(id=${user.id})}">
+														<input name="_method" type="hidden" value="put"/>
+														<button class="dropdown-item"
+														        type="submit"><span
+																th:text="#{edit.label}">Edit</span>
+														</button>
+													</form>
+												</li>
+												<li>
+													<form class="d-inline" method="post"
+													      th:action="@{/admin/users/{id}(id=${user.id})}">
+														<input name="_method" type="hidden" value="delete"/>
+														<button class="dropdown-item"
+														        type="submit"><span
+																th:text="#{delete.label}">Delete</span>
+														</button>
+													</form>
+												</li>
+											</ul>
+										</div>
+									</div>
+								</td>
 							</tr>
 							</tbody>
 						</table>

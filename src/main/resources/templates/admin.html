@@ -266,7 +266,9 @@
 												<li>
 													<form class="d-inline" method="post"
 													      th:action="@{/admin/users/{id}/block(id=${user.id})}">
+
 														<input name="_method" type="hidden" value="put"/>
+
 														<button class="dropdown-item" th:unless="${user.blocked}"
 														        type="submit"><span
 																th:text="#{block.label}">Block</span>
@@ -304,7 +306,7 @@
 												</li>
 												<li>
 													<form class="d-inline" method="post"
-													      th:action="@{/admin/users/{id}(id=${user.id})}">
+													      th:action="@{/users/{id}(id=${user.id})}">
 														<input name="_method" type="hidden" value="put"/>
 														<button class="dropdown-item"
 														        type="submit"><span
@@ -314,7 +316,7 @@
 												</li>
 												<li>
 													<form class="d-inline" method="post"
-													      th:action="@{/admin/users/{id}(id=${user.id})}">
+													      th:action="@{/users/{id}(id=${user.id})}">
 														<input name="_method" type="hidden" value="delete"/>
 														<button class="dropdown-item"
 														        type="submit"><span

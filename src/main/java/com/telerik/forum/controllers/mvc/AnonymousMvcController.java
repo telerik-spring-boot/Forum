@@ -29,7 +29,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.time.LocalDateTime;
 
 @Controller
-@RequestMapping("/auth")
+@RequestMapping
 public class AnonymousMvcController {
 
     private final AuthenticationHelper authenticationHelper;
@@ -46,7 +46,7 @@ public class AnonymousMvcController {
         this.jwtUtil = jwtUtil;
     }
 
-    @GetMapping("/login")
+    @GetMapping("/auth/login")
     public String showLoginPage(HttpSession session, Model model) {
 
         if (session.getAttribute("currentUser") != null) {
@@ -58,7 +58,7 @@ public class AnonymousMvcController {
         return "login";
     }
 
-    @PostMapping("/login")
+    @PostMapping("/auth/login")
     public String handleLogin(@Valid @ModelAttribute("login") UserLoginDTO userLoginDTO, BindingResult bindingResult, HttpSession session, Model model) {
 
         model.addAttribute("formSubmitted", true);
@@ -77,7 +77,7 @@ public class AnonymousMvcController {
             user.setLastLogin(LocalDateTime.now());
             userService.update(user, user);
 
-            return "redirect:/home";
+            return "redirect:/search";
 
         } catch (UnauthorizedOperationException e) {
             bindingResult.rejectValue("username", "error.login", e.getMessage());
@@ -86,19 +86,19 @@ public class AnonymousMvcController {
         }
     }
 
-    @GetMapping("/logout")
+    @GetMapping("/auth/logout")
     public String handleLogout(HttpSession session) {
         session.invalidate();
-        return "redirect:/home";
+        return "redirect:/search";
     }
 
-    @GetMapping("/register")
+    @GetMapping("/auth/register")
     public String showRegisterPage(Model model) {
         model.addAttribute("register", new UserCreateMvcDTO());
         return "register";
     }
 
-    @PostMapping("/register")
+    @PostMapping("/auth/register")
     public String handleRegister(@Valid @ModelAttribute("register") UserCreateMvcDTO userCreateMvcDTO, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
 
         model.addAttribute("formSubmitted", true);
@@ -131,14 +131,14 @@ public class AnonymousMvcController {
     }
 
 
-    @GetMapping("/request-password")
+    @GetMapping("/auth/request-password")
     public String showForgotPassword(Model model) {
         model.addAttribute("user", new UserRetrieveDTO());
 
         return "password";
     }
 
-    @PostMapping("/request-password")
+    @PostMapping("/auth/request-password")
     public String handlePasswordRetrieval(@Valid @ModelAttribute("user") UserRetrieveDTO userRetrieveDTO, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
 
         model.addAttribute("formSubmitted", true);
@@ -172,7 +172,7 @@ public class AnonymousMvcController {
 
     }
 
-    @GetMapping("/reset-password")
+    @GetMapping("/auth/reset-password")
     public String showResetPasswordForm(@RequestParam String token, Model model) {
 
         try {
@@ -187,7 +187,7 @@ public class AnonymousMvcController {
         return "reset-password";
     }
 
-    @PostMapping("/reset-password")
+    @PostMapping("/auth/reset-password")
     public String resetPassword(@RequestParam String token, @Valid @ModelAttribute("user") UserPasswordUpdateDTO userPasswordUpdateDTO, BindingResult bindingResult, HttpServletRequest request, Model model, RedirectAttributes redirectAttributes) {
 
         model.addAttribute("formSubmitted", true);
@@ -222,6 +222,11 @@ public class AnonymousMvcController {
             return "reset-password";
         }
 
+    }
+
+    @GetMapping("/search")
+    public String showSearchPage() {
+        return "search";
     }
 
 

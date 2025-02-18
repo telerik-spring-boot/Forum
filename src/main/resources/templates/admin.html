@@ -42,7 +42,7 @@
 		</li>
 		<li class="nav-item" id="searchInput">
 			<form class="w-100">
-				<div class="input-group">
+				<div class="input-group d-flex flex-nowrap">
 					<input aria-describedby="btnNavbarSearch" aria-label="Search for..."
 					       class="form-control search-start"
 					       placeholder="Search for..."
@@ -53,7 +53,16 @@
 				</div>
 			</form>
 		</li>
-		<li class="nav-item dropdown ms-auto ps-3">
+
+		<li class="nav-item ms-auto ps-3">
+			<a class="btn btn-dark nav-link d-flex rounded-pill align-items-center" href="post-create.html"
+			   role="button" th:href="@{/posts}">
+				<i class="fas fa-plus"></i>
+				<span class="ms-2" id="createText" th:text="#{create.label}">Create</span>
+			</a>
+		</li>
+
+		<li class="nav-item dropdown">
 			<a
 					aria-expanded="false"
 					class="nav-link btn btn-dark rounded-circle dropdown-toggle"
@@ -61,13 +70,13 @@
 					href="#"
 					id="navbarDropdown"
 					role="button"
-			><i class="fas fa-user fa-fw pt-md-2 pt-sm-1"></i
+			><i class="fas fa-user fa-fw"></i
 			></a>
 			<ul
 					aria-labelledby="navbarDropdown"
 					class="dropdown-menu dropdown-menu-end"
 			>
-				<li><a class="dropdown-item mb-2" href="#!" th:href="@{/users/{id}(id=${userId})}">
+				<li><a class="dropdown-item" href="#!" th:href="@{/users/{id}(id=${userId})}">
 					<i class="fas fa-user fa-fw me-1"></i>
 					<span th:text="#{view-profile.label}">View Profile</span>
 				</a></li>

@@ -3737,10 +3737,6 @@ textarea.form-control-lg {
     #searchInput {
         width: 30rem;
     }
-
-    .search-end {
-        width: 3rem;
-    }
 }
 
 .nav
@@ -12939,11 +12935,6 @@ body {
     border-start-start-radius: 2rem;
 }
 
-.search-end {
-    border-end-end-radius: 2rem;
-    border-start-end-radius: 2rem;
-}
-
 #sidebarToggle {
     width: 3rem;
     height: 3rem;
@@ -12980,3 +12971,16 @@ tr:hover td div #dropdownMenu {
 tr td {
     align-content: center;
 }
+
+
+.search-end {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 10% !important;
+    border-end-end-radius: 2rem;
+    border-start-end-radius: 2rem;
+}
+
+
+

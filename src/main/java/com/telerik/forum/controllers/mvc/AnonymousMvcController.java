@@ -225,7 +225,10 @@ public class AnonymousMvcController {
     }
 
     @GetMapping("/search")
-    public String showSearchPage() {
+    public String showSearchPage(HttpSession session, Model model) {
+        if (session.getAttribute("currentUser") != null) {
+            model.addAttribute("userId", userService.getByUsername((String) session.getAttribute("currentUser")).getId());
+        }
         return "search";
     }
 

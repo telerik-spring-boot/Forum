@@ -12982,5 +12982,16 @@ tr td {
     border-start-end-radius: 2rem;
 }
 
+.title-link, .username-link {
+    text-decoration: none;
+    color: black;
+}
+
+.title-link:hover {
+    text-decoration: underline;
+}
+
+
+
 
 

@@ -1,201 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-	<meta charset="utf-8"/>
-	<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
-	<meta
-			content="width=device-width, initial-scale=1, shrink-to-fit=no"
-			name="viewport"
-	/>
-	<meta content="" name="description"/>
-	<meta content="" name="author"/>
-	<title>Admin Dashboard</title>
+<head th:replace="~{fragments/general-fragments.html :: head('Admin Dashboard')}"></head>
 
-	<!-- Simple Datatables CSS -->
-	<link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css"
-	      th:href="@{'https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css'}"/>
-
-	<!-- Custom styles -->
-	<link href="../static/css/styles.css" rel="stylesheet" th:href="@{/css/styles.css}"/>
-
-	<!-- Font Awesome -->
-	<script crossorigin="anonymous" src="https://use.fontawesome.com/releases/v6.3.0/js/all.js"
-	        th:src="'https://use.fontawesome.com/releases/v6.3.0/js/all.js'"></script>
-
-	<!-- Google Fonts -->
-	<link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-	      rel="stylesheet"
-	      th:href="'https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i'"/>
-
-</head>
 <body class="sb-nav-fixed">
-<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark" id="navbar">
-	<!-- Navbar-->
-
-	<ul class="navbar-nav d-flex w-100 align-items-center justify-content-start">
-		<li class="nav-item px-3 me-auto">
-			<a class="nav-link d-flex align-items-center" href="search.html" th:href="@{/search}">
-				<img alt="Logo" class="me-2" id="logo" src="../static/favicon.ico"
-				     th:src="@{/favicon.ico}"/>
-				<span class="pt-1" th:text="#{roamify.label}"> Roamify  </span></a
-			>
-		</li>
-		<li class="nav-item" id="searchInput">
-			<form class="w-100">
-				<div class="input-group d-flex flex-nowrap">
-					<input aria-describedby="btnNavbarSearch" aria-label="Search for..."
-					       class="form-control search-start"
-					       placeholder="Search for..."
-					       type="text"/>
-					<button class="btn btn-primary search-end" id="btnNavbarSearch" type="button"><i
-							class="fas fa-search"></i>
-					</button>
-				</div>
-			</form>
-		</li>
-
-		<li class="nav-item ms-auto ps-3">
-			<a class="btn btn-dark nav-link d-flex rounded-pill align-items-center" href="post-create.html"
-			   role="button" th:href="@{/posts}">
-				<i class="fas fa-plus"></i>
-				<span class="ms-2" id="createText" th:text="#{create.label}">Create</span>
-			</a>
-		</li>
-
-		<li class="nav-item dropdown">
-			<a
-					aria-expanded="false"
-					class="nav-link btn btn-dark rounded-circle dropdown-toggle"
-					data-bs-toggle="dropdown"
-					href="#"
-					id="navbarDropdown"
-					role="button"
-			><i class="fas fa-user fa-fw"></i
-			></a>
-			<ul
-					aria-labelledby="navbarDropdown"
-					class="dropdown-menu dropdown-menu-end"
-			>
-				<li><a class="dropdown-item" href="#!" th:href="@{/users/{id}(id=${userId})}">
-					<i class="fas fa-user fa-fw me-1"></i>
-					<span th:text="#{view-profile.label}">View Profile</span>
-				</a></li>
-				<li>
-					<a class="dropdown-item" href="#!" th:href="@{/users/{id}/settings(id=${userId})}">
-						<i class="fa fa-cog fa-fw me-1"></i>
-						<span th:text="#{settings.label}">Settings</span>
-					</a>
-				<li>
-					<hr class="dropdown-divider"/>
-				</li>
-				<li>
-					<a class="dropdown-item" href="login.html" th:href="@{/auth/logout}"
-					   th:if="${isAuthenticated}">
-						<i class="fas fa-sign-out-alt me-1"></i>
-						<span th:text="#{logout.label}">Logout</span>
-					</a>
-					<a class="dropdown-item" href="#" th:href="@{/auth/login}" th:unless="${isAuthenticated}">
-						<i class="fas fa-sign-in-alt me-1"></i>
-						<span th:text="#{login.label}">Login</span>
-					</a>
-				</li>
-			</ul>
-		</li>
-
-		<li class="nav-item pe-2">
-			<a class="nav-link btn btn-dark rounded-circle" href="#!" id="sidebarToggle" role="button">
-				<i class="fas fa-bars"></i>
-			</a>
-		</li>
-	</ul>
-</nav>
+<nav th:replace="~{fragments/general-fragments.html :: topnav}"></nav>
 
 <div id="layoutSidenav">
-	<div id="layoutSidenav_nav">
-		<nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
-			<div class="sb-sidenav-menu">
-
-
-				<div class="nav mt-3">
-					<div class="sb-sidenav-menu-heading"><span th:text="#{core.label}"> Core </span></div>
-					<a class="nav-link btn btn-dark" href="search.html" th:href="@{/search}">
-						<div class="sb-nav-link-icon">
-							<i class="fas fa-home"></i>
-						</div>
-						<span th:text="#{home.label}">Home</span>
-					</a>
-
-					<a class="nav-link btn btn-dark" href="search.html" th:href="@{/search/trending}">
-						<div class="sb-nav-link-icon">
-							<i class="fas fa-arrow-trend-up"></i>
-						</div>
-						<span th:text="#{trending.label}"> Trending </span>
-					</a>
-
-					<a class="nav-link btn btn-dark" href="search.html" th:href="@{/search/users}">
-						<div class="sb-nav-link-icon">
-							<i class="fas fa-user-friends"></i>
-						</div>
-						<span th:text="#{browse.label}"> Browse </span>
-					</a>
-
-					<a class="nav-link btn btn-dark" href="search.html" th:href="@{/search/latest}">
-						<div class="sb-nav-link-icon">
-							<i class="fas fa-clock-rotate-left"></i>
-						</div>
-						<span th:text="#{latest.label}"> Latest </span>
-					</a>
-				</div>
-				<hr>
-				<div class="nav">
-					<a
-							aria-controls="collapseResources"
-							aria-expanded="false"
-							class="sb-sidenav-menu-heading d-flex justify-content-start nav-link collapsed btn btn-dark"
-							data-bs-target="#collapseResources"
-							data-bs-toggle="collapse"
-							href="#"
-					>
-						<span th:text="#{resources.label}">Resources</span>
-
-						<div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-up"></i></div>
-					</a>
-					<div
-							aria-labelledby="headingOne"
-							class="collapse"
-							data-bs-parent="#sidenavAccordion"
-							id="collapseResources"
-					>
-						<a class="nav-link btn btn-dark" href="about.html" th:href="@{/about}">
-							<div class="sb-nav-link-icon">
-								<i class="fas fa-users-cog"></i>
-							</div>
-							<span th:text="#{about.label}"> About</span>
-						</a>
-
-						<a class="nav-link btn btn-dark" href="help.html" th:href="@{/help}">
-							<div class="sb-nav-link-icon">
-								<i class="fas fa-question-circle"></i>
-							</div>
-							<span th:text="#{help.label}"> Help </span>
-						</a>
-
-						<a class="nav-link btn btn-dark" href="careers.html">
-							<div class="sb-nav-link-icon">
-								<i class="fas fa-briefcase"></i>
-							</div>
-							<span th:text="#{careers.label}"> Careers </span>
-						</a>
-					</div>
-				</div>
-			</div>
-			<div class="sb-sidenav-footer">
-				<span class=th:text="#{logged-in.label}">Logged in as:</span>
-				<div class="fst-italic fw-bold text-center fs-4" th:text="${session.currentUser}">Current User
-				</div>
-			</div>
-		</nav>
-	</div>
+	<div th:replace="~{fragments/general-fragments.html :: sidenav}"></div>
 	<div id="layoutSidenav_content">
 		<main>
 			<div class="container-fluid px-4">
@@ -344,31 +155,14 @@
 				</div>
 			</div>
 		</main>
-		<footer class="py-4 bg-light mt-auto">
-			<div class="container-fluid px-4">
-				<div
-						class="d-flex align-items-center justify-content-between small"
-				>
-					<div class="text-muted" th:text="#{copyright.label}">Copyright &copy; Roamify 2025</div>
-					<div>
-						<a href="#" th:text="#{privacy.label}">Privacy Policy</a>
-						<a class="ms-1" href="#" th:text="#{terms.label}">Terms &amp; Conditions</a>
-					</div>
-				</div>
-			</div>
-		</footer>
+		<footer th:replace="~{fragments/general-fragments.html :: footer}"></footer>
 	</div>
 </div>
 <script>
     let postDates = '[[${postDates}]]';
 </script>
-<script
-		crossorigin="anonymous"
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-		th:src="'https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js'"
-></script>
-<script src="../static/js/scripts.js"
-        th:src="@{/js/scripts.js}"></script>
+
+
 <script
 		crossorigin="anonymous"
 		src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"
@@ -384,6 +178,6 @@
 <script src="../static/js/datatables-simple-demo.js"
         th:src="@{/js/datatables-simple-demo.js}"></script>
 
-
+<th:block th:replace="~{fragments/general-fragments.html :: scripts}"></th:block>
 </body>
 </html>

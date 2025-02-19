@@ -13000,6 +13000,21 @@ tr td {
     color: var(--bs-danger);
 }
 
+.username-part {
+    line-height: 1;
+}
 
+#contentBox {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    max-width: 720px;
+}
+
+#userContainer {
+    height: 5rem;
+}
+
+.fontsize08 {
+    font-size: 0.8rem;
+}
 
 

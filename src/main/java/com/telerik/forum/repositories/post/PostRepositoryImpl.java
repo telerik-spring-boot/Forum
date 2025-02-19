@@ -11,8 +11,11 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +41,11 @@ public class PostRepositoryImpl implements PostRepository {
 
             return query.list();
         }
+    }
+
+    @Override
+    public Page<Post> getAllPostsWithFilters(FilterPostOptions options, Pageable pageable) {
+        return getPostsWithFiltersHelper(-1, options, pageable);
     }
 
     @Override
@@ -119,8 +127,8 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public List<Post> getPostsWithCommentsByUserId(int userId, FilterPostOptions options) {
-        return getPostsWithFiltersHelper(userId, options);
+    public Page<Post> getPostsWithCommentsByUserId(int userId, FilterPostOptions options, Pageable pageable) {
+        return getPostsWithFiltersHelper(userId, options, pageable);
     }
 
     @Override
@@ -214,6 +222,95 @@ public class PostRepositoryImpl implements PostRepository {
 
         }
 
+    }
+
+    private Page<Post> getPostsWithFiltersHelper(int userId, FilterPostOptions options, Pageable pageable) {
+        try (Session session = sessionFactory.openSession()) {
+            CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+
+            CriteriaQuery<Post> criteriaQuery = criteriaBuilder.createQuery(Post.class);
+
+            Root<Post> root = criteriaQuery.from(Post.class);
+
+            Join<Post, Like> likesJoin = root.join("likes", JoinType.LEFT);
+
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (userId != -1) {
+                predicates.add(criteriaBuilder.equal(root.get("user").get("id"), userId));
+            }
+
+            options.getCreatorUsername().ifPresent(username -> {
+                predicates.add(criteriaBuilder.like(root.get("user").get("username"), "%" + username + "%"));
+            });
+
+            options.getTitle().ifPresent(title -> {
+                predicates.add(criteriaBuilder.like(root.get("title"), "%" + title + "%"));
+            });
+
+            options.getContent().ifPresent(content -> {
+                predicates.add(criteriaBuilder.like(root.get("content"), "%" + content + "%"));
+            });
+
+
+            options.getTags().ifPresent(tagNames -> {
+                Join<Post, Tag> tagsJoin = root.join("tags", JoinType.LEFT);
+                List<Predicate> tagPredicates = new ArrayList<>();
+
+                for (String tagName : tagNames) {
+                    tagPredicates.add(criteriaBuilder.like(tagsJoin.get("name"), "%" + tagName + "%"));
+                }
+                predicates.add(criteriaBuilder.or(tagPredicates.toArray(new Predicate[0])));
+            });
+
+            criteriaQuery.where(predicates.toArray(new Predicate[0]));
+
+            criteriaQuery.groupBy(root.get("id"));
+
+            options.getSortBy().ifPresent(sortBy -> {
+                String sortOrder = options.getSortOrder().orElse("asc");
+
+                Expression<?> expression = root.get(sortBy);
+
+                if (sortBy.equalsIgnoreCase("likes")) {
+                    expression = criteriaBuilder.sum(likesJoin.get("reaction"));
+                }
+
+                if (sortOrder.equalsIgnoreCase("desc")) {
+                    criteriaQuery.orderBy(criteriaBuilder.desc(expression));
+                } else {
+                    criteriaQuery.orderBy(criteriaBuilder.asc(expression));
+                }
+
+            });
+
+            CriteriaQuery<Long> countQuery = criteriaBuilder.createQuery(Long.class);
+            Root<Post> countRoot = countQuery.from(Post.class);
+            countQuery.select(criteriaBuilder.count(countRoot));
+
+            countQuery.where(predicates.toArray(new Predicate[0]));
+            Long totalPosts = session.createQuery(countQuery).getSingleResult();
+
+            Query<Post> query = session.createQuery(criteriaQuery)
+                    .setFirstResult((int) pageable.getOffset())
+                    .setMaxResults(pageable.getPageSize());
+
+
+            return new PageImpl<>(query.getResultList(), pageable, totalPosts);
+
+//            Query<Post> query = session.createQuery(criteriaQuery);
+//
+//            List<Post> posts = query.list();
+//
+//
+//            posts.forEach(post -> {
+//                Hibernate.initialize(post.getTags());
+//                Hibernate.initialize(post.getLikes());
+//                Hibernate.initialize(post.getComments());
+//            });
+//
+//            return posts;
+        }
     }
 
     private List<Post> getPostsWithFiltersHelper(int userId, FilterPostOptions options) {

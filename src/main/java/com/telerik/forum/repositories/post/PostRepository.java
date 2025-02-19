@@ -3,12 +3,16 @@ package com.telerik.forum.repositories.post;
 import com.telerik.forum.models.dtos.postDTOs.PostDisplayMvcDTO;
 import com.telerik.forum.models.post.Post;
 import com.telerik.forum.models.filters.FilterPostOptions;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface PostRepository {
 
     List<Post> getAllPosts();
+
+    Page<Post> getAllPostsWithFilters(FilterPostOptions options, Pageable pageable);
 
     List<Post> getAllPostsWithFilters(FilterPostOptions options);
 
@@ -18,7 +22,7 @@ public interface PostRepository {
 
     List<Post> getMostRecentPosts(int limit);
 
-    List<Post> getPostsWithCommentsByUserId(int userId, FilterPostOptions options);
+    Page<Post> getPostsWithCommentsByUserId(int userId, FilterPostOptions options, Pageable pageable);
 
     List<PostDisplayMvcDTO> getPostsCreationDates();
 

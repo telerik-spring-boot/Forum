@@ -10,6 +10,9 @@ import com.telerik.forum.models.filters.FilterPostOptions;
 import com.telerik.forum.repositories.post.PostRepository;
 import com.telerik.forum.repositories.utilities.SortingHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -38,6 +41,21 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<Post> getAllPosts() {
         return postRepository.getAllPosts();
+    }
+
+    @Override
+    public Page<Post> getAllPostsWithFilters(FilterPostOptions filterOptions, Pageable pageable) {
+
+        filterOptions.getSortBy().ifPresent(SortingHelper::validateSortByFieldPost);
+
+        filterOptions.getSortOrder().ifPresent(SortingHelper::validateSortOrderField);
+
+        Page<Post> posts = postRepository.getAllPostsWithFilters(filterOptions, pageable);
+
+        Page<Post> filteredPosts = filterByLikes(posts, filterOptions);
+
+        return filteredPosts;
+
     }
 
     @Override
@@ -174,6 +192,42 @@ public class PostServiceImpl implements PostService {
 
     }
 
+    private Page<Post> filterByLikes(Page<Post> posts, FilterPostOptions options) {
+        List<Post> postsToDelete = new ArrayList<>();
+
+        for (Post post : posts) {
+            options.getMinLikes().ifPresent(minLikes -> {
+                if (post.getLikes().stream()
+                        .map(Like::getReaction)
+                        .mapToInt(Integer::intValue)
+                        .sum() < minLikes) {
+                    postsToDelete.add(post);
+                }
+            });
+
+            options.getMaxLikes().ifPresent(maxLikes -> {
+                if (post.getLikes().stream()
+                        .map(Like::getReaction)
+                        .mapToInt(Integer::intValue)
+                        .sum() > maxLikes) {
+                    postsToDelete.add(post);
+                }
+            });
+        }
+
+        if (!postsToDelete.isEmpty()) {
+//            posts.removeAll(postsToDelete);
+            List<Post> filteredPosts = posts.getContent()
+                    .stream()
+                    .filter(post -> !postsToDelete.contains(post)) // Remove unwanted posts
+                    .toList();
+
+            return new PageImpl<>(filteredPosts, posts.getPageable(), filteredPosts.size());
+
+        }
+        return posts;
+    }
+
     private void filterByLikes(List<Post> posts, FilterPostOptions options) {
         List<Post> postsToDelete = new ArrayList<>();
 
@@ -201,6 +255,7 @@ public class PostServiceImpl implements PostService {
             posts.removeAll(postsToDelete);
         }
     }
+
 
 
 }

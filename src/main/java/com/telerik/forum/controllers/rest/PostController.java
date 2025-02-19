@@ -2,11 +2,13 @@ package com.telerik.forum.controllers.rest;
 
 import com.telerik.forum.helpers.AuthenticationHelper;
 import com.telerik.forum.helpers.PostMapper;
+import com.telerik.forum.models.dtos.PaginationDTO;
 import com.telerik.forum.models.dtos.commentDTOs.CommentCreateDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostCreateDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO;
 import com.telerik.forum.models.dtos.tagDTOs.TagCreateAndDeleteDTO;
 import com.telerik.forum.models.dtos.tagDTOs.TagUpdateDTO;
+import com.telerik.forum.models.dtos.userDTOs.UserDisplayDTO;
 import com.telerik.forum.models.filters.FilterPostOptions;
 import com.telerik.forum.models.post.Comment;
 import com.telerik.forum.models.post.Post;
@@ -17,6 +19,9 @@ import com.telerik.forum.services.post.PostService;
 import com.telerik.forum.services.tag.TagService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,15 +50,16 @@ public class PostController {
     }
 
     @GetMapping
-    public List<PostDisplayDTO> getAllPosts(@RequestHeader HttpHeaders headers,
-                                            @RequestParam(required = false) String username,
-                                            @RequestParam(required = false) String title,
-                                            @RequestParam(required = false) String content,
-                                            @RequestParam(required = false) String tags,
-                                            @RequestParam(required = false) Long minLikes,
-                                            @RequestParam(required = false) Long maxLikes,
-                                            @RequestParam(required = false) String sortBy,
-                                            @RequestParam(required = false) String sortOrder) {
+    public PaginationDTO<PostDisplayDTO> getAllPosts(@RequestHeader HttpHeaders headers,
+                                                     @RequestParam(required = false) String username,
+                                                     @RequestParam(required = false) String title,
+                                                     @RequestParam(required = false) String content,
+                                                     @RequestParam(required = false) String tags,
+                                                     @RequestParam(required = false) Long minLikes,
+                                                     @RequestParam(required = false) Long maxLikes,
+                                                     @RequestParam(required = false) String sortBy,
+                                                     @RequestParam(required = false) String sortOrder,
+                                                     @PageableDefault(size = 10, page = 0) Pageable pageable) {
 
         authenticationHelper.tryGetUser(headers);
         String[] tagArray = null;
@@ -65,9 +71,15 @@ public class PostController {
         FilterPostOptions options = new FilterPostOptions(username, title, content, tagArray,
                 minLikes, maxLikes, sortBy, sortOrder);
 
-        return postService.getAllPostsWithFilters(options).stream()
-                .map(postMapper::postToPostDisplayDTO)
-                .toList();
+//        return postService.getAllPostsWithFilters(options).stream()
+//                .map(postMapper::postToPostDisplayDTO)
+//                .toList();
+        Page<Post> postsPage = postService.getAllPostsWithFilters(options, pageable);
+
+        List<PostDisplayDTO> posts = postsPage.getContent().stream().map(postMapper::postToPostDisplayDTO).toList();
+
+        return new PaginationDTO<>(posts, postsPage.getNumber(), postsPage.getSize(), postsPage.getTotalElements(), postsPage.getTotalPages());
+
 
     }
 

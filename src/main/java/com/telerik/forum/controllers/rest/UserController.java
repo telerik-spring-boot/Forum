@@ -3,6 +3,8 @@ package com.telerik.forum.controllers.rest;
 
 import com.telerik.forum.helpers.AuthenticationHelper;
 import com.telerik.forum.helpers.UserMapper;
+import com.telerik.forum.models.dtos.PaginationDTO;
+import com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO;
 import com.telerik.forum.models.dtos.userDTOs.*;
 import com.telerik.forum.models.filters.FilterCommentOptions;
 import com.telerik.forum.models.filters.FilterPostOptions;
@@ -10,8 +12,11 @@ import com.telerik.forum.models.user.User;
 import com.telerik.forum.services.user.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 @RequestMapping("/api/users")
@@ -40,15 +45,16 @@ public class UserController {
     }
 
     @GetMapping("/{id}/posts")
-    public UserPostsDisplayDTO getUserPosts(@RequestHeader HttpHeaders headers,
-                                            @RequestParam(required = false) String title,
-                                            @RequestParam(required = false) String content,
-                                            @RequestParam(required = false) String tags,
-                                            @RequestParam(required = false) Long minLikes,
-                                            @RequestParam(required = false) Long maxLikes,
-                                            @RequestParam(required = false) String sortBy,
-                                            @RequestParam(required = false) String sortOrder,
-                                            @PathVariable int id) {
+    public PaginationDTO<PostDisplayDTO> getUserPosts(@RequestHeader HttpHeaders headers,
+                                                      @RequestParam(required = false) String title,
+                                                      @RequestParam(required = false) String content,
+                                                      @RequestParam(required = false) String tags,
+                                                      @RequestParam(required = false) Long minLikes,
+                                                      @RequestParam(required = false) Long maxLikes,
+                                                      @RequestParam(required = false) String sortBy,
+                                                      @RequestParam(required = false) String sortOrder,
+                                                      @PathVariable int id,
+                                                      @PageableDefault(size = 10, page = 0) Pageable pageable) {
 
         User userRequest = authenticationHelper.tryGetUser(headers);
         String[] tagArray = null;
@@ -59,9 +65,9 @@ public class UserController {
 
         FilterPostOptions options = new FilterPostOptions(null, title, content, tagArray, minLikes, maxLikes, sortBy, sortOrder);
 
-        User userEntity = userService.getByIdWithPosts(id, options, userRequest);
+        UserPostsPageDisplayDTO userEntity = userService.getByIdWithPosts(id, options, userRequest, pageable);
 
-        return userMapper.userToUserPostsDisplayDTO(userEntity);
+        return new PaginationDTO<>(userEntity.getPosts().getContent(), userEntity.getPosts().getNumber(), userEntity.getPosts().getSize(), userEntity.getPosts().getTotalElements(), userEntity.getPosts().getTotalPages());
 
     }
 

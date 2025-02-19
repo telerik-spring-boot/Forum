@@ -4,12 +4,16 @@ import com.telerik.forum.models.dtos.postDTOs.PostDisplayMvcDTO;
 import com.telerik.forum.models.post.Post;
 import com.telerik.forum.models.user.User;
 import com.telerik.forum.models.filters.FilterPostOptions;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface PostService {
 
     List<Post> getAllPosts();
+
+    Page<Post> getAllPostsWithFilters(FilterPostOptions filterPostOptions, Pageable pageable);
 
     List<Post> getAllPostsWithFilters(FilterPostOptions filterPostOptions);
 

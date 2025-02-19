@@ -3,6 +3,8 @@ package com.telerik.forum.services.user;
 import com.telerik.forum.exceptions.DuplicateEntityException;
 import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
+import com.telerik.forum.helpers.PostMapper;
+import com.telerik.forum.models.dtos.userDTOs.UserPostsPageDisplayDTO;
 import com.telerik.forum.models.filters.Sortable;
 import com.telerik.forum.models.post.Comment;
 import com.telerik.forum.models.post.Like;
@@ -16,6 +18,9 @@ import com.telerik.forum.repositories.role.RoleRepository;
 import com.telerik.forum.repositories.user.UserRepository;
 import com.telerik.forum.repositories.utilities.SortingHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -29,13 +34,15 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
+    private final PostMapper postMapper;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PostRepository postRepository, CommentRepository commentRepository) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PostRepository postRepository, CommentRepository commentRepository, PostMapper postMapper) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.postRepository = postRepository;
         this.commentRepository = commentRepository;
+        this.postMapper = postMapper;
     }
 
 
@@ -53,20 +60,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getByIdWithPosts(int id, FilterPostOptions options, User userRequest) {
+    public UserPostsPageDisplayDTO getByIdWithPosts(int id, FilterPostOptions options, User userRequest, Pageable pageable) {
         authorizationBlocked(userRequest);
 
         User user = getUserValidationAndSortingValidation(id, options);
 
-        List<Post> posts = postRepository.getPostsWithCommentsByUserId(id, options);
+        Page<Post> postsPaged = postRepository.getPostsWithCommentsByUserId(id, options, pageable);
 
-        filterByLikes(posts, options);
+        filterByLikes(postsPaged, options);
 
-        user.setPosts(posts);
+        return new UserPostsPageDisplayDTO(user.getUsername(), user.getId(),
+                postsPaged.map(postMapper::postToPostDisplayDTO));
 
-        return user;
+
     }
-
 
 
     @Override
@@ -150,7 +157,7 @@ public class UserServiceImpl implements UserService {
 
         User userToDelete = userRepository.getById(id);
 
-        if(userToDelete == null){
+        if (userToDelete == null) {
             throw new EntityNotFoundException("User", "id", id);
         }
 
@@ -159,7 +166,7 @@ public class UserServiceImpl implements UserService {
 
     private void authorizationBlocked(User userRequest) {
 
-        if(userRequest.isBlocked()){
+        if (userRequest.isBlocked()) {
             throw new UnauthorizedOperationException(PERMISSION_ERROR_MESSAGE);
         }
     }
@@ -175,7 +182,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private void filterByLikes(List<Post> posts, FilterPostOptions options) {
+    private Page<Post> filterByLikes(Page<Post> posts, FilterPostOptions options) {
         List<Post> postsToDelete = new ArrayList<>();
 
         for (Post post : posts) {
@@ -197,8 +204,16 @@ public class UserServiceImpl implements UserService {
             });
         }
         if (!postsToDelete.isEmpty()) {
-            posts.removeAll(postsToDelete);
+//            posts.removeAll(postsToDelete);
+            List<Post> filteredPosts = posts.getContent()
+                    .stream()
+                    .filter(post -> !postsToDelete.contains(post)) // Remove unwanted posts
+                    .toList();
+
+            return new PageImpl<>(filteredPosts, posts.getPageable(), filteredPosts.size());
+
         }
+        return posts;
     }
 
     private <T extends Sortable> User getUserValidationAndSortingValidation(int id, T options) {

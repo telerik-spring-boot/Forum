@@ -7,11 +7,18 @@ import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.helpers.AuthenticationHelper;
 import com.telerik.forum.helpers.UserMapper;
+import com.telerik.forum.models.dtos.PaginationDTO;
+import com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO;
 import com.telerik.forum.models.dtos.userDTOs.UserCreateMvcDTO;
 import com.telerik.forum.models.dtos.userDTOs.UserLoginDTO;
 import com.telerik.forum.models.dtos.userDTOs.UserPasswordUpdateDTO;
 import com.telerik.forum.models.dtos.userDTOs.UserRetrieveDTO;
+import com.telerik.forum.models.filters.FilterPostOptions;
+import com.telerik.forum.models.filters.FilterUserOptions;
+import com.telerik.forum.models.post.Post;
 import com.telerik.forum.models.user.User;
+import com.telerik.forum.services.admin.AdminService;
+import com.telerik.forum.services.post.PostService;
 import com.telerik.forum.services.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -27,6 +34,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Controller
 @RequestMapping
@@ -37,13 +45,17 @@ public class AnonymousMvcController {
     private final UserMapper userMapper;
     private final JavaMailSender mailSender;
     private final JwtUtil jwtUtil;
+    private final PostService postService;
+    private final AdminService adminService;
 
-    public AnonymousMvcController(AuthenticationHelper authenticationHelper, UserService userService, UserMapper userMapper, JavaMailSender mailSender, JwtUtil jwtUtil) {
+    public AnonymousMvcController(AuthenticationHelper authenticationHelper, UserService userService, UserMapper userMapper, JavaMailSender mailSender, JwtUtil jwtUtil, PostService postService, AdminService adminService) {
         this.authenticationHelper = authenticationHelper;
         this.userService = userService;
         this.userMapper = userMapper;
         this.mailSender = mailSender;
         this.jwtUtil = jwtUtil;
+        this.postService = postService;
+        this.adminService = adminService;
     }
 
     @GetMapping("/auth/login")
@@ -225,12 +237,41 @@ public class AnonymousMvcController {
     }
 
     @GetMapping("/search")
-    public String showSearchPage(HttpSession session, Model model) {
+    public String showPostSearchPage(@ModelAttribute("searchString") String searchTerm, HttpSession session, Model model) {
         if (session.getAttribute("currentUser") != null) {
             model.addAttribute("userId", userService.getByUsername((String) session.getAttribute("currentUser")).getId());
         }
+        FilterPostOptions filterPostOptions = new FilterPostOptions(null,
+                searchTerm, null, null, null, null, null, null);
+        List<Post> foundPosts = postService.getAllPostsWithFilters(filterPostOptions);
+
+        filterPostOptions = new FilterPostOptions(null,
+                null, searchTerm, null, null, null, null, null);
+        List<Post> foundPostsContent = postService.getAllPostsWithFilters(filterPostOptions);
+
+        foundPosts.addAll(foundPostsContent);
+        model.addAttribute("foundPosts", foundPosts);
+        model.addAttribute("searchTerm", searchTerm);
+
         return "search";
     }
+
+    @GetMapping("/search/users")
+    public String showUserSearchPage(@ModelAttribute("searchString") String searchTerm, HttpSession session, Model model) {
+        if (session.getAttribute("currentUser") != null) {
+            model.addAttribute("userId", userService.getByUsername((String) session.getAttribute("currentUser")).getId());
+        }
+        FilterUserOptions filterUserOptions = new FilterUserOptions(searchTerm,
+                 null, null, null, null);
+        List<User> foundUsers = adminService.getAllUsers(filterUserOptions);
+
+        model.addAttribute("foundUsers", foundUsers);
+        model.addAttribute("searchTerm", searchTerm);
+
+        return "search";
+    }
+
+
 
 
 }

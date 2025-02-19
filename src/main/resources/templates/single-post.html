@@ -108,7 +108,7 @@
 		<h5>Comments</h5>
 
 		<div class="comment-box p-3 bg-light border rounded mb-2" th:classappend="${iterStat.index > 3} ? 'd-none extra-comment' : ''"
-		     th:each="comment, iterStat : ${post.comments}">
+			 th:each="comment, iterStat : ${post.comments}">
 			<p class="text-muted mb-1">
 				<strong th:text="${comment.creatorUsername}">Username</strong>
 				<span th:text="${#temporals.format(comment.createdAt, 'dd-MM-yyyy HH:mm')}">Date</span>
@@ -128,23 +128,21 @@
 				<i class="fa fa-arrow-down"></i> Show More Comments
 			</button>
 		</div>
-	</div>
 
-
-	<!-- Comment Form -->
-	<div>
-		<h6>Add a Comment</h6>
-		<form action="#" method="post" th:action="@{__${requestURI}__}" th:object="${commentCreateDto}">
-			<div class="mb-3">
+		<!-- Move the comment form BELOW the comments -->
+		<div class="mt-4">
+			<h6>Add a Comment</h6>
+			<form action="#" method="post" th:action="@{__${requestURI}__}" th:object="${commentCreateDto}">
+				<div class="mb-3">
             <textarea class="form-control" id="textarea" placeholder="Write your comment here..." rows="3"
-                      th:classappend="${#fields.hasErrors('content') ? 'is-invalid' : ''}"
-                      th:field="*{content}"></textarea>
-				<div class="invalid-feedback" th:errors="*{content}" th:if="${#fields.hasErrors('content')}"></div>
-			</div>
-			<button class="btn btn-primary" type="submit">Post Comment</button>
-		</form>
+					  th:classappend="${#fields.hasErrors('content') ? 'is-invalid' : ''}"
+					  th:field="*{content}"></textarea>
+					<div class="invalid-feedback" th:errors="*{content}" th:if="${#fields.hasErrors('content')}"></div>
+				</div>
+				<button class="btn btn-primary" type="submit">Post Comment</button>
+			</form>
+		</div>
 	</div>
-</div>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {

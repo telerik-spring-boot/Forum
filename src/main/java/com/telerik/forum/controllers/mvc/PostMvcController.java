@@ -62,7 +62,7 @@ public class PostMvcController {
 
         if (bindingResult.hasErrors()) {
             extracted(postId,model, user);
-            return "PostView";
+            return "single-post";
         }
 
         try{
@@ -92,7 +92,7 @@ public class PostMvcController {
             extracted(id, model, user);
             model.addAttribute("commentCreateDto", new CommentCreateDTO());
 
-            return "PostView";
+            return "single-post";
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());

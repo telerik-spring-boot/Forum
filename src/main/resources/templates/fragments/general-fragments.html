@@ -40,16 +40,25 @@
 				<span class="pt-1" th:text="#{roamify.label}"> Roamify  </span></a
 			>
 		</li>
-		<li class="nav-item" id="searchInput">
-			<form class="w-100">
-				<div class="input-group d-flex flex-nowrap">
-					<input aria-describedby="btnNavbarSearch" aria-label="Search for..."
-					       class="form-control rounded-pill"
-					       placeholder="Search..."
-					       type="text"/>
-				</div>
-			</form>
-		</li>
+<!--		<li class="nav-item" id="searchInput">-->
+<!--			<form class="w-100">-->
+<!--				<div class="input-group d-flex flex-nowrap">-->
+<!--					<input aria-describedby="btnNavbarSearch" aria-label="Search for..."-->
+<!--					       class="form-control rounded-pill"-->
+<!--					       placeholder="Search..."-->
+<!--					       type="text"/>-->
+<!--				</div>-->
+<!--			</form>-->
+<!--		</li>-->
+		<form class="w-100" method="GET" action="/search">
+			<div class="input-group d-flex flex-nowrap">
+				<input aria-describedby="btnNavbarSearch" aria-label="Search for..."
+					   class="form-control rounded-pill"
+					   placeholder="Search..."
+					   type="text"
+					   name="searchString"/>  <!-- Added 'name' attribute -->
+			</div>
+		</form>
 
 		<li class="nav-item ms-auto ps-3">
 			<a class="btn btn-dark nav-link d-flex rounded-pill align-items-center" href="create-post.html"

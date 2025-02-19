@@ -8,8 +8,7 @@ import com.telerik.forum.models.dtos.commentDTOs.CommentCreateDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostCreateDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostUpdateDTO;
-import com.telerik.forum.models.dtos.tagDTOs.TagCreateAndDeleteDTO;
-import com.telerik.forum.models.dtos.tagDTOs.TagUpdateDTO;
+import com.telerik.forum.models.dtos.tagDTOs.TagCreateAndDeleteMvcDTO;
 import com.telerik.forum.models.post.Comment;
 import com.telerik.forum.models.post.Like;
 import com.telerik.forum.models.post.Post;
@@ -172,14 +171,14 @@ public class PostMvcController {
         }
 
         model.addAttribute("postCreateDTO", new PostCreateDTO());
-        model.addAttribute("tagCreateDTO", new TagCreateAndDeleteDTO());
+        model.addAttribute("tagCreateDTO", new TagCreateAndDeleteMvcDTO());
         return "create-post";
     }
 
     @PostMapping("/new")
     public String createPost(@Valid @ModelAttribute("postCreateDTO") PostCreateDTO postCreateDTO,
                              BindingResult bindingResult,
-                             @Valid @ModelAttribute("tagCreateDTO") TagCreateAndDeleteDTO tagCreateDTO,
+                             @Valid @ModelAttribute("tagCreateDTO") TagCreateAndDeleteMvcDTO tagCreateDTO,
                              BindingResult tagBindingResult,
                              Model model, HttpSession session) {
 

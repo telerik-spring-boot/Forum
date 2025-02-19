@@ -4,6 +4,8 @@ import com.telerik.forum.exceptions.DuplicateEntityException;
 import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.helpers.PostMapper;
+import com.telerik.forum.models.dtos.PostCommentWrapper;
+import com.telerik.forum.models.dtos.userDTOs.UserOverviewPageDisplayDTO;
 import com.telerik.forum.models.dtos.userDTOs.UserPostsPageDisplayDTO;
 import com.telerik.forum.models.filters.Sortable;
 import com.telerik.forum.models.post.Comment;
@@ -109,6 +111,30 @@ public class UserServiceImpl implements UserService {
 
         if (user == null) {
             throw new EntityNotFoundException("User", "username", username);
+        }
+
+        return user;
+    }
+
+    @Override
+    public UserOverviewPageDisplayDTO getByIdWithCommentsAndPosts(int id, FilterPostOptions postOptions, FilterCommentOptions commentOptions, User userRequest, Pageable pageable) {
+        List<PostCommentWrapper> combinedList = new ArrayList<>();
+        UserOverviewPageDisplayDTO user = new UserOverviewPageDisplayDTO();
+
+        Page<Post> posts = postRepository.getPostsWithCommentsByUserId(id, postOptions, pageable);
+        List<Comment> comments = commentRepository.getByUserId(id, commentOptions);
+
+        posts.forEach(post -> combinedList.add(new PostCommentWrapper(post)));
+        comments.forEach(comment -> combinedList.add(new PostCommentWrapper(comment)));
+
+        combinedList.sort((a, b) -> b.getCreatedAt().compareTo(a.getCreatedAt()));
+
+        user.setEntities(combinedList);
+        user.setUsername(getById(id, userRequest).getUsername());
+        user.setId(id);
+
+        if (user.getUsername() == null) {
+            throw new EntityNotFoundException("User", "id", id);
         }
 
         return user;

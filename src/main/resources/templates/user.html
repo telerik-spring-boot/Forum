@@ -203,7 +203,8 @@
 					<div class="row">
 						<div class="col-8 mx-auto bg-light p-0" id="contentBox">
 							<div class="d-flex border-top border-2 px-3" id="userContainer">
-								<img class="d-block rounded-circle h-100" id="userPicture" src="../static/favicon.ico">
+								<img class="d-block rounded-circle h-100" id="userPicture" src="../static/favicon.ico"
+								     th:src="@{/favicon.ico}">
 								<div class="mt-3 ms-2 d-inline align-items-center">
 									<span class="fs-3 username-part"
 									      th:text="#{user.username.label}">Username</span> <br>
@@ -214,67 +215,102 @@
 
 							<div class="px-3 pt-4 d-flex gap-2 align-content-center pb-3">
 								<div class="btn btn-outline-dark rounded-pill fw-bold active"
+								     href="#" th:href="@{/user/{id}/overview(id=${user.id})}"
 								     th:text="#{overview.label}">
 									Overview
 								</div>
-								<div class="btn btn-outline-dark rounded-pill fw-bold" id="postsBtn"
+								<div class="btn btn-outline-dark rounded-pill fw-bold" href="#"
+								     id="postsBtn" th:href="@{/user/{id}/posts(id=${user.id})}"
 								     th:text="#{posts.label}">
 									Posts
 								</div>
-								<div class="btn btn-outline-dark rounded-pill fw-bold" th:text="#{comments.label}">
+								<div class="btn btn-outline-dark rounded-pill fw-bold" href="#"
+								     th:href="@{/user/{id}/comments(id=${user.id})}"
+								     th:text="#{comments.label}">
 									Comments
 								</div>
 							</div>
 
-							<div class="px-3 my-1 d-flex">
+							<form action="#" class="px-3 my-1 d-flex" th:action="@{__${currentURI}__}"
+							      th:object="${filterOptions}">
+								<input id="sortByInput" th:field="*{sortBy}" type="hidden"/>
 								<div class="dropdown">
 									<button class="btn btn-dark rounded-pill dropdown-toggle fontsize08"
 									        data-bs-toggle="dropdown">
-										Sort
+										<span th:text="#{sort.label}"></span>
 									</button>
 									<ul class="dropdown-menu">
-										<li class="post-sort-option d-none"><a class="dropdown-item" href="#"
-										                                       th:text="#{title.label}">Title</a>
+										<li class="post-sort-option d-none sort-option"><a class="dropdown-item"
+										                                                   href="#"
+										                                                   id="sortTitle"
+										                                                   th:text="#{title.label}">Title</a>
 										</li>
-										<li class="post-sort-option d-none"><a class="dropdown-item" href="#"
-										                                       th:text="#{likes.label}">Likes</a>
+										<li class="post-sort-option d-none sort-option"><a class="dropdown-item"
+										                                                   href="#"
+										                                                   id="sortLikes"
+										                                                   th:text="#{likes.label}">Likes</a>
 										</li>
-										<li><a class="dropdown-item" href="#" th:text="#{content.label}">Content</a>
+										<li><a class="dropdown-item sort-option" href="#" id="sortContent"
+										       th:text="#{content.label}">Content</a>
 										</li>
 									</ul>
 								</div>
 
 								<div class="ps-2 dropdown">
 									<button class="btn btn-dark rounded-pill dropdown-toggle fontsize08"
-									        data-bs-toggle="dropdown" th:text="#{filter.label}">
-										Filter
+									        data-bs-toggle="dropdown">
+										<span th:text="#{filter.label}"></span>
 									</button>
 									<ul class="dropdown-menu">
-										<li><input class="dropdown-item rounded-pill" href="#"
-										           placeholder="Title name">
+										<li><input class="dropdown-item rounded-pill filter-option" href="#"
+										           placeholder="Title name" th:field="*{title}">
 										</li>
-										<li><input class="dropdown-item rounded-pill" href="#"
-										           placeholder="Something else 2">
+										<li><input class="dropdown-item rounded-pill filter-option" href="#"
+										           placeholder="Tags" th:field="*{tags}">
 										</li>
 
-										<li><input class="dropdown-item rounded-pill" href="#"
-										           placeholder="Something else">
+										<li><input class="dropdown-item rounded-pill filter-option" href="#"
+										           placeholder="Minimum likes" th:field="*{minLikes}">
+										</li>
+
+										<li><input class="dropdown-item rounded-pill filter-option" href="#"
+										           placeholder="Maximum likes" th:field="*{maxLikes}">
 										</li>
 									</ul>
 								</div>
-							</div>
 
-							<div class="px-3 my-1">
-								<hr>
-								<div class="btn btn-light w-100 h-100 d-flex flex-column align-items-start">
-									<a class="title-link d-inline fst-italic fs-5" href="#"> This is the title of
-										the
-										post </a>
-									<span class="ps-2 pb-2"> <a class="username-link fw-bold" href="#"> Name </a>  <span
-											class="text-muted"> commented + date </span> </span>
-									<span class="ps-4 text-start"> -- comment content -- Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque culpa eveniet fuga maiores nam numquam qui quo rem vitae voluptatum. Assumenda dolor optio quae qui quibusdam? Aperiam architecto autem ipsam iure libero neque nostrum qui ratione rerum veritatis? A eveniet incidunt modi nam nesciunt nulla pariatur recusandae repellendus rerum, velit?</span>
+								<button class="btn btn-dark rounded-pill d-none ms-2 fontsize08" id="applyFilterBtn"
+								        type="submit">Apply
+								</button>
+							</form>
+
+							<div class="px-3 my-1" th:if="${currentURI.endsWith('comments')}">
+								<div th:each="comment : ${user.comments}">
+									<hr>
+									<div class="btn btn-light w-100 h-100 d-flex flex-column align-items-start">
+										<a class="title-link d-inline fst-italic fs-5 text-content" href="#"
+										   th:href="@{/posts/{id}(id=${comment.post.id})}"
+										   th:text="${comment.post.title}"
+										> This is the title of
+											the
+											post </a>
+										<span class="ps-2 pb-2"> <a class="username-link fw-bold text-content"
+										                            href="#"
+										                            th:href="@{/users/{id}(id=${comment.user.id})}"
+										                            th:text="${comment.user.username}"> Name </a>  <span
+												class="text-muted" th:text="'commented ' + ${comment.createdAt}"> commented + date </span> </span>
+										<span class="ps-4 text-start text-content"
+										      th:utext="${comment.content}">
+											-- comment content -- Lorem ipsum dolor sit amet, consectetur adipisicing
+											elit. Atque culpa eveniet fuga maiores nam numquam qui quo rem vitae
+											voluptatum. Assumenda dolor optio quae qui quibusdam? Aperiam architecto
+											autem ipsam iure libero neque nostrum qui ratione rerum veritatis? A eveniet
+											incidunt modi nam nesciunt nulla pariatur recusandae repellendus rerum,
+											velit?
+										</span>
+									</div>
+									<hr>
 								</div>
-								<hr>
 							</div>
 							<div class="px-3 my-1">
 								<div class="btn btn-light w-100 h-100 d-flex flex-column align-items-start">
@@ -284,7 +320,8 @@
 											class="text-muted"> posted on + date </span> </span>
 									<span class="ps-4 text-start pb-2"> --post content-- Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque culpa eveniet fuga maiores nam numquam qui quo rem vitae voluptatum. Assumenda dolor optio quae qui quibusdam? Aperiam architecto autem ipsam iure libero neque nostrum qui ratione rerum veritatis? A eveniet incidunt modi nam nesciunt nulla pariatur recusandae repellendus rerum, velit?</span>
 									<img class="img-fluid mx-auto px-2"
-									     src="../static/img/nice-paca-credit-fotolia-1-640x640.jpg">
+									     src="../static/img/nice-paca-credit-fotolia-1-640x640.jpg"
+									     th:src="@{/img/nice-paca-credit-fotolia-1-640x640.jpg}">
 
 
 									<div class="d-flex gap-3 pt-2 ps-2">

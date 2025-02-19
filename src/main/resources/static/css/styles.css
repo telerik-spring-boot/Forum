@@ -13017,4 +13017,9 @@ tr td {
     font-size: 0.8rem;
 }
 
+.text-content {
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
 

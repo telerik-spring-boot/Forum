@@ -2,19 +2,19 @@ package com.telerik.forum.models.filters;
 
 import java.util.Optional;
 
-public class FilterCommentOptions implements Sortable{
+public class FilterCommentOptions implements Sortable {
 
     private final String creatorUsername;
 
-    private final String commentContent;
+    private final String content;
 
     private final String sortBy;
 
     private final String sortOrder;
 
-    public FilterCommentOptions(String creatorUsername, String commentContent, String sortBy, String sortOrder) {
+    public FilterCommentOptions(String creatorUsername, String content, String sortBy, String sortOrder) {
         this.creatorUsername = creatorUsername;
-        this.commentContent = commentContent;
+        this.content = content;
         this.sortBy = sortBy;
         this.sortOrder = sortOrder;
     }
@@ -23,8 +23,8 @@ public class FilterCommentOptions implements Sortable{
         return Optional.ofNullable(creatorUsername);
     }
 
-    public Optional<String> getCommentContent() {
-        return Optional.ofNullable(commentContent);
+    public Optional<String> getContent() {
+        return Optional.ofNullable(content);
     }
 
     public Optional<String> getSortBy() {

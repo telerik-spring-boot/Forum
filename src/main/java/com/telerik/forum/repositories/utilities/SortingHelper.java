@@ -44,7 +44,7 @@ public class SortingHelper {
     }
 
     public static void validateSortByFieldComment(String type) {
-        if (!type.equalsIgnoreCase("commentContent")) {
+        if (!type.equalsIgnoreCase("content")) {
             throw new InvalidSortParameterException(type);
         }
     }

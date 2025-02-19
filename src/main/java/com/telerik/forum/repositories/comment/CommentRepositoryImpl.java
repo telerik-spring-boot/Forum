@@ -50,7 +50,7 @@ public class CommentRepositoryImpl implements CommentRepository {
     public List<Comment> getByUserId(int id, FilterCommentOptions options) {
 
 
-        try(Session session = sessionFactory.openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
 
             CriteriaQuery<Comment> criteriaQuery = criteriaBuilder.createQuery(Comment.class);
@@ -61,13 +61,13 @@ public class CommentRepositoryImpl implements CommentRepository {
 
             predicates.add(criteriaBuilder.equal(root.get("user").get("id"), id));
 
-            options.getCommentContent().ifPresent(content -> {
+            options.getContent().ifPresent(content -> {
                 predicates.add(criteriaBuilder.like(root.get("commentContent"), "%" + content + "%"));
             });
 
             criteriaQuery.where(predicates.toArray(new Predicate[0]));
 
-            sortingHelper(criteriaBuilder,root,criteriaQuery,options);
+            sortingHelper(criteriaBuilder, root, criteriaQuery, options);
 
             Query<Comment> query = session.createQuery(criteriaQuery);
 

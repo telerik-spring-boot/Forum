@@ -5,6 +5,7 @@ import com.telerik.forum.models.dtos.commentDTOs.CommentCreateDTO;
 import com.telerik.forum.models.dtos.commentDTOs.CommentDisplayDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostCreateDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO;
+import com.telerik.forum.models.dtos.postDTOs.PostUpdateDTO;
 import com.telerik.forum.models.post.Comment;
 import com.telerik.forum.models.post.Like;
 import com.telerik.forum.models.post.Post;
@@ -28,6 +29,23 @@ public class PostMapper {
     public PostMapper(PostService postService, CommentService commentService) {
         this.postService = postService;
         this.commentService = commentService;
+    }
+
+    public PostUpdateDTO postToPostUpdateDTO(Post post) {
+        PostUpdateDTO postUpdateDTO = new PostUpdateDTO();
+
+        postUpdateDTO.setTitle(post.getTitle());
+        postUpdateDTO.setContent(post.getContent());
+
+        StringBuilder sb = new StringBuilder();
+        for (Tag tag : post.getTags()) {
+            sb.append(tag.getName()).append(",");
+        }
+        if (!sb.isEmpty()) {
+            String tags = sb.substring(0, sb.toString().length() - 1);
+            postUpdateDTO.setTags(tags);
+        }
+        return postUpdateDTO;
     }
 
     public PostDisplayDTO postToPostDisplayDTO(Post post) {

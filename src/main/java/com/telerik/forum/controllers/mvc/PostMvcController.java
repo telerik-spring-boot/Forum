@@ -7,7 +7,9 @@ import com.telerik.forum.helpers.PostMapper;
 import com.telerik.forum.models.dtos.commentDTOs.CommentCreateDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostCreateDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO;
+import com.telerik.forum.models.dtos.postDTOs.PostUpdateDTO;
 import com.telerik.forum.models.dtos.tagDTOs.TagCreateAndDeleteDTO;
+import com.telerik.forum.models.dtos.tagDTOs.TagUpdateDTO;
 import com.telerik.forum.models.post.Comment;
 import com.telerik.forum.models.post.Like;
 import com.telerik.forum.models.post.Post;
@@ -16,7 +18,6 @@ import com.telerik.forum.services.comment.CommentService;
 import com.telerik.forum.services.like.LikeService;
 import com.telerik.forum.services.post.PostService;
 import com.telerik.forum.services.tag.TagService;
-import com.telerik.forum.services.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -204,6 +205,70 @@ public class PostMvcController {
             tagService.addTagToPost(post.getId(), tagCreateDTO.getTags(), user);
 
             return "redirect:/posts/" + post.getId();
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "ErrorView";
+        }
+
+    }
+
+    @GetMapping("/{id}/update")
+    public String showUpdatePostForm(@PathVariable int id, Model model, HttpSession session) {
+        try {
+            authHelper.tryGetUserMvc(session);
+        } catch (UnauthorizedOperationException e) {
+            return "redirect:/auth/login";
+        }
+
+        try {
+            Post post = postService.getByIdWithCommentsAndLikesAndTags(id);
+            PostUpdateDTO postToDisplay = postMapper.postToPostUpdateDTO(post);
+
+            model.addAttribute("postUpdateDTO", postToDisplay);
+
+            session.setAttribute("oldTags", postToDisplay.getTags());
+
+            return "update-post";
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "ErrorView";
+        }
+    }
+
+    @PostMapping("/{id}/update")
+    public String updatePost(@PathVariable int id,
+                             @Valid @ModelAttribute("postUpdateDTO") PostUpdateDTO postUpdateDTO,
+                             BindingResult bindingResult,
+                             Model model, HttpSession session) {
+
+        User user;
+        try {
+            user = authHelper.tryGetUserMvc(session);
+        } catch (UnauthorizedOperationException e) {
+            return "redirect:/auth/login";
+        }
+
+        if (bindingResult.hasErrors()) {
+            return "create-post";
+        }
+
+        try {
+            PostCreateDTO postCreateDTO = new PostCreateDTO();
+            postCreateDTO.setTitle(postUpdateDTO.getTitle());
+            postCreateDTO.setContent(postUpdateDTO.getContent());
+            Post post = postMapper.dtoToPost(id, postCreateDTO);
+
+            postService.updatePost(post, user);
+
+            String oldTags = "";
+            if(session.getAttribute("oldTags") != null) {
+                oldTags = (String) session.getAttribute("oldTags");
+            }
+
+            tagService.updateTagFromPost(id, oldTags, postUpdateDTO.getTags(), user);
+            return "redirect:/posts/" + id;
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());

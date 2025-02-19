@@ -256,20 +256,20 @@ public class AnonymousMvcController {
         return "search";
     }
 
-    @GetMapping("/search/users")
-    public String showUserSearchPage(@ModelAttribute("searchString") String searchTerm, HttpSession session, Model model) {
-        if (session.getAttribute("currentUser") != null) {
-            model.addAttribute("userId", userService.getByUsername((String) session.getAttribute("currentUser")).getId());
-        }
-        FilterUserOptions filterUserOptions = new FilterUserOptions(searchTerm,
-                 null, null, null, null);
-        List<User> foundUsers = adminService.getAllUsers(filterUserOptions);
-
-        model.addAttribute("foundUsers", foundUsers);
-        model.addAttribute("searchTerm", searchTerm);
-
-        return "search";
-    }
+//    @GetMapping("/search/users")
+//    public String showUserSearchPage(@ModelAttribute("searchString") String searchTerm, HttpSession session, Model model) {
+//        if (session.getAttribute("currentUser") != null) {
+//            model.addAttribute("userId", userService.getByUsername((String) session.getAttribute("currentUser")).getId());
+//        }
+//        FilterUserOptions filterUserOptions = new FilterUserOptions(searchTerm,
+//                 null, null, null, null);
+//        List<User> foundUsers = adminService.getAllUsers(filterUserOptions);
+//
+//        model.addAttribute("foundUsers", foundUsers);
+//        model.addAttribute("searchTerm", searchTerm);
+//
+//        return "search";
+//    }
 
 
 

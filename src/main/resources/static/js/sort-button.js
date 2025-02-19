@@ -13,3 +13,26 @@ document.querySelectorAll('.btn-outline-dark').forEach(button => {
         });
     });
 });
+
+
+var buttonGroup1 = document.getElementById('buttonGroup1');
+var buttonUp1 = document.getElementById('buttonUp1');
+var buttonUp2 = document.getElementById('buttonUp2');
+var buttonUp1PrevColor = buttonUp1.style.color;
+var buttonUp2PrevColor = buttonUp2.style.color;
+
+
+buttonUp1.addEventListener('click', function () {
+    buttonUp1.classList.add('active');
+    buttonUp1.style.color = 'green'
+    buttonUp2.classList.remove('active');
+    buttonUp2.style.color = buttonUp2PrevColor;
+});
+
+buttonUp2.addEventListener('click', function () {
+    buttonUp2.classList.add('active');
+    buttonUp2.style.color = 'red'
+    buttonUp1.classList.remove('active');
+    buttonUp1.style.color = buttonUp1PrevColor;
+
+});

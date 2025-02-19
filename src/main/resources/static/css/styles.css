@@ -12991,6 +12991,14 @@ tr td {
     text-decoration: underline;
 }
 
+.voteUp:hover {
+    color: var(--bs-success);
+}
+
+
+.voteDown:hover {
+    color: var(--bs-danger);
+}
 
 
 

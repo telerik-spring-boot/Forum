@@ -68,7 +68,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
     @Override
     public User getByIdWithComments(int id, FilterCommentOptions options, User userRequest) {
         authorizationBlocked(userRequest);
@@ -150,7 +149,7 @@ public class UserServiceImpl implements UserService {
 
         User userToDelete = userRepository.getById(id);
 
-        if(userToDelete == null){
+        if (userToDelete == null) {
             throw new EntityNotFoundException("User", "id", id);
         }
 
@@ -159,7 +158,7 @@ public class UserServiceImpl implements UserService {
 
     private void authorizationBlocked(User userRequest) {
 
-        if(userRequest.isBlocked()){
+        if (userRequest.isBlocked()) {
             throw new UnauthorizedOperationException(PERMISSION_ERROR_MESSAGE);
         }
     }
@@ -204,7 +203,7 @@ public class UserServiceImpl implements UserService {
     private <T extends Sortable> User getUserValidationAndSortingValidation(int id, T options) {
         User user = userRepository.getById(id);
 
-        options.getSortBy().ifPresent(SortingHelper::validateSortByFieldPost);
+        options.getSortBy().ifPresent(SortingHelper::validateSortByFieldComment);
 
         options.getSortOrder().ifPresent(SortingHelper::validateSortOrderField);
 

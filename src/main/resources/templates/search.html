@@ -31,10 +31,34 @@
 				</li>
 				<hr class="w-75 ms-5">
 				<li>
-					<button class="btn btn-dark d-block text-light ms-5  p-5 radius-3 w-75" th:href="@{/search}">
+					<button class="btn btn-dark d-block text-light ms-5  p-5 radius-3 w-75" th:href="@{/auth/login}">
 						TO TEST THIS AMAZING BUTTON <a class="link-danger" th:value="'what the fuck'" th:href="@{/admin}"> this is our link</a>
 					</button>
 				</li>
+
+				<li th:each="post : ${foundPosts}">
+					<!-- Entire button acts as a link -->
+					<button class="btn btn-dark text-light ms-5 p-5 radius-3 w-75 text-start d-flex flex-column align-items-start"
+							th:attr="onclick=|window.location.href='@{/posts/{id}(id=${post.id})}'|">
+
+						<!-- Post Title -->
+						<span class="h4" th:text="${post.title}"></span>
+
+						<!-- Post Creation Date -->
+						<div class="text-muted" th:text="${#temporals.format(post.createdAt, 'dd MMM yyyy HH:mm')}"></div>
+
+						<!-- Post Creator (Link inside button) -->
+						<div>
+							<a class="link" th:href="@{/user/{id}(id=${post.user.id})}" th:text="${post.user.username}"></a>
+						</div>
+
+						<!-- Post Content -->
+						<div th:text="${post.content}" class="mt-2"></div>
+
+					</button>
+				</li>
+
+
 
 				<li>
 					<button class=" d-block bg-dark text-light ms-5 p-5 radius-3 w-75">

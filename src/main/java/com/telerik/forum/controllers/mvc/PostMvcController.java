@@ -5,7 +5,9 @@ import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.helpers.AuthenticationHelper;
 import com.telerik.forum.helpers.PostMapper;
 import com.telerik.forum.models.dtos.commentDTOs.CommentCreateDTO;
+import com.telerik.forum.models.dtos.postDTOs.PostCreateDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO;
+import com.telerik.forum.models.dtos.tagDTOs.TagCreateAndDeleteDTO;
 import com.telerik.forum.models.post.Comment;
 import com.telerik.forum.models.post.Like;
 import com.telerik.forum.models.post.Post;
@@ -13,6 +15,8 @@ import com.telerik.forum.models.user.User;
 import com.telerik.forum.services.comment.CommentService;
 import com.telerik.forum.services.like.LikeService;
 import com.telerik.forum.services.post.PostService;
+import com.telerik.forum.services.tag.TagService;
+import com.telerik.forum.services.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -32,15 +36,17 @@ public class PostMvcController {
     private final PostMapper postMapper;
     private final LikeService likeService;
     private final CommentService commentService;
+    private final TagService tagService;
 
     @Autowired
     public PostMvcController(PostService postService, AuthenticationHelper authHelper, PostMapper postMapper,
-                             LikeService likeService, CommentService commentService) {
+                             LikeService likeService, CommentService commentService, TagService tagService) {
         this.postService = postService;
         this.authHelper = authHelper;
         this.postMapper = postMapper;
         this.likeService = likeService;
         this.commentService = commentService;
+        this.tagService = tagService;
     }
 
     @ModelAttribute("requestURI")
@@ -61,15 +67,15 @@ public class PostMvcController {
         }
 
         if (bindingResult.hasErrors()) {
-            extracted(postId,model, user);
-            return "PostView";
+            extracted(postId, model, user);
+            return "single-post";
         }
 
-        try{
+        try {
             Comment comment = postMapper.dtoToComment(commentCreateDTO);
             commentService.addComment(postId, comment, user);
             return "redirect:/posts/" + postId;
-        }catch (EntityNotFoundException e) {
+        } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
             return "ErrorView";
@@ -92,7 +98,7 @@ public class PostMvcController {
             extracted(id, model, user);
             model.addAttribute("commentCreateDto", new CommentCreateDTO());
 
-            return "PostView";
+            return "single-post";
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
@@ -153,6 +159,57 @@ public class PostMvcController {
             model.addAttribute("error", e.getMessage());
             return "ErrorView";
         }
+    }
+
+    @GetMapping("/new")
+    public String showNewPostForm(Model model, HttpSession session) {
+
+        try {
+            authHelper.tryGetUserMvc(session);
+        } catch (UnauthorizedOperationException e) {
+            return "redirect:/auth/login";
+        }
+
+        model.addAttribute("postCreateDTO", new PostCreateDTO());
+        model.addAttribute("tagCreateDTO", new TagCreateAndDeleteDTO());
+        return "create-post";
+    }
+
+    @PostMapping("/new")
+    public String createPost(@Valid @ModelAttribute("postCreateDTO") PostCreateDTO postCreateDTO,
+                             BindingResult bindingResult,
+                             @Valid @ModelAttribute("tagCreateDTO") TagCreateAndDeleteDTO tagCreateDTO,
+                             BindingResult tagBindingResult,
+                             Model model, HttpSession session) {
+
+        User user;
+        try {
+            user = authHelper.tryGetUserMvc(session);
+        } catch (UnauthorizedOperationException e) {
+            return "redirect:/auth/login";
+        }
+
+        if (bindingResult.hasErrors()) {
+            return "create-post";
+        }
+
+        if (tagBindingResult.hasErrors()) {
+            return "create-post";
+        }
+
+        try {
+            Post post = postMapper.dtoToPost(postCreateDTO);
+            postService.createPost(post, user);
+
+            tagService.addTagToPost(post.getId(), tagCreateDTO.getTags(), user);
+
+            return "redirect:/posts/" + post.getId();
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "ErrorView";
+        }
+
     }
 
 

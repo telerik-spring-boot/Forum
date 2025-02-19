@@ -13,6 +13,7 @@ import com.telerik.forum.models.dtos.postDTOs.PostCreateDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO;
 import com.telerik.forum.models.dtos.tagDTOs.TagCreateAndDeleteDTO;
 import com.telerik.forum.models.dtos.tagDTOs.TagUpdateDTO;
+import com.telerik.forum.models.post.Post;
 import com.telerik.forum.services.comment.CommentService;
 import com.telerik.forum.services.like.LikeService;
 import com.telerik.forum.services.post.PostService;
@@ -21,6 +22,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -76,20 +81,47 @@ public class PostControllerTests {
 //
 //    }
 
-//    @Test
-//    public void getAllPosts_Should_ReturnStatusBadRequest_When_InvalidSortingParameter() throws Exception {
-//        // Arrange
-//        Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
-//                .thenReturn(createMockUser());
-//
-//        Mockito.when(mockPostService.getAllPostsWithFilters(Mockito.any()))
-//                .thenThrow(InvalidSortParameterException.class);
-//
-//        // Act, Assert
-//        mockMvc.perform(MockMvcRequestBuilders.get("/api/posts"))
-//                .andExpect(MockMvcResultMatchers.status().isBadRequest());
-//
-//    }
+    @Test
+    public void getAllPosts_Should_ReturnStatusOk_When_ParametersAreValid() throws Exception {
+        // Arrange
+        Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
+                .thenReturn(createMockUser());
+
+        List<Post> mockPosts = List.of(createMockPost());
+        Page<Post> mockPage = new PageImpl<>(mockPosts, PageRequest.of(0, 10), mockPosts.size());
+
+        Mockito.when(mockPostService.getAllPostsWithFilters(Mockito.any(), Mockito.any(Pageable.class)))
+                .thenReturn(mockPage);
+
+        // Act & Assert
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/posts")
+                        .param("tags", "tag,two")
+                        .param("page", "0")  // Added pagination
+                        .param("size", "10"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json"));
+    }
+
+
+
+    @Test
+    public void getAllPosts_Should_ReturnStatusBadRequest_When_InvalidSortingParameter() throws Exception {
+        // Arrange
+        Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
+                .thenReturn(createMockUser());
+
+        Mockito.when(mockPostService.getAllPostsWithFilters(Mockito.any(), Mockito.any(Pageable.class)))
+                .thenThrow(InvalidSortParameterException.class);
+
+        // Act, Assert
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/posts")
+                        .param("size", "10")
+                        .param("page", "0")
+                        .param("sortBy", "invalidField")
+                )
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+    }
 
     @Test
     public void getAllPosts_Should_ReturnStatusUnauthorized_When_UserIsNotAuthorized() throws Exception {

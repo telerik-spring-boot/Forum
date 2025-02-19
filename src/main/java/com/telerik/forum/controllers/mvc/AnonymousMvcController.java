@@ -34,7 +34,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Stream;
 
 @Controller
 @RequestMapping
@@ -249,11 +253,14 @@ public class AnonymousMvcController {
                 null, searchTerm, null, null, null, null, null);
         List<Post> foundPostsContent = postService.getAllPostsWithFilters(filterPostOptions);
 
-        foundPosts.addAll(foundPostsContent);
-        model.addAttribute("foundPosts", foundPosts);
+        List<Post> totalFoundPosts = Stream.concat(foundPosts.stream(), foundPostsContent.stream())
+                .distinct()
+                .toList();
+        model.addAttribute("foundPosts", totalFoundPosts);
         model.addAttribute("searchTerm", searchTerm);
 
-        return "search";
+//        return "search";
+        return "search-updated";
     }
 
 //    @GetMapping("/search/users")
@@ -270,8 +277,6 @@ public class AnonymousMvcController {
 //
 //        return "search";
 //    }
-
-
 
 
 }

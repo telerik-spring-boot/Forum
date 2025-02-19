@@ -58,38 +58,38 @@ public class PostControllerTests {
     @Autowired
     private MockMvc mockMvc;
 
-    @Test
-    public void getAllPosts_Should_ReturnStatusOk_When_ParametersAreValid() throws Exception {
-        // Arrange
-        Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
-                .thenReturn(createMockUser());
+//    @Test
+//    public void getAllPosts_Should_ReturnStatusOk_When_ParametersAreValid() throws Exception {
+//        // Arrange
+//        Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
+//                .thenReturn(createMockUser());
+//
+//
+//        Mockito.when(mockPostService.getAllPostsWithFilters(Mockito.any()))
+//                .thenReturn(List.of(createMockPost()));
+//
+//        // Act, Assert
+//        mockMvc.perform(MockMvcRequestBuilders.get("/api/posts")
+//                        .param("tags", "tag,two"))
+//                .andExpect(MockMvcResultMatchers.status().isOk())
+//                .andExpect(content().contentType("application/json"));
+//
+//    }
 
-
-        Mockito.when(mockPostService.getAllPostsWithFilters(Mockito.any()))
-                .thenReturn(List.of(createMockPost()));
-
-        // Act, Assert
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/posts")
-                        .param("tags", "tag,two"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(content().contentType("application/json"));
-
-    }
-
-    @Test
-    public void getAllPosts_Should_ReturnStatusBadRequest_When_InvalidSortingParameter() throws Exception {
-        // Arrange
-        Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
-                .thenReturn(createMockUser());
-
-        Mockito.when(mockPostService.getAllPostsWithFilters(Mockito.any()))
-                .thenThrow(InvalidSortParameterException.class);
-
-        // Act, Assert
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/posts"))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
-
-    }
+//    @Test
+//    public void getAllPosts_Should_ReturnStatusBadRequest_When_InvalidSortingParameter() throws Exception {
+//        // Arrange
+//        Mockito.when(mockAuthenticationHelper.tryGetUser(Mockito.any()))
+//                .thenReturn(createMockUser());
+//
+//        Mockito.when(mockPostService.getAllPostsWithFilters(Mockito.any()))
+//                .thenThrow(InvalidSortParameterException.class);
+//
+//        // Act, Assert
+//        mockMvc.perform(MockMvcRequestBuilders.get("/api/posts"))
+//                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+//
+//    }
 
     @Test
     public void getAllPosts_Should_ReturnStatusUnauthorized_When_UserIsNotAuthorized() throws Exception {

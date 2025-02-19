@@ -219,7 +219,7 @@ public class UserServiceImpl implements UserService {
     private <T extends Sortable> User getUserValidationAndSortingValidation(int id, T options) {
         User user = userRepository.getById(id);
 
-        options.getSortBy().ifPresent(SortingHelper::validateSortByFieldPost);
+        options.getSortBy().ifPresent(SortingHelper::validateSortByFieldComment);
 
         options.getSortOrder().ifPresent(SortingHelper::validateSortOrderField);
 

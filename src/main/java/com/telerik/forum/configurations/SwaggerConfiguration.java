@@ -39,7 +39,7 @@ public class SwaggerConfiguration {
                         .contact(new Contact()
                                 .name("Yordan, Nikolai, and the API Team")
                                 .email("rocketteam@forum.api.com")
-                                .url("http://localhost:8080/home")))
+                                .url("http://localhost:8080/api/home")))
                 .components(getComponentWithAllSchemas())
                 .paths(createPaths());
     }
@@ -155,7 +155,7 @@ public class SwaggerConfiguration {
                         .addProperty("username", new Schema<>()
                                 .description("Username")
                                 .example("george_bush"))
-                        .addProperty("password", new Schema<> ()
+                        .addProperty("password", new Schema<>()
                                 .description("Password")
                                 .example("<PASSWORD>")))
                 .addSchemas("TagUpdateDTO", new Schema<>().type("object")
@@ -183,10 +183,10 @@ public class SwaggerConfiguration {
     }
 
 
-    private Paths createPaths(){
+    private Paths createPaths() {
         Paths paths = new Paths();
 
-        paths.addPathItem("/home", new PathItem()
+        paths.addPathItem("/api/home", new PathItem()
                 .get(new Operation()
                         .summary("Home page")
                         .addTagsItem("Anonymous access")
@@ -195,7 +195,7 @@ public class SwaggerConfiguration {
                                         .description("Successful operation.")
                                         .content(getSampleContent("Home"))))));
 
-        paths.addPathItem("/login", new PathItem()
+        paths.addPathItem("/api/login", new PathItem()
                 .post(new Operation()
                         .summary("Login page")
                         .addTagsItem("Anonymous access")
@@ -205,7 +205,7 @@ public class SwaggerConfiguration {
                                         .description("Successful operation.")
                                         .content(new Content()
                                                 .addMediaType("application/json", new MediaType()
-                                                .schema(new StringSchema().example("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMjM0NTY3ODkwfQ.Dksj1OiIJmWs1i8eD_SFLjOCcxw3H8GGWwpzQG95MG0"))))
+                                                        .schema(new StringSchema().example("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMjM0NTY3ODkwfQ.Dksj1OiIJmWs1i8eD_SFLjOCcxw3H8GGWwpzQG95MG0"))))
                                 )
                                 .addApiResponse("404", new ApiResponse().description("User not found"))
                                 .addApiResponse("401", new ApiResponse().description("Unauthorized operation")))));
@@ -400,7 +400,7 @@ public class SwaggerConfiguration {
                         .summary("Update user by ID")
                         .description("This endpoint updates an admin by their ID.")
                         .addTagsItem("Admin CRUD operations")
-                        .parameters(List.of(getHeaderParameter(),getPathIdParameter("userId")))
+                        .parameters(List.of(getHeaderParameter(), getPathIdParameter("userId")))
                         .requestBody(getRequestBody("AdminUpdateDTO"))
                         .responses(successNotFoundUnauthorizedResponses("AdminDisplayDTO"))
                         .security(List.of(new SecurityRequirement().addList("bearerAuth"))))
@@ -461,7 +461,7 @@ public class SwaggerConfiguration {
                         .summary("Update user by ID")
                         .description("This endpoint updates a user by their ID.")
                         .addTagsItem("User CRUD operations")
-                        .parameters(List.of(getHeaderParameter(),getPathIdParameter("id")))
+                        .parameters(List.of(getHeaderParameter(), getPathIdParameter("id")))
                         .requestBody(getRequestBody("UserUpdateDTO"))
                         .responses(successNotFoundUnauthorizedDuplicateResponses())
                         .security(List.of(new SecurityRequirement().addList("bearerAuth"))))
@@ -469,7 +469,7 @@ public class SwaggerConfiguration {
                         .summary("Delete user by ID")
                         .description("This endpoint deletes a user by their ID.")
                         .addTagsItem("User CRUD operations")
-                        .parameters(List.of(getHeaderParameter(),getPathIdParameter("id")))
+                        .parameters(List.of(getHeaderParameter(), getPathIdParameter("id")))
                         .responses(successNotFoundUnauthorizedResponses(null))
                         .security(List.of(new SecurityRequirement().addList("bearerAuth"))))
         );
@@ -514,12 +514,12 @@ public class SwaggerConfiguration {
 
         ApiResponse successResponse = new ApiResponse().description("Successful operation.");
 
-        if(entityName != null){
+        if (entityName != null) {
             successResponse.content(new Content().addMediaType("application/json",
                     new MediaType().schema(new Schema<>().$ref("#/components/schemas/" + entityName))));
         }
 
-        responses.addApiResponse("200",successResponse);
+        responses.addApiResponse("200", successResponse);
 
         responses.addApiResponse("404", new ApiResponse().description("User not found"));
         return responses;
@@ -537,7 +537,7 @@ public class SwaggerConfiguration {
         return responses;
     }
 
-    private ApiResponses successNotFoundUnauthorizedResponses(String entityName){
+    private ApiResponses successNotFoundUnauthorizedResponses(String entityName) {
         ApiResponses responses = successNotFoundResponses(entityName);
         responses.addApiResponse("401", new ApiResponse().description("Unauthorized operation"));
         return responses;
@@ -549,7 +549,7 @@ public class SwaggerConfiguration {
         return responses;
     }
 
-    private Schema<?> getUserBaseSchema(){
+    private Schema<?> getUserBaseSchema() {
         return new Schema<>()
                 .type("object")
                 .addProperty("firstName", new Schema<>().type("string")
@@ -571,7 +571,7 @@ public class SwaggerConfiguration {
                 );
     }
 
-    private Schema<?> getUserContentDisplayBaseSchema(){
+    private Schema<?> getUserContentDisplayBaseSchema() {
         return new Schema<>()
                 .type("object")
                 .addProperty("firstName", new Schema<>().type("string").description("First Name")
@@ -580,7 +580,7 @@ public class SwaggerConfiguration {
                         .example("Bush"));
     }
 
-    private Schema<?> getUserDisplayeSchema(){
+    private Schema<?> getUserDisplayeSchema() {
         return getUserContentDisplayBaseSchema()
                 .addProperty("username", new Schema<>().type("string").description("Username")
                         .example("george_bush"))
@@ -588,7 +588,7 @@ public class SwaggerConfiguration {
                         .example("false"));
     }
 
-    private Schema<?> getPasswordPropertySchema(){
+    private Schema<?> getPasswordPropertySchema() {
         return new Schema<>().type("string")
                 .description("Password must contain at least one uppercase letter, one lowercase letter, one number, one symbol, and be between 6 to 20 characters long.")
                 .example("Password123!")
@@ -597,7 +597,7 @@ public class SwaggerConfiguration {
                 .maxLength(20);
     }
 
-    private Schema<?> getPhoneNumberPropertySchema(){
+    private Schema<?> getPhoneNumberPropertySchema() {
         return new Schema<>()
                 .type("string")
                 .description("If provided it must be a valid phone number.")
@@ -605,7 +605,7 @@ public class SwaggerConfiguration {
                 .example("+359 89 444 4343");
     }
 
-    private Parameter getHeaderParameter(){
+    private Parameter getHeaderParameter() {
         return new Parameter()
                 .name("Authorization")
                 .description("Basic authentication header. For Swagger UI, use the lock to authenticate.")
@@ -616,7 +616,7 @@ public class SwaggerConfiguration {
                         .readOnly(true));
     }
 
-    private List<Parameter> getAllUsersParameters(){
+    private List<Parameter> getAllUsersParameters() {
         List<Parameter> result = new ArrayList<>();
 
         result.add(getHeaderParameter());
@@ -651,7 +651,7 @@ public class SwaggerConfiguration {
         return result;
     }
 
-    private List<Parameter> getSortParameters(String description){
+    private List<Parameter> getSortParameters(String description) {
         List<Parameter> result = new ArrayList<>();
 
         result.add(new Parameter()
@@ -674,7 +674,7 @@ public class SwaggerConfiguration {
         return result;
     }
 
-    private List<Parameter> getCommentParameters(){
+    private List<Parameter> getCommentParameters() {
         List<Parameter> result = new ArrayList<>();
 
         result.add(getHeaderParameter());
@@ -694,18 +694,18 @@ public class SwaggerConfiguration {
         return result;
     }
 
-    private List<Parameter> getPostParameters(){
+    private List<Parameter> getPostParameters() {
         List<Parameter> result = new ArrayList<>();
 
         result.add(getHeaderParameter());
 
         result.add(new Parameter()
-                        .name("title")
-                        .description("Title or part of the title of the post.")
-                        .required(false)
-                        .in("query")
-                        .schema(new Schema<>().type("string")
-                                .example("Car malfunction.")));
+                .name("title")
+                .description("Title or part of the title of the post.")
+                .required(false)
+                .in("query")
+                .schema(new Schema<>().type("string")
+                        .example("Car malfunction.")));
 
         result.add(new Parameter()
                 .name("content")
@@ -746,7 +746,7 @@ public class SwaggerConfiguration {
         return result;
     }
 
-    private Parameter getPathIdParameter(String name){
+    private Parameter getPathIdParameter(String name) {
         return new Parameter()
                 .name(name)
                 .description("Id of the resource")
@@ -756,7 +756,7 @@ public class SwaggerConfiguration {
                         .example("1"));
     }
 
-    private Schema<?> getTagSchema(String description){
+    private Schema<?> getTagSchema(String description) {
         return new Schema<>().type("string")
                 .description(description)
                 .pattern("^\\w+(,\\w+)*$")
@@ -765,19 +765,19 @@ public class SwaggerConfiguration {
                 .example("fast,old,cars");
     }
 
-    private RequestBody getRequestBody(String schemaName){
+    private RequestBody getRequestBody(String schemaName) {
         return new RequestBody()
                 .required(true)
                 .content(new Content()
                         .addMediaType("application/json", new MediaType()
-                                .schema(new Schema<>().$ref("#/components/schemas/"+ schemaName)
+                                .schema(new Schema<>().$ref("#/components/schemas/" + schemaName)
                                 )
                         )
                 );
     }
 
-    private Content getSampleContent(String schemaName){
-       return new Content().addMediaType("application/json",
+    private Content getSampleContent(String schemaName) {
+        return new Content().addMediaType("application/json",
                 new MediaType().schema(new ArraySchema()
                         .items(new Schema<>().$ref("#/components/schemas/" + schemaName))
                         .minItems(2)

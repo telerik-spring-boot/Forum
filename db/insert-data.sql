@@ -13,9 +13,9 @@ INSERT INTO forum_schema.users (first_name, last_name, email_address, username, 
 VALUES ('John', 'Doe', 'john.doe@example.com', 'johndoe',
         '$2y$10$dhjvK/JIRiGs4.Qfvpzr.OsBdyVhn1pdqtwLUZcqk3DItBrv7UwNO', 0, '2024-10-10 20:29:28'),
        ('Jane', 'Smith', 'jane.smith@example.com', 'janesmith',
-        '$2b$12$3dPjrjV5xOmdt82cVTh1A4Fc5prbGGntF8u7s95OKJ6z7riWgR3pK', 0, '2025-01-18 20:29:28'),
+        '$2a$12$Mrg1Z/BGYHitRcAt8g1VXe86SA/P58CEnVRDxslD.z3YieZJhjsYm', 0, '2025-01-18 20:29:28'),
        ('Michael', 'Johnson', 'michael.johnson@example.com', 'mikejohnson',
-        '$2b$12$4dJnmd4drh6c9xa1Vq2szFkD.3PfFZV09ybcuVVwHByJp8NeBR3U6u', 0, '2024-09-25 20:29:28'),
+        '$2a$12$N4O1aw.mZGxjUskZ93mk.eR7AaX8ObR2Ggyj8FQnuf8TVnmLO0tMe', 0, '2024-09-25 20:29:28'),
        ('Emily', 'Davis', 'emily.davis@example.com', 'emilydavis',
         '$2b$12$6sfVqZCOgf7gtzvq.C47u98P4A2gQJqayZ2gkMcFZPchdbtUG/Zg8', 0, '2025-02-10 20:29:28'),
        ('William', 'Martinez', 'william.martinez@example.com', 'willmartinez',
@@ -59,7 +59,7 @@ VALUES ('John', 'Doe', 'john.doe@example.com', 'johndoe',
        ('Zoe', 'Nelson', 'zoe.nelson@example.com', 'zoenelson',
         '$2b$12$7AqTHj13l2kpm1dczJjd.QkpHgjgWzZG2p6nV1lh69hVVh8o91gJe', 0, '2024-09-05 20:29:28'),
        ('Isaac', 'Carter', 'isaac.carter@example.com', 'isaaccarter',
-        '$2b$12$8v0tSBQuV6gXADz5vXocH4dHkdzpDl1mt2GRxhjfiySoDAc2Fg8Ku', 0, '2024-11-22 20:29:28');
+        '$2b$12$8v0tSBQuV6gXADz5vXocH4dHkdzpDl1mt2GRxhjfiySoDAc2Fg8Ku', 1, '2024-11-22 20:29:28');
 
 -- INSERT INTO forum_schema.posts (title, content, user_id)
 -- VALUES ('Welcome Post', 'This is the first post in the forum!', 1),

@@ -96,7 +96,6 @@ function countCreatedPosts(postDatesArray) {
     // Count logins for each month
     postDatesArray.forEach(dateStr => {
         const monthYear = formatDateToYearMonth(dateStr);
-        console.log(monthYear);
         if (last12Months.includes(monthYear)) {
             counts[monthYear] = (counts[monthYear] || 0) + 1;
         }
@@ -154,8 +153,8 @@ function createLineChart(elementId, label, data, backgroundColor, borderColor) {
                     {
                         ticks: {
                             min: 0,
-                            max: 50,
-                            stepSize: 5,
+                            max: Math.round(Math.max(...data) * 120 / 100),
+                            stepSize: Math.round(Math.max(...data) * 120 / 100 / 10),
                             maxTicksLimit: 10,
                         },
                         gridLines: {

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/general-fragments.html :: head('Home')"></head>
+
+</head>
+<body class="sb-nav-fixed">
+<nav th:replace="fragments/general-fragments.html :: topnav"></nav>
+<div id="layoutSidenav">
+	<div th:replace="fragments/general-fragments.html :: sidenav"></div>
+	<div id="layoutSidenav_content">
+		<main>
+			<div class="row"></div>
+			<ul class="list-unstyled gap-2 ms-5 d-flex gap-2 flex-column">
+				<li class="d-flex justify-content-center">
+					<button class="bg-dark text-light border-radius-2 active">
+						SOMETHING FUNNY
+					</button>
+					<button class="bg-dark text-light border-radius-2">
+						SOMETHING FUNNY
+					</button>
+					<button class="bg-dark text-light border-radius-2">
+						SOMETHING FUNNY
+					</button>
+					<button class="bg-dark text-light border-radius-2">
+						SOMETHING FUNNY
+					</button>
+
+					<button class="bg-dark text-light border-radius-2">
+						SOMETHING FUNNY
+					</button>
+				</li>
+				<hr class="w-75 ms-5">
+				<li>
+					<button class="btn btn-dark d-block text-light ms-5  p-5 radius-3 w-75" th:href="@{/search}">
+						TO TEST THIS AMAZING BUTTON <a class="link-danger" th:value="'what the fuck'" th:href="@{/admin}"> this is our link</a>
+					</button>
+				</li>
+
+				<li>
+					<button class=" d-block bg-dark text-light ms-5 p-5 radius-3 w-75">
+						SOMETHING FUNNY
+					</button>
+				</li>
+
+				<li>
+					<button class=" d-block bg-dark text-light ms-5 p-5 radius-3 w-75">
+						SOMETHING FUNNY
+					</button>
+				</li>
+
+				<li>
+					<button class=" d-block bg-dark text-light ms-5 p-5 radius-3 w-75">
+						SOMETHING FUNNY
+					</button>
+				</li>
+				<li>
+					<button class=" d-block bg-dark text-light  ms-5 p-5 radius-3 w-75">
+						SOMETHING FUNNY
+					</button>
+				</li>
+			</ul>
+			<button class=" d-block bg-black text-light m-5 p-5 radius-3 w-75">
+				SOMETHING FUNNY
+			</button>
+		</main>
+		<footer class="py-4 bg-light mt-auto">
+			<div class="container-fluid px-4">
+				<div
+						class="d-flex align-items-center justify-content-between small"
+				>
+					<div class="text-muted">Copyright &copy; Your Website 2023</div>
+					<div>
+						<a href="#">Privacy Policy</a>
+						&middot;
+						<a href="#">Terms &amp; Conditions</a>
+					</div>
+				</div>
+			</div>
+		</footer>
+	</div>
+</div>
+<th:block th:replace="fragments/general-fragments.html :: scripts"></th:block>
+</body>
+</html>

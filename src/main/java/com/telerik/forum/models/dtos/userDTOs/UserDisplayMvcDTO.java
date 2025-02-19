@@ -15,17 +15,23 @@ public class UserDisplayMvcDTO {
 
     private Long commentCount;
 
+    private boolean isAdmin;
+
+    private boolean isBlocked;
+
     private LocalDateTime lastLogin;
 
     public UserDisplayMvcDTO() {
     }
 
-    public UserDisplayMvcDTO(int id, String name, String username, Long postCount, Long commentCount, LocalDateTime lastLogin) {
+    public UserDisplayMvcDTO(int id, String name, String username, Long postCount, Long commentCount, boolean isAdmin, boolean isBlocked, LocalDateTime lastLogin) {
         this.id = id;
         this.name = name;
         this.username = username;
         this.postCount = postCount;
         this.commentCount = commentCount;
+        this.isAdmin = isAdmin;
+        this.isBlocked = isBlocked;
         this.lastLogin = lastLogin;
     }
 
@@ -75,5 +81,21 @@ public class UserDisplayMvcDTO {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
+    }
+
+    public boolean isBlocked() {
+        return isBlocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        isBlocked = blocked;
     }
 }

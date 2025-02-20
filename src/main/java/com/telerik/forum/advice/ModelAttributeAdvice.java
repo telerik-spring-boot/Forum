@@ -14,5 +14,4 @@ public class ModelAttributeAdvice {
         return session.getAttribute("currentUser") != null;
     }
 
-
 }

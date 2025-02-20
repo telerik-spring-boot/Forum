@@ -358,7 +358,7 @@
 											<span
 													class="text-muted"
 													th:text="'posted on ' + ${#temporals.format(post.getCreatedAt(), 'yyyy-MM-dd HH:mm')}"> posted on + date </span> </span>
-										<span class="ps-4 text-start pb-2" th:text="${post.content}"> --post content-- Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque culpa eveniet fuga maiores nam numquam qui quo rem vitae voluptatum. Assumenda dolor optio quae qui quibusdam? Aperiam architecto autem ipsam iure libero neque nostrum qui ratione rerum veritatis? A eveniet incidunt modi nam nesciunt nulla pariatur recusandae repellendus rerum, velit?</span>
+										<span class="px-4 text-start pb-2 text-content" th:text="${post.content}"> --post content-- Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque culpa eveniet fuga maiores nam numquam qui quo rem vitae voluptatum. Assumenda dolor optio quae qui quibusdam? Aperiam architecto autem ipsam iure libero neque nostrum qui ratione rerum veritatis? A eveniet incidunt modi nam nesciunt nulla pariatur recusandae repellendus rerum, velit?</span>
 										<img class="img-fluid mx-auto px-2"
 										     src="../static/img/nice-paca-credit-fotolia-1-640x640.jpg"
 										     th:src="@{/img/nice-paca-credit-fotolia-1-640x640.jpg}">
@@ -410,7 +410,8 @@
 											<span
 													class="text-muted"
 													th:text="'posted on ' + ${#temporals.format(entity.getCreatedAt(), 'yyyy-MM-dd HH:mm')}"> posted on + date </span> </span>
-										<span class="ps-4 text-start pb-2" th:text="${entity.post.content}"> --post content-- Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque culpa eveniet fuga maiores nam numquam qui quo rem vitae voluptatum. Assumenda dolor optio quae qui quibusdam? Aperiam architecto autem ipsam iure libero neque nostrum qui ratione rerum veritatis? A eveniet incidunt modi nam nesciunt nulla pariatur recusandae repellendus rerum, velit?</span>
+										<span class="px-4 text-start pb-2 text-content"
+										      th:text="${entity.post.content}"> --post content-- Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque culpa eveniet fuga maiores nam numquam qui quo rem vitae voluptatum. Assumenda dolor optio quae qui quibusdam? Aperiam architecto autem ipsam iure libero neque nostrum qui ratione rerum veritatis? A eveniet incidunt modi nam nesciunt nulla pariatur recusandae repellendus rerum, velit?</span>
 										<img class="img-fluid mx-auto px-2"
 										     src="../static/img/nice-paca-credit-fotolia-1-640x640.jpg"
 										     th:src="@{/img/nice-paca-credit-fotolia-1-640x640.jpg}">

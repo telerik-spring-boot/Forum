@@ -254,6 +254,8 @@ public class AnonymousMvcController {
         if (session.getAttribute("currentUser") != null) {
             model.addAttribute("userId", userService.getByUsername((String) session.getAttribute("currentUser")).getId());
         }
+
+        
         FilterPostOptions filterPostOptions = new FilterPostOptions(null,
                 searchTerm, null, null, null, null, null, null);
         List<Post> foundPosts = postService.getAllPostsWithFilters(filterPostOptions);

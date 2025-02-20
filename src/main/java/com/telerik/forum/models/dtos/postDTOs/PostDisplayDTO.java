@@ -3,6 +3,7 @@ package com.telerik.forum.models.dtos.postDTOs;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.telerik.forum.models.dtos.commentDTOs.CommentDisplayDTO;
+import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -49,6 +50,10 @@ public class PostDisplayDTO {
         this.createdAt = createdAt;
         this.comments = comments;
         this.userId = userId;
+    }
+
+    public PostDisplayDTO(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public String getCreatorUsername() {

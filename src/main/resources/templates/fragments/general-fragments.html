@@ -41,12 +41,13 @@
 			>
 		</li>
 		<li class="nav-item" id="searchInput">
-			<form class="w-100">
+			<form class="w-100" method="get" th:action="@{/search}">
 				<div class="input-group d-flex flex-nowrap">
 					<input aria-describedby="btnNavbarSearch" aria-label="Search for..."
 					       class="form-control rounded-pill"
+					       name="searchTerm"
 					       placeholder="Search..."
-					       type="text"/>
+					       type="text"/>/>
 				</div>
 			</form>
 		</li>

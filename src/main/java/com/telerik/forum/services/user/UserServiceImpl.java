@@ -5,6 +5,7 @@ import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.helpers.PostMapper;
 import com.telerik.forum.models.dtos.PostCommentWrapper;
+import com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO;
 import com.telerik.forum.models.dtos.userDTOs.UserOverviewPageDisplayDTO;
 import com.telerik.forum.models.dtos.userDTOs.UserPostsPageDisplayDTO;
 import com.telerik.forum.models.filters.Sortable;
@@ -26,6 +27,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -67,12 +69,19 @@ public class UserServiceImpl implements UserService {
 
         User user = getUserValidationAndSortingValidation(id, options);
 
-        Page<Post> postsPaged = postRepository.getPostsWithCommentsByUserId(id, options, pageable);
+        Page<Post> postsPaged = filterByLikes(postRepository.getPostsWithCommentsByUserId(id, options, pageable), options);
 
-        filterByLikes(postsPaged, options);
+        Page<PostDisplayDTO> posts = postsPaged.map(postMapper::postToPostDisplayDTO);
+
+        for (int i = 0; i < postsPaged.getContent().size(); i++) {
+            posts.getContent().get(i)
+                    .setReaction(postsPaged.getContent().get(i).getLikes().stream()
+                            .filter(like -> like.getUser().getId() == userRequest.getId())
+                            .map(Like::getReaction).findFirst().orElse(0));
+        }
 
         return new UserPostsPageDisplayDTO(user.getUsername(), user.getId(),
-                postsPaged.map(postMapper::postToPostDisplayDTO));
+                posts);
 
 
     }
@@ -127,7 +136,30 @@ public class UserServiceImpl implements UserService {
         posts.forEach(post -> combinedList.add(new PostCommentWrapper(postMapper.postToPostDisplayDTO(post))));
         comments.forEach(comment -> combinedList.add(new PostCommentWrapper(comment)));
 
-        combinedList.sort((a, b) -> b.getCreatedAt().compareTo(a.getCreatedAt()));
+
+        if (postOptions.getSortBy().isPresent()) {
+            switch (postOptions.getSortBy().toString()) {
+                case "content":
+                    combinedList.sort((a, b) -> {
+                        if (a.getPost() != null) {
+                            if (b.getPost() != null) {
+                                return b.getPost().getContent().compareTo(a.getPost().getContent());
+                            } else
+                                return b.getComment().getContent().compareTo(a.getPost().getContent());
+                        } else {
+                            if (b.getPost() != null) {
+                                return b.getPost().getContent().compareTo(a.getComment().getContent());
+                            } else
+                                return b.getComment().getContent().compareTo(a.getComment().getContent());
+
+                        }
+                    });
+                    break;
+                case "createdAt":
+                    combinedList.sort(Comparator.comparing(PostCommentWrapper::getCreatedAt));
+                    break;
+            }
+        } else combinedList.sort(Comparator.comparing(PostCommentWrapper::getCreatedAt));
 
         user.setEntities(combinedList);
         user.setUsername(getById(id, userRequest).getUsername());

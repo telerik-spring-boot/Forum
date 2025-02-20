@@ -215,17 +215,21 @@
 							</div>
 
 							<div class="px-3 pt-4 d-flex gap-2 align-content-center pb-3">
-								<a class="btn btn-outline-dark rounded-pill fw-bold active"
-								   href="#" th:href="@{/users/{id}/overview(id=${user.id})}"
+								<a class="btn btn-outline-dark rounded-pill fw-bold"
+								   href="#"
+								   th:classappend="${currentURI.endsWith('/overview') ? 'active' : ''}"
+								   th:href="@{/users/{id}/overview(id=${user.id})}"
 								   th:text="#{overview.label}">
 									Overview
 								</a>
 								<a class="btn btn-outline-dark rounded-pill fw-bold" href="#"
-								   id="postsBtn" th:href="@{/users/{id}/posts(id=${user.id})}"
+								   th:classappend="${currentURI.endsWith('/posts') ? 'active' : ''}"
+								   th:href="@{/users/{id}/posts(id=${user.id})}"
 								   th:text="#{posts.label}">
 									Posts
 								</a>
 								<a class="btn btn-outline-dark rounded-pill fw-bold" href="#"
+								   th:classappend="${currentURI.endsWith('/comments') ? 'active' : ''}"
 								   th:href="@{/users/{id}/comments(id=${user.id})}"
 								   th:text="#{comments.label}">
 									Comments
@@ -243,16 +247,24 @@
 									<ul class="dropdown-menu">
 										<li class="post-sort-option d-none sort-option"><a class="dropdown-item"
 										                                                   href="#"
-										                                                   id="sortTitle"
+										                                                   id="sorttitle"
+										                                                   th:classappend="${!currentURI.endsWith('/posts') ? 'd-none' : ''} + ' ' + ${filterOptions.getSortBy() == 'title'? 'active' : ''}"
 										                                                   th:text="#{title.label}">Title</a>
 										</li>
 										<li class="post-sort-option d-none sort-option"><a class="dropdown-item"
 										                                                   href="#"
-										                                                   id="sortLikes"
+										                                                   id="sortlikes"
+										                                                   th:classappend="${!currentURI.endsWith('/posts') ? 'd-none' : ''} +' ' + ${filterOptions.getSortBy() == 'likes' ? 'active' : ''}"
 										                                                   th:text="#{likes.label}">Likes</a>
 										</li>
-										<li><a class="dropdown-item sort-option" href="#" id="sortContent"
+										<li><a class="dropdown-item sort-option" href="#" id="sortcontent"
+										       th:classappend="${filterOptions.getSortBy() == 'content' ? 'active' : ''}"
 										       th:text="#{content.label}">Content</a>
+										</li>
+
+										<li><a class="dropdown-item sort-option" href="#" id="sortcreatedAt"
+										       th:classappend="${filterOptions.getSortBy() == 'createdAt' ? 'active' : ''}"
+										       th:text="#{newest.label}">Newest</a>
 										</li>
 									</ul>
 								</div>
@@ -263,22 +275,33 @@
 										<span th:text="#{filter.label}"></span>
 									</button>
 									<ul class="dropdown-menu">
-										<li><input class="dropdown-item rounded-pill filter-option" href="#"
-										           placeholder="Title name" th:field="*{title}">
+										<li><input class="dropdown-item  filter-option" href="#"
+										           placeholder="Title name"
+										           th:classappend="${!currentURI.endsWith('/posts') ? 'd-none' : ''}"
+										           th:field="*{title}">
 										</li>
-										<li><input class="dropdown-item rounded-pill filter-option" href="#"
-										           placeholder="Tags" th:field="*{tags}">
-										</li>
-
-										<li><input class="dropdown-item rounded-pill filter-option" href="#"
-										           placeholder="Minimum likes" th:field="*{minLikes}">
-										</li>
-
-										<li><input class="dropdown-item rounded-pill filter-option" href="#"
-										           placeholder="Maximum likes" th:field="*{maxLikes}">
+										<li><input class="dropdown-item  filter-option" href="#"
+										           placeholder="Tags"
+										           th:classappend="${!currentURI.endsWith('/posts') ? 'd-none' : ''}"
+										           th:field="*{tags}">
 										</li>
 
-										<li><input class="dropdown-item rounded-pill filter-option" href="#"
+										<li><input class="dropdown-item  filter-option" href="#"
+										           placeholder="Minimum likes"
+										           th:classappend="${!currentURI.endsWith('/posts') ? 'd-none' : ''}"
+										           th:field="*{minLikes}"
+										           type="number">
+										</li>
+
+										<li><input class="dropdown-item  filter-option" href="#"
+										           placeholder="Maximum likes"
+										           th:classappend="${!currentURI.endsWith('/posts') ? 'd-none' : ''}"
+										           th:field="*{maxLikes}"
+										           type="number"
+										>
+										</li>
+
+										<li><input class="dropdown-item  filter-option" href="#"
 										           placeholder="Content" th:field="*{content}">
 										</li>
 									</ul>
@@ -344,16 +367,17 @@
 											<div class="d-flex align-items-center border border-1 border-dark  rounded-pill"
 											     id="buttonGroup1">
 												<a class="btn btn-outline-dark border-0 rounded-circle w-30 voteUp"
-												   id="buttonUp1"
 												   th:href="@{/posts/{id}/like(id=${post.id}, url=${currentURI})}">
-													<i class="fas fa-arrow-up"></i>
+													<i class="fas fa-arrow-up"
+													   th:classappend="${post.reaction == 1} ? 'text-success' : ''"></i>
 												</a>
 												<span class="w-40 px-1 text-black fontsize08" th:text="${post.likes}">152</span>
 
 												<a class="btn btn-outline-dark border-0 rounded-circle w-30 voteDown"
 												   id="buttonUp2"
 												   th:href="@{/posts/{id}/dislike(id=${post.id}, url=${currentURI})}">
-													<i class="fas fa-arrow-down justify-content-center"> </i>
+													<i class="fas fa-arrow-down justify-content-center"
+													   th:classappend="${post.reaction == -1} ? 'text-danger' : ''"> </i>
 												</a>
 											</div>
 
@@ -393,17 +417,20 @@
 										<div class="d-flex gap-3 pt-2 ps-2">
 											<div class="d-flex align-items-center border border-1 border-dark  rounded-pill"
 											     id="buttonGroup1">
-												<button class="btn btn-outline-dark border-0 rounded-circle w-30 voteUp"
-												        id="buttonUp1">
-													<i class="fas fa-arrow-up"></i>
-												</button>
+												<a class="btn btn-outline-dark border-0 rounded-circle w-30 voteUp"
+												   th:href="@{/posts/{id}/like(id=${entity.post.id}, url=${currentURI})}">
+													<i class="fas fa-arrow-up"
+													   th:classappend="${entity.post.reaction == 1} ? 'text-success' : ''"></i>
+												</a>
 												<span class="w-40 px-1 text-black fontsize08"
 												      th:text="${entity.post.likes}">152</span>
 
-												<button class="btn btn-outline-dark border-0 rounded-circle w-30 voteDown"
-												        id="buttonUp2">
-													<i class="fas fa-arrow-down justify-content-center"> </i>
-												</button>
+												<a class="btn btn-outline-dark border-0 rounded-circle w-30 voteDown"
+												   id="buttonUp2"
+												   th:href="@{/posts/{id}/dislike(id=${entity.post.id}, url=${currentURI})}">
+													<i class="fas fa-arrow-down justify-content-center"
+													   th:classappend="${entity.post.reaction == -1} ? 'text-danger' : ''"> </i>
+												</a>
 											</div>
 
 											<div class="btn btn-outline-dark rounded-pill d-flex align-items-center gap-1">

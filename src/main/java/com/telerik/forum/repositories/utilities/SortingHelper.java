@@ -30,7 +30,8 @@ public class SortingHelper {
     public static void validateSortByFieldPost(String type) {
         if (!type.equalsIgnoreCase("title") &&
                 !type.equalsIgnoreCase("content") &&
-                !type.equalsIgnoreCase("likes")) {
+                !type.equalsIgnoreCase("likes") &&
+                !type.equalsIgnoreCase("createdAt")) {
             throw new InvalidSortParameterException(type);
         }
     }
@@ -44,7 +45,8 @@ public class SortingHelper {
     }
 
     public static void validateSortByFieldComment(String type) {
-        if (!type.equalsIgnoreCase("content")) {
+        if (!type.equalsIgnoreCase("content") &&
+                !type.equalsIgnoreCase("createdAt")) {
             throw new InvalidSortParameterException(type);
         }
     }

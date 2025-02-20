@@ -2,7 +2,7 @@ package com.telerik.forum.models.filters;
 
 import java.util.Optional;
 
-public class FilterUserOptions implements Sortable{
+public class FilterUserOptions implements Sortable {
 
     private final String username;
     private final String emailAddress;
@@ -11,11 +11,11 @@ public class FilterUserOptions implements Sortable{
     private final String sortOrder;
 
     public FilterUserOptions(String username, String emailAddress, String firstName, String sortBy, String sortOrder) {
-        this.username = username;
-        this.emailAddress = emailAddress;
-        this.firstName = firstName;
-        this.sortBy = sortBy;
-        this.sortOrder = sortOrder;
+        this.username = username == null || username.isBlank() ? null : username;
+        this.emailAddress = emailAddress == null || emailAddress.isBlank() ? null : emailAddress;
+        this.firstName = firstName == null || firstName.isBlank() ? null : firstName;
+        this.sortBy = sortBy == null || sortBy.isBlank() ? null : sortBy;
+        this.sortOrder = sortOrder == null || sortOrder.isBlank() ? null : sortOrder;
     }
 
     public Optional<String> getUsername() {

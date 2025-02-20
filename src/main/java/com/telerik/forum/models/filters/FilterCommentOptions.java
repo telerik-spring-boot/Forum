@@ -13,10 +13,10 @@ public class FilterCommentOptions implements Sortable {
     private final String sortOrder;
 
     public FilterCommentOptions(String creatorUsername, String content, String sortBy, String sortOrder) {
-        this.creatorUsername = creatorUsername;
-        this.content = content;
-        this.sortBy = sortBy;
-        this.sortOrder = sortOrder;
+        this.creatorUsername = creatorUsername == null || creatorUsername.isBlank() ? null : creatorUsername;
+        this.content = content == null || content.isBlank() ? null : content;
+        this.sortBy = sortBy == null || sortBy.isBlank() ? null : sortBy;
+        this.sortOrder = sortOrder == null || sortOrder.isBlank() ? null : sortOrder;
     }
 
     public Optional<String> getCreatorUsername() {

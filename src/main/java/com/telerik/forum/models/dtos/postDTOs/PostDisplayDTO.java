@@ -15,6 +15,10 @@ public class PostDisplayDTO {
     @JsonIgnore
     public int userId;
 
+    @JsonIgnore
+    public int reaction;
+
+
     public String creatorUsername;
 
     public String title;
@@ -117,5 +121,13 @@ public class PostDisplayDTO {
 
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    public int getReaction() {
+        return reaction;
+    }
+
+    public void setReaction(int reaction) {
+        this.reaction = reaction;
     }
 }

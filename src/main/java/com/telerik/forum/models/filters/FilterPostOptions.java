@@ -16,9 +16,9 @@ public class FilterPostOptions extends FilterCommentOptions {
 
     public FilterPostOptions(String creatorUsername, String title, String content, String[] tags, Long minLikes, Long maxLikes, String sortBy, String sortOrder) {
         super(creatorUsername, content, sortBy, sortOrder);
-        this.creatorUsername = creatorUsername;
-        this.title = title;
-        this.tags = tags;
+        this.creatorUsername = creatorUsername == null || creatorUsername.isBlank() ? null : creatorUsername;
+        this.title = title == null || title.isBlank() ? null : title;
+        this.tags = tags == null || (tags.length == 1 && tags[0].isBlank()) ? null : tags;
         this.minLikes = minLikes;
         this.maxLikes = maxLikes;
     }

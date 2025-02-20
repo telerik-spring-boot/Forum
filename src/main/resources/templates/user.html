@@ -265,7 +265,7 @@
 
 										<li><a class="dropdown-item sort-option" href="#" id="sortcreatedAt"
 										       th:classappend="${filterOptions.getSortBy() == 'createdAt' ? 'active' : ''}"
-										       th:text="#{newest.label}">Newest</a>
+										       th:text="#{most-recent.label}">Most Recent</a>
 										</li>
 									</ul>
 								</div>
@@ -370,12 +370,13 @@
 												<a class="btn btn-outline-dark border-0 rounded-circle w-30 voteUp"
 												   th:href="@{/posts/{id}/like(id=${post.id}, url=${currentURI})}">
 													<i class="fas fa-arrow-up"
+													   id="buttonUp1"
 													   th:classappend="${post.reaction == 1} ? 'text-success' : ''"></i>
 												</a>
 												<span class="w-40 px-1 text-black fontsize08" th:text="${post.likes}">152</span>
 
 												<a class="btn btn-outline-dark border-0 rounded-circle w-30 voteDown"
-												   id="buttonUp2"
+												   id="buttonDown1"
 												   th:href="@{/posts/{id}/dislike(id=${post.id}, url=${currentURI})}">
 													<i class="fas fa-arrow-down justify-content-center"
 													   th:classappend="${post.reaction == -1} ? 'text-danger' : ''"> </i>
@@ -417,17 +418,18 @@
 
 										<div class="d-flex gap-3 pt-2 ps-2">
 											<div class="d-flex align-items-center border border-1 border-dark  rounded-pill"
-											     id="buttonGroup1">
+											     id="buttonGroup2">
 												<a class="btn btn-outline-dark border-0 rounded-circle w-30 voteUp"
 												   th:href="@{/posts/{id}/like(id=${entity.post.id}, url=${currentURI})}">
 													<i class="fas fa-arrow-up"
+													   id="buttonUp2"
 													   th:classappend="${entity.post.reaction == 1} ? 'text-success' : ''"></i>
 												</a>
 												<span class="w-40 px-1 text-black fontsize08"
 												      th:text="${entity.post.likes}">152</span>
 
 												<a class="btn btn-outline-dark border-0 rounded-circle w-30 voteDown"
-												   id="buttonUp2"
+												   id="buttonDown2"
 												   th:href="@{/posts/{id}/dislike(id=${entity.post.id}, url=${currentURI})}">
 													<i class="fas fa-arrow-down justify-content-center"
 													   th:classappend="${entity.post.reaction == -1} ? 'text-danger' : ''"> </i>

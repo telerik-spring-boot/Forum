@@ -287,7 +287,9 @@
                                         </a>
                                     </div>
 
-                                    <div class="btn btn-outline-dark rounded-pill d-flex align-items-center gap-1" th:attr="data-bs-target='#postModal' + ${post.id}">
+                                    <div class="btn btn-outline-dark rounded-pill d-flex align-items-center gap-1"
+                                        data-bs-toggle="modal"
+                                        th:data-bs-target="'#commentModal_' + ${post.id}">
                                         <i class="fas fa-comment"> </i>
                                         <span class="ps-1" style="font-size:0.8rem;"th:text="${post.comments.size()}">5</span>
                                     </div>
@@ -295,42 +297,70 @@
                                 <hr>
                             </div>
 
-<!--                            &lt;!&ndash; Beer Modal&ndash;&gt;-->
-<!--                            <div th:each="post : ${foundPosts}" class="portfolio-modal modal fade" th:id="'postModal' + ${post.id}"-->
-<!--                                 tabindex="-1" aria-labelledby="portfolioModal1" th:attr="aria-labelledby='postModal' + ${post.id}"-->
-<!--                                 aria-hidden="true">-->
-<!--                                <div class="modal-dialog modal-xl">-->
-<!--                                    <div class="modal-content">-->
-<!--                                        <div class="modal-header border-0">-->
-<!--                                            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>-->
-<!--                                        </div>-->
-<!--                                        <div class="modal-body text-center pb-5">-->
-<!--                                            <div class="container">-->
-<!--                                                <div class="row justify-content-center">-->
-<!--                                                    <div class="col-lg-8">-->
-<!--                                                        &lt;!&ndash; Portfolio Modal - Title&ndash;&gt;-->
-<!--                                                        <h2 class="portfolio-modal-title text-secondary text-uppercase mb-0" th:text="${beer.name}">Beer Name</h2>-->
-<!--                                                        &lt;!&ndash; Icon Divider&ndash;&gt;-->
-<!--                                                        <div class="divider-custom">-->
-<!--                                                            <div class="divider-custom-line"></div>-->
-<!--                                                            <div class="divider-custom-icon"><i class="fas fa-beer"></i></div>-->
-<!--                                                            <div class="divider-custom-line"></div>-->
-<!--                                                        </div>-->
-
-<!--                                                        &lt;!&ndash; Portfolio Modal - Text&ndash;&gt;-->
-<!--                                                        <p class="mb-4" th:text="${'ABV: ' + post.title}">ABV</p>-->
-
-<!--                                                        <button class="btn btn-primary" data-bs-dismiss="modal">-->
-<!--                                                            <i class="fas fa-xmark fa-fw"></i>-->
-<!--                                                            Close Window-->
-<!--                                                        </button>-->
-<!--                                                    </div>-->
-<!--                                                </div>-->
+<!--                            <th:block th:each="post : ${foundPosts}">-->
+<!--                                &lt;!&ndash; Comment Modal &ndash;&gt;-->
+<!--                                <div class="modal fade" th:id="'commentModal_' + ${post.id}" tabindex="-1" aria-hidden="true">-->
+<!--                                    <div class="modal-dialog">-->
+<!--                                        <div class="modal-content">-->
+<!--                                            <div class="modal-header">-->
+<!--                                                <h5 class="modal-title" th:text="${post.title}">Post Title</h5>-->
+<!--                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
+<!--                                            </div>-->
+<!--                                            <div class="modal-body">-->
+<!--                                                &lt;!&ndash; You can add more content here &ndash;&gt;-->
+<!--                                                <p>Comments will go here...</p>-->
+<!--                                            </div>-->
+<!--                                            <div class="modal-footer">-->
+<!--                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>-->
 <!--                                            </div>-->
 <!--                                        </div>-->
 <!--                                    </div>-->
 <!--                                </div>-->
-<!--                            </div>-->
+<!--                            </th:block>-->
+
+                            <th:block th:each="post : ${foundPosts}">
+                                <!-- Comment Modal -->
+                                <div class="modal fade" th:id="'commentModal_' + ${post.id}" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+
+                                                <!-- Keep the "X" close button -->
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <h5 class="modal-title" th:text="${post.title}">Post Title</h5>
+                                                <!-- Comment Form with Validation -->
+                                                <div class="mt-4">
+                                                    <h6>Add a Comment</h6>
+                                                    <form action="#" method="post"
+                                                          th:action="@{/posts/{id}(id=${post.id}, url=${requestURI})}"
+                                                          th:object="${commentCreateDto}">
+
+                                                        <div class="mb-3">
+                                <textarea class="form-control" placeholder="Write your comment here..." rows="3"
+                                          th:field="*{content}"
+                                          th:classappend="${#fields.hasErrors('content') ? 'is-invalid' : ''}"
+                                          required minlength="1" maxlength="200">
+                                </textarea>
+                                                            <!-- Error Message -->
+                                                            <div class="invalid-feedback" th:errors="*{content}" th:if="${#fields.hasErrors('content')}"></div>
+                                                        </div>
+
+                                                        <!-- Move the button to the footer -->
+                                                        <div class="modal-footer">
+                                                            <button class="btn btn-primary" type="submit">Post Comment</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </th:block>
+
+
+
 
 
 
@@ -347,15 +377,15 @@
 
                                     <div class="d-flex gap-3 pt-2 ps-2">
                                         <div class="d-flex align-items-center border border-1 border-dark  rounded-pill"
-                                             id="buttonGroup1">
+                                             id="buttonGroup13">
                                             <button class="btn btn-outline-dark border-0 rounded-circle w-30 voteUp"
-                                                    id="buttonUp1">
+                                                    id="buttonUp13">
                                                 <i class="fas fa-arrow-up"></i>
                                             </button>
                                             <span class="w-40 px-1 text-black " style="font-size:0.75rem;">152</span>
 
                                             <button class="btn btn-outline-dark border-0 rounded-circle w-30 voteDown"
-                                                    id="buttonUp2">
+                                                    id="buttonUp23">
                                                 <i class="fas fa-arrow-down justify-content-center"> </i>
                                             </button>
                                         </div>
@@ -403,6 +433,7 @@
                             </div>
                         </div>
                     </div>
+                </div>
             </main>
             <footer class="py-4 bg-light mt-auto">
                 <div class="container-fluid px-4">
@@ -433,6 +464,11 @@
 
 <script src="../static/js/sort-button.js"
         th:src="@{/js/sort-button.js}"></script>
+
+
+
+
+
 
 
 </body>

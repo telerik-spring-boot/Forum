@@ -9,6 +9,7 @@ import com.telerik.forum.helpers.AuthenticationHelper;
 import com.telerik.forum.helpers.PostMapper;
 import com.telerik.forum.helpers.UserMapper;
 import com.telerik.forum.models.dtos.PaginationDTO;
+import com.telerik.forum.models.dtos.commentDTOs.CommentCreateDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO;
 import com.telerik.forum.models.dtos.userDTOs.UserCreateMvcDTO;
 import com.telerik.forum.models.dtos.userDTOs.UserLoginDTO;
@@ -271,6 +272,8 @@ public class AnonymousMvcController {
 
         model.addAttribute("foundPosts", totalPostDTOs);
         model.addAttribute("searchTerm", searchTerm);
+
+        model.addAttribute("commentCreateDto", new CommentCreateDTO());
 
 //        return "search";
         return "search-updated";

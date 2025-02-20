@@ -57,7 +57,8 @@ public class PostMvcController {
     @PostMapping("/{id}")
     public String postComment(@PathVariable("id") int postId,
                               @Valid @ModelAttribute("commentCreateDto") CommentCreateDTO commentCreateDTO,
-                              BindingResult bindingResult, Model model, HttpSession session) {
+                              BindingResult bindingResult, Model model, HttpSession session,
+                              @RequestParam(required = false) String url) {
 
         User user;
         try {
@@ -74,6 +75,9 @@ public class PostMvcController {
         try {
             Comment comment = postMapper.dtoToComment(commentCreateDTO);
             commentService.addComment(postId, comment, user);
+            if (url != null) {
+                return "redirect:" + url;
+            }
             return "redirect:/posts/" + postId;
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());

@@ -3,11 +3,7 @@ package com.telerik.forum.controllers.mvc;
 
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.helpers.AuthenticationHelper;
-import com.telerik.forum.models.dtos.adminDTOs.AdminCreateDTO;
-import com.telerik.forum.models.dtos.adminDTOs.AdminDisplayDTO;
-import com.telerik.forum.models.dtos.adminDTOs.AdminUpdateDTO;
-import com.telerik.forum.models.dtos.postDTOs.PostDisplayMvcDTO;
-import com.telerik.forum.models.dtos.userDTOs.UserDisplayDTO;
+import com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO;
 import com.telerik.forum.models.dtos.userDTOs.UserDisplayMvcDTO;
 import com.telerik.forum.models.user.User;
 import com.telerik.forum.services.admin.AdminService;
@@ -48,7 +44,7 @@ public class AdminMvcController {
             }
 
             List<UserDisplayMvcDTO> users = adminService.getAllUsersMvc();
-            List<LocalDateTime> postsDates = postService.getPostsCreationDates().stream().map(PostDisplayMvcDTO::getCreatedAt).toList();
+            List<LocalDateTime> postsDates = postService.getPostsCreationDates().stream().map(PostDisplayDTO::getCreatedAt).toList();
 
             model.addAttribute("users", users);
             model.addAttribute("userId", user.getId());

@@ -1,12 +1,16 @@
 package com.telerik.forum.models.dtos.postDTOs;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.telerik.forum.models.dtos.commentDTOs.CommentDisplayDTO;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class PostDisplayDTO {
+
+    @JsonIgnore
+    public int id;
 
     public String creatorUsername;
 
@@ -93,5 +97,13 @@ public class PostDisplayDTO {
 
     public void setComments(List<CommentDisplayDTO> comments) {
         this.comments = comments;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

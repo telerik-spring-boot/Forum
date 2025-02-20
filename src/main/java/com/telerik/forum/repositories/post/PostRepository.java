@@ -1,6 +1,6 @@
 package com.telerik.forum.repositories.post;
 
-import com.telerik.forum.models.dtos.postDTOs.PostDisplayMvcDTO;
+import com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO;
 import com.telerik.forum.models.post.Post;
 import com.telerik.forum.models.filters.FilterPostOptions;
 import org.springframework.data.domain.Page;
@@ -24,7 +24,7 @@ public interface PostRepository {
 
     Page<Post> getPostsWithCommentsByUserId(int userId, FilterPostOptions options, Pageable pageable);
 
-    List<PostDisplayMvcDTO> getPostsCreationDates();
+    List<PostDisplayDTO> getPostsCreationDates();
 
     Post getPostById(int id);
 

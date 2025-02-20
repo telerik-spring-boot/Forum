@@ -1,6 +1,6 @@
 package com.telerik.forum.repositories.post;
 
-import com.telerik.forum.models.dtos.postDTOs.PostDisplayMvcDTO;
+import com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO;
 import com.telerik.forum.models.filters.FilterPostOptions;
 import com.telerik.forum.models.post.Like;
 import com.telerik.forum.models.post.Post;
@@ -55,12 +55,12 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public List<PostDisplayMvcDTO> getPostsCreationDates() {
+    public List<PostDisplayDTO> getPostsCreationDates() {
         try (Session session = sessionFactory.openSession()) {
 
-            Query<PostDisplayMvcDTO> query = session.createQuery(
-                    "SELECT new com.telerik.forum.models.dtos.postDTOs.PostDisplayMvcDTO(p.createdAt) FROM Post p",
-                    PostDisplayMvcDTO.class
+            Query<PostDisplayDTO> query = session.createQuery(
+                    "SELECT new com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO(p.createdAt) FROM Post p",
+                    PostDisplayDTO.class
             );
 
             return query.list();

@@ -2,7 +2,7 @@ package com.telerik.forum.services.post;
 
 import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
-import com.telerik.forum.models.dtos.postDTOs.PostDisplayMvcDTO;
+import com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO;
 import com.telerik.forum.models.post.Like;
 import com.telerik.forum.models.post.Post;
 import com.telerik.forum.models.user.User;
@@ -89,7 +89,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDisplayMvcDTO> getPostsCreationDates() {
+    public List<PostDisplayDTO> getPostsCreationDates() {
         return postRepository.getPostsCreationDates();
     }
 
@@ -255,7 +255,6 @@ public class PostServiceImpl implements PostService {
             posts.removeAll(postsToDelete);
         }
     }
-
 
 
 }

@@ -5,7 +5,6 @@ import com.telerik.forum.models.dtos.commentDTOs.CommentCreateDTO;
 import com.telerik.forum.models.dtos.commentDTOs.CommentDisplayDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostCreateDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO;
-import com.telerik.forum.models.dtos.postDTOs.PostDisplayMvcDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostUpdateDTO;
 import com.telerik.forum.models.post.Comment;
 import com.telerik.forum.models.post.Like;
@@ -52,6 +51,7 @@ public class PostMapper {
     public PostDisplayDTO postToPostDisplayDTO(Post post) {
         PostDisplayDTO postDTO = new PostDisplayDTO();
 
+        postDTO.setId(post.getId());
         postDTO.setTitle(post.getTitle());
         postDTO.setContent(post.getContent());
         postDTO.setCreatorUsername(post.getUser().getUsername());
@@ -77,12 +77,6 @@ public class PostMapper {
 
         return postDTO;
 
-    }
-
-    public PostDisplayMvcDTO postToPostDisplayMvcDTO(Post post) {
-        PostDisplayDTO pdto = postToPostDisplayDTO(post);
-
-        return new PostDisplayMvcDTO(pdto.getCreatorUsername(), pdto.getTitle(), pdto.getContent(), pdto.getTags(), pdto.getLikes(), pdto.getCreatedAt(), pdto.getComments(), post.getId());
     }
 
     public CommentDisplayDTO commentToCommentDisplayDTO(Comment comment) {

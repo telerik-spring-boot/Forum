@@ -313,11 +313,6 @@
 <!--                                            <div class="modal-footer">-->
 <!--                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>-->
 <!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                            </th:block>-->
-
                             <th:block th:each="post : ${foundPosts}">
                                 <!-- Comment Modal -->
                                 <div class="modal fade" th:id="'commentModal_' + ${post.id}" tabindex="-1" aria-hidden="true">
@@ -357,7 +352,12 @@
                                         </div>
                                     </div>
                                 </div>
-                            </th:block>
+                            </th:block><!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </th:block>-->
+
+
 
 
 

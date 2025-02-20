@@ -302,7 +302,7 @@
 											post </a>
 										<span class="ps-2 pb-2"> <a class="username-link fw-bold text-content"
 										                            href="#"
-										                            th:href="@{/users/{id}(id=${comment.user.id})}"
+										                            th:href="@{/users/{id}(id=${comment.user.id})/overview}"
 										                            th:text="${comment.user.username}"> Name </a>  <span
 												class="text-muted"
 												th:text="'commented ' + ${#temporals.format(comment.getCreatedAt(), 'yyyy-MM-dd HH:mm')}"> commented + date </span> </span>
@@ -343,16 +343,18 @@
 										<div class="d-flex gap-3 pt-2 ps-2">
 											<div class="d-flex align-items-center border border-1 border-dark  rounded-pill"
 											     id="buttonGroup1">
-												<button class="btn btn-outline-dark border-0 rounded-circle w-30 voteUp"
-												        id="buttonUp1">
+												<a class="btn btn-outline-dark border-0 rounded-circle w-30 voteUp"
+												   id="buttonUp1"
+												   th:href="@{/posts/{id}/like(id=${post.id}, url=${currentURI})}">
 													<i class="fas fa-arrow-up"></i>
-												</button>
+												</a>
 												<span class="w-40 px-1 text-black fontsize08" th:text="${post.likes}">152</span>
 
-												<button class="btn btn-outline-dark border-0 rounded-circle w-30 voteDown"
-												        id="buttonUp2">
+												<a class="btn btn-outline-dark border-0 rounded-circle w-30 voteDown"
+												   id="buttonUp2"
+												   th:href="@{/posts/{id}/dislike(id=${post.id}, url=${currentURI})}">
 													<i class="fas fa-arrow-down justify-content-center"> </i>
-												</button>
+												</a>
 											</div>
 
 											<div class="btn btn-outline-dark rounded-pill d-flex align-items-center gap-1">

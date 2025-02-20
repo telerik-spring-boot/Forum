@@ -123,7 +123,7 @@ public class PostMvcController {
 
     @GetMapping("/{id}/like")
     public String likePost(@PathVariable int id, Model model,
-                           HttpSession session) {
+                           HttpSession session, @RequestParam(required = false) String url) {
         User user;
         try {
             user = authHelper.tryGetUserMvc(session);
@@ -133,7 +133,9 @@ public class PostMvcController {
 
         try {
             likeService.likePost(id, user);
-            return "redirect:/posts/" + id;
+            if (url != null) {
+                return "redirect:" + url;
+            } else return "redirect:/posts/" + id;
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
@@ -143,7 +145,7 @@ public class PostMvcController {
 
     @GetMapping("/{id}/dislike")
     public String dislikePost(@PathVariable int id, Model model,
-                              HttpSession session) {
+                              HttpSession session, @RequestParam(required = false) String url) {
         User user;
         try {
             user = authHelper.tryGetUserMvc(session);
@@ -153,6 +155,9 @@ public class PostMvcController {
 
         try {
             likeService.dislikePost(id, user);
+            if (url != null) {
+                return "redirect:" + url;
+            }
             return "redirect:/posts/" + id;
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
@@ -262,7 +267,7 @@ public class PostMvcController {
             postService.updatePost(post, user);
 
             String oldTags = "";
-            if(session.getAttribute("oldTags") != null) {
+            if (session.getAttribute("oldTags") != null) {
                 oldTags = (String) session.getAttribute("oldTags");
             }
 

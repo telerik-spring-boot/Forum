@@ -6,6 +6,7 @@ import com.telerik.forum.exceptions.DuplicateEntityException;
 import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.helpers.AuthenticationHelper;
+import com.telerik.forum.helpers.PostMapper;
 import com.telerik.forum.helpers.UserMapper;
 import com.telerik.forum.models.dtos.PaginationDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO;
@@ -51,8 +52,9 @@ public class AnonymousMvcController {
     private final JwtUtil jwtUtil;
     private final PostService postService;
     private final AdminService adminService;
+    private final PostMapper postMapper;
 
-    public AnonymousMvcController(AuthenticationHelper authenticationHelper, UserService userService, UserMapper userMapper, JavaMailSender mailSender, JwtUtil jwtUtil, PostService postService, AdminService adminService) {
+    public AnonymousMvcController(AuthenticationHelper authenticationHelper, UserService userService, UserMapper userMapper, JavaMailSender mailSender, JwtUtil jwtUtil, PostService postService, AdminService adminService, PostMapper postMapper) {
         this.authenticationHelper = authenticationHelper;
         this.userService = userService;
         this.userMapper = userMapper;
@@ -60,6 +62,12 @@ public class AnonymousMvcController {
         this.jwtUtil = jwtUtil;
         this.postService = postService;
         this.adminService = adminService;
+        this.postMapper = postMapper;
+    }
+
+    @ModelAttribute("requestURI")
+    public String requestURI(final HttpServletRequest request) {
+        return request.getRequestURI();
     }
 
     @GetMapping("/auth/login")
@@ -256,7 +264,12 @@ public class AnonymousMvcController {
         List<Post> totalFoundPosts = Stream.concat(foundPosts.stream(), foundPostsContent.stream())
                 .distinct()
                 .toList();
-        model.addAttribute("foundPosts", totalFoundPosts);
+
+        List<PostDisplayDTO> totalPostDTOs = totalFoundPosts.stream()
+                .map(postMapper::postToPostDisplayDTO)
+                .toList();
+
+        model.addAttribute("foundPosts", totalPostDTOs);
         model.addAttribute("searchTerm", searchTerm);
 
 //        return "search";

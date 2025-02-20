@@ -9,7 +9,7 @@
     />
     <meta content="" name="description"/>
     <meta content="" name="author"/>
-    <title> User </title>
+    <title> Search </title>
     <!-- Simple Datatables CSS -->
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css"
           th:href="@{'https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css'}"/>
@@ -259,16 +259,78 @@
                                 <div class="btn btn-light w-100 h-100 d-flex flex-column align-items-start"
                                      th:attr="onclick=|window.location.href='@{/posts/{id}(id=${post.id})}'|"
                                      style="cursor: pointer;">
-                                    <a class="title-link d-inline fst-italic fs-5" th:text="${post.title}"> This is the title of the post </a>
+                                    <a class="title-link d-inline fst-italic fs-5" th:text="${post.title}"> This is the
+                                        title of the post </a>
                                     <span class="ps-2 pb-2">
-            <a class="username-link fw-bold" th:href="@{/user/{id}(id=${post.user.id})}"
-               th:text="${post.user.username}" onclick="event.stopPropagation();"> Name </a>
-            <span class="text-muted" th:text="${#temporals.format(post.createdAt, 'dd MMM yyyy HH:mm')}"> posted date </span>
+            <a class="username-link fw-bold" th:href="@{/users/{id}/overview(id=${post.userId})}"
+               th:text="${post.creatorUsername}" onclick="event.stopPropagation();"> Name </a>
+            <span class="text-muted"
+                  th:text="${#temporals.format(post.createdAt, 'dd MMM yyyy HH:mm')}"> posted date </span>
         </span>
-                                    <span class="ps-4 text-start" th:text="${post.content}"> Post content goes here </span>
+                                    <span class="ps-4 text-start"
+                                          th:text="${post.content}"> Post content goes here </span>
+                                </div>
+                                <div class="d-flex gap-3 pt-2 ps-2">
+                                    <div class="d-flex align-items-center border border-1 border-dark  rounded-pill"
+                                         id="buttonGroup1">
+                                        <a class="btn btn-outline-dark border-0 rounded-circle w-30 voteUp"
+                                                id="buttonUp1"
+                                           th:href="@{/posts/{id}/like(id=${post.id}, url=${requestURI})}">
+                                            <i class="fas fa-arrow-up"></i>
+                                        </a>
+                                        <span class="w-40 px-1 text-black " style="font-size:0.75rem;" th:text="${post.likes}">152</span>
+
+                                        <a class="btn btn-outline-dark border-0 rounded-circle w-30 voteDown"
+                                                id="buttonUp2"
+                                           th:href="@{/posts/{id}/dislike(id=${post.id}, url=${requestURI})}">
+                                            <i class="fas fa-arrow-down justify-content-center"> </i>
+                                        </a>
+                                    </div>
+
+                                    <div class="btn btn-outline-dark rounded-pill d-flex align-items-center gap-1" th:attr="data-bs-target='#postModal' + ${post.id}">
+                                        <i class="fas fa-comment"> </i>
+                                        <span class="ps-1" style="font-size:0.8rem;"th:text="${post.comments.size()}">5</span>
+                                    </div>
                                 </div>
                                 <hr>
                             </div>
+
+<!--                            &lt;!&ndash; Beer Modal&ndash;&gt;-->
+<!--                            <div th:each="post : ${foundPosts}" class="portfolio-modal modal fade" th:id="'postModal' + ${post.id}"-->
+<!--                                 tabindex="-1" aria-labelledby="portfolioModal1" th:attr="aria-labelledby='postModal' + ${post.id}"-->
+<!--                                 aria-hidden="true">-->
+<!--                                <div class="modal-dialog modal-xl">-->
+<!--                                    <div class="modal-content">-->
+<!--                                        <div class="modal-header border-0">-->
+<!--                                            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>-->
+<!--                                        </div>-->
+<!--                                        <div class="modal-body text-center pb-5">-->
+<!--                                            <div class="container">-->
+<!--                                                <div class="row justify-content-center">-->
+<!--                                                    <div class="col-lg-8">-->
+<!--                                                        &lt;!&ndash; Portfolio Modal - Title&ndash;&gt;-->
+<!--                                                        <h2 class="portfolio-modal-title text-secondary text-uppercase mb-0" th:text="${beer.name}">Beer Name</h2>-->
+<!--                                                        &lt;!&ndash; Icon Divider&ndash;&gt;-->
+<!--                                                        <div class="divider-custom">-->
+<!--                                                            <div class="divider-custom-line"></div>-->
+<!--                                                            <div class="divider-custom-icon"><i class="fas fa-beer"></i></div>-->
+<!--                                                            <div class="divider-custom-line"></div>-->
+<!--                                                        </div>-->
+
+<!--                                                        &lt;!&ndash; Portfolio Modal - Text&ndash;&gt;-->
+<!--                                                        <p class="mb-4" th:text="${'ABV: ' + post.title}">ABV</p>-->
+
+<!--                                                        <button class="btn btn-primary" data-bs-dismiss="modal">-->
+<!--                                                            <i class="fas fa-xmark fa-fw"></i>-->
+<!--                                                            Close Window-->
+<!--                                                        </button>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
 
 
 
@@ -303,42 +365,44 @@
                                             <span class="ps-1" style="font-size:0.8rem;">5</span>
                                         </div>
                                     </div>
+
+                                    <hr>
                                 </div>
-                                <hr>
-                            </div>
 
-                            <div class="px-3 my-1">
-                                <div class="btn btn-light w-100 h-100 d-flex flex-column align-items-start">
-                                    <a class="title-link d-inline fst-italic fs-5" href="#"> This is the title of the
-                                        post </a>
-                                    <span class="ps-2"> <a class="username-link fw-bold" href="#"> Name </a>  <span
-                                            class="text-muted"> posted on + date </span> </span>
-                                    <span class="ps-4 text-start"> --post content-- Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque culpa eveniet fuga maiores nam numquam qui quo rem vitae voluptatum. Assumenda dolor optio quae qui quibusdam? Aperiam architecto autem ipsam iure libero neque nostrum qui ratione rerum veritatis? A eveniet incidunt modi nam nesciunt nulla pariatur recusandae repellendus rerum, velit?</span>
-                                    <img class="img-fluid mx-auto px-2"
-                                         src="../static/img/northern-lights-finland-lapland-shutterstock_305354732_4bc3f8d6db.jpeg">
+                                <div class="px-3 my-1">
+                                    <div class="btn btn-light w-100 h-100 d-flex flex-column align-items-start">
+                                        <a class="title-link d-inline fst-italic fs-5" href="#"> This is the title of
+                                            the
+                                            post </a>
+                                        <span class="ps-2"> <a class="username-link fw-bold" href="#"> Name </a>  <span
+                                                class="text-muted"> posted on + date </span> </span>
+                                        <span class="ps-4 text-start"> --post content-- Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque culpa eveniet fuga maiores nam numquam qui quo rem vitae voluptatum. Assumenda dolor optio quae qui quibusdam? Aperiam architecto autem ipsam iure libero neque nostrum qui ratione rerum veritatis? A eveniet incidunt modi nam nesciunt nulla pariatur recusandae repellendus rerum, velit?</span>
+                                        <img class="img-fluid mx-auto px-2"
+                                             src="../static/img/northern-lights-finland-lapland-shutterstock_305354732_4bc3f8d6db.jpeg">
 
-                                    <div class="d-flex gap-3 pt-2 ps-2">
-                                        <div class="d-flex align-items-center border border-1 rounded-pill bg-dark">
-                                            <button class="btn btn-dark rounded-circle w-30 voteUp">
-                                                <i class="fas fa-arrow-up"></i>
-                                            </button>
-                                            <span class="w-40 px-1 text-white " style="font-size:0.75rem;">152</span>
+                                        <div class="d-flex gap-3 pt-2 ps-2">
+                                            <div class="d-flex align-items-center border border-1 rounded-pill bg-dark">
+                                                <button class="btn btn-dark rounded-circle w-30 voteUp">
+                                                    <i class="fas fa-arrow-up"></i>
+                                                </button>
+                                                <span class="w-40 px-1 text-white "
+                                                      style="font-size:0.75rem;">152</span>
 
-                                            <button class="btn btn-dark rounded-circle w-30 voteDown">
-                                                <i class="fas fa-arrow-down justify-content-center"> </i>
-                                            </button>
-                                        </div>
+                                                <button class="btn btn-dark rounded-circle w-30 voteDown">
+                                                    <i class="fas fa-arrow-down justify-content-center"> </i>
+                                                </button>
+                                            </div>
 
-                                        <div class="btn btn-dark rounded-pill d-flex align-items-center gap-1">
-                                            <i class="fas fa-comment"> </i>
-                                            <span class="ps-1" style="font-size:0.8rem;">5</span>
+                                            <div class="btn btn-dark rounded-pill d-flex align-items-center gap-1">
+                                                <i class="fas fa-comment"> </i>
+                                                <span class="ps-1" style="font-size:0.8rem;">5</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
             </main>
             <footer class="py-4 bg-light mt-auto">
                 <div class="container-fluid px-4">

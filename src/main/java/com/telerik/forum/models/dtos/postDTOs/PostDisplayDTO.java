@@ -12,6 +12,9 @@ public class PostDisplayDTO {
     @JsonIgnore
     public int id;
 
+    @JsonIgnore
+    public int userId;
+
     public String creatorUsername;
 
     public String title;
@@ -30,7 +33,7 @@ public class PostDisplayDTO {
     public PostDisplayDTO() {
     }
 
-    public PostDisplayDTO(String creatorUsername, String title,
+    public PostDisplayDTO(int userId, String creatorUsername, String title,
                           String content, List<String> tags,
                           int likes, LocalDateTime createdAt,
                           List<CommentDisplayDTO> comments) {
@@ -41,6 +44,7 @@ public class PostDisplayDTO {
         this.likes = likes;
         this.createdAt = createdAt;
         this.comments = comments;
+        this.userId = userId;
     }
 
     public String getCreatorUsername() {
@@ -105,5 +109,13 @@ public class PostDisplayDTO {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 }

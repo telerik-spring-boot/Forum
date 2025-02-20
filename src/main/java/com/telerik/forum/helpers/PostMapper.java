@@ -52,6 +52,7 @@ public class PostMapper {
         PostDisplayDTO postDTO = new PostDisplayDTO();
 
         postDTO.setId(post.getId());
+        postDTO.setUserId(post.getUser().getId());
         postDTO.setTitle(post.getTitle());
         postDTO.setContent(post.getContent());
         postDTO.setCreatorUsername(post.getUser().getUsername());

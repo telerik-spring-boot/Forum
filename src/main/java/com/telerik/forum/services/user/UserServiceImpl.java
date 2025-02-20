@@ -124,7 +124,7 @@ public class UserServiceImpl implements UserService {
         Page<Post> posts = postRepository.getPostsWithCommentsByUserId(id, postOptions, pageable);
         List<Comment> comments = commentRepository.getByUserId(id, commentOptions);
 
-        posts.forEach(post -> combinedList.add(new PostCommentWrapper(post)));
+        posts.forEach(post -> combinedList.add(new PostCommentWrapper(postMapper.postToPostDisplayDTO(post))));
         comments.forEach(comment -> combinedList.add(new PostCommentWrapper(comment)));
 
         combinedList.sort((a, b) -> b.getCreatedAt().compareTo(a.getCreatedAt()));

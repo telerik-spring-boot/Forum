@@ -1,5 +1,6 @@
 package com.telerik.forum.models.dtos;
 
+import com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO;
 import com.telerik.forum.models.post.Comment;
 import com.telerik.forum.models.post.Post;
 
@@ -11,7 +12,7 @@ public class PostCommentWrapper {
 
     private Comment comment;
 
-    private Post post;
+    private PostDisplayDTO post;
 
 
     public PostCommentWrapper() {
@@ -22,7 +23,7 @@ public class PostCommentWrapper {
         this.createdAt = comment.getCreatedAt();
     }
 
-    public PostCommentWrapper(Post post) {
+    public PostCommentWrapper(PostDisplayDTO post) {
         this.post = post;
         this.createdAt = post.getCreatedAt();
     }
@@ -43,11 +44,11 @@ public class PostCommentWrapper {
         this.createdAt = createdAt;
     }
 
-    public Post getPost() {
+    public PostDisplayDTO getPost() {
         return post;
     }
 
-    public void setPost(Post post) {
+    public void setPost(PostDisplayDTO post) {
         this.post = post;
     }
 }

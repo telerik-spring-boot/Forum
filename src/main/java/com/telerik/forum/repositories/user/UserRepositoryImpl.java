@@ -79,19 +79,13 @@ public class UserRepositoryImpl implements UserRepository {
 
             sortingHelper(criteriaBuilder, root, criteriaQuery, options);
 
-            CriteriaQuery<Long> countQuery = criteriaBuilder.createQuery(Long.class);
-            Root<User> countRoot = countQuery.from(User.class);
-            countQuery.select(criteriaBuilder.count(countRoot));
-
-            countQuery.where(predicates.toArray(new Predicate[0]));
-            Long totalUsers = session.createQuery(countQuery).getSingleResult();
 
             Query<User> query = session.createQuery(criteriaQuery)
                     .setFirstResult((int) pageable.getOffset())
                     .setMaxResults(pageable.getPageSize());
 
 
-            return new PageImpl<>(query.getResultList(), pageable, totalUsers);
+            return new PageImpl<>(query.getResultList(), pageable, query.getResultCount());
         }
     }
 

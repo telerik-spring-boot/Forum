@@ -2,7 +2,6 @@ package com.telerik.forum.controllers.rest;
 
 
 import com.telerik.forum.helpers.AuthenticationHelper;
-import com.telerik.forum.helpers.PostMapper;
 import com.telerik.forum.helpers.UserMapper;
 import com.telerik.forum.models.dtos.PaginationDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO;
@@ -13,7 +12,6 @@ import com.telerik.forum.models.user.User;
 import com.telerik.forum.services.user.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
@@ -27,15 +25,13 @@ public class UserController {
     private final UserService userService;
     private final AuthenticationHelper authenticationHelper;
     private final UserMapper userMapper;
-    private final PostMapper postMapper;
 
     @Autowired
     public UserController(UserService userService, AuthenticationHelper authenticationHelper,
-                          UserMapper userMapper, PostMapper postMapper) {
+                          UserMapper userMapper) {
         this.userService = userService;
         this.authenticationHelper = authenticationHelper;
         this.userMapper = userMapper;
-        this.postMapper = postMapper;
     }
 
 
@@ -71,7 +67,7 @@ public class UserController {
 
         UserPostsPageDisplayDTO userEntity = userService.getByIdWithPosts(id, options, userRequest, pageable);
 
-        return new PaginationDTO<>(userEntity.getPosts().map(postMapper::postToPostDisplayDTO).getContent(), userEntity.getPosts().getNumber(), userEntity.getPosts().getSize(), userEntity.getPosts().getTotalElements(), userEntity.getPosts().getTotalPages());
+        return new PaginationDTO<>(userEntity.getPosts().getContent(), userEntity.getPosts().getNumber(), userEntity.getPosts().getSize(), userEntity.getPosts().getTotalElements(), userEntity.getPosts().getTotalPages());
 
     }
 

@@ -10,12 +10,12 @@ public class UserPostsPageDisplayDTO {
 
     public int id;
 
-    public Page<Post> posts;
+    public Page<PostDisplayDTO> posts;
 
     public UserPostsPageDisplayDTO() {
     }
 
-    public UserPostsPageDisplayDTO(String username, int id, Page<Post> posts) {
+    public UserPostsPageDisplayDTO(String username, int id, Page<PostDisplayDTO> posts) {
         this.username = username;
         this.id = id;
         this.posts = posts;
@@ -37,11 +37,11 @@ public class UserPostsPageDisplayDTO {
         this.id = id;
     }
 
-    public Page<Post> getPosts() {
+    public Page<PostDisplayDTO> getPosts() {
         return posts;
     }
 
-    public void setPosts(Page<Post> posts) {
+    public void setPosts(Page<PostDisplayDTO> posts) {
         this.posts = posts;
     }
 }

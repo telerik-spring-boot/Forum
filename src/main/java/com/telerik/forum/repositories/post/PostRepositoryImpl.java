@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -284,31 +285,20 @@ public class PostRepositoryImpl implements PostRepository {
 
             });
 
-            CriteriaQuery<Long> countQuery = criteriaBuilder.createQuery(Long.class);
-            Root<Post> countRoot = countQuery.from(Post.class);
-            countQuery.select(criteriaBuilder.count(countRoot));
-
-            countQuery.where(predicates.toArray(new Predicate[0]));
-            Long totalPosts = session.createQuery(countQuery).getSingleResult();
-
             Query<Post> query = session.createQuery(criteriaQuery)
                     .setFirstResult((int) pageable.getOffset())
                     .setMaxResults(pageable.getPageSize());
 
 
-            return new PageImpl<>(query.getResultList(), pageable, totalPosts);
+            List<Post> posts = query.list();
 
-//            Query<Post> query = session.createQuery(criteriaQuery);
-//
-//            List<Post> posts = query.list();
-//
-//
-//            posts.forEach(post -> {
-//                Hibernate.initialize(post.getTags());
-//                Hibernate.initialize(post.getLikes());
-//                Hibernate.initialize(post.getComments());
-//            });
-//
+
+            posts.forEach(post -> {
+                Hibernate.initialize(post.getTags());
+                Hibernate.initialize(post.getLikes());
+                Hibernate.initialize(post.getComments());
+            });
+            return new PageImpl<>(query.getResultList(), pageable, query.getResultCount());
 //            return posts;
         }
     }

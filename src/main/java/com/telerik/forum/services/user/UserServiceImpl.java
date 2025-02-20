@@ -3,6 +3,7 @@ package com.telerik.forum.services.user;
 import com.telerik.forum.exceptions.DuplicateEntityException;
 import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
+import com.telerik.forum.helpers.PostMapper;
 import com.telerik.forum.models.dtos.PostCommentWrapper;
 import com.telerik.forum.models.dtos.userDTOs.UserOverviewPageDisplayDTO;
 import com.telerik.forum.models.dtos.userDTOs.UserPostsPageDisplayDTO;
@@ -35,13 +36,15 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
+    private final PostMapper postMapper;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PostRepository postRepository, CommentRepository commentRepository) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PostRepository postRepository, CommentRepository commentRepository, PostMapper postMapper) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.postRepository = postRepository;
         this.commentRepository = commentRepository;
+        this.postMapper = postMapper;
     }
 
 
@@ -68,7 +71,8 @@ public class UserServiceImpl implements UserService {
 
         filterByLikes(postsPaged, options);
 
-        return new UserPostsPageDisplayDTO(user.getUsername(), user.getId(), postsPaged);
+        return new UserPostsPageDisplayDTO(user.getUsername(), user.getId(),
+                postsPaged.map(postMapper::postToPostDisplayDTO));
 
 
     }

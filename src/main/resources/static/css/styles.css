@@ -8939,6 +8939,7 @@ textarea.form-control-lg {
 .text-muted {
     --bs-text-opacity: 1;
     color: #6c757d !important;
+    word-wrap: break-word;
 }
 
 .text-black-50 {
@@ -13021,5 +13022,35 @@ tr td {
     word-break: break-word;
     overflow-wrap: break-word;
 }
+
+.post-container {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    position: relative; /* Needed for absolute positioning of buttons */
+}
+
+/* Buttons at bottom-right */
+.button-container {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    display: flex;
+    gap: 8px;
+}
+
+/* Make buttons smaller */
+.button-container a {
+    font-size: 0.8rem;
+    padding: 4px 8px;
+}
+
+.h7-container {
+    display: block;  /* Ensures it's on a new line */
+    text-align: right; /* Aligns the content to the left */
+}
+
 
 

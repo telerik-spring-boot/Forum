@@ -115,6 +115,26 @@ public class PostMvcController {
         PostDisplayDTO postToDisplay = postMapper.postToPostDisplayDTO(post);
         model.addAttribute("post", postToDisplay);
 
+        if (post.getUser().equals(user)) {
+            model.addAttribute("userIsCreator",true);
+        }else{
+            model.addAttribute("userIsCreator",false);
+        }
+
+        if(user.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN")))
+        {
+            model.addAttribute("userIsAdmin",true);
+        }else{
+            model.addAttribute("userIsAdmin",false);
+        }
+
+        if(user.isBlocked())
+        {
+            model.addAttribute("userIsBlocked",true);
+        }else {
+            model.addAttribute("userIsBlocked",false);
+        }
+
         int userReaction = 0;
         for (Like like : post.getLikes()) {
             if (like.getUser().getId() == user.getId()) {

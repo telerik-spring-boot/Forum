@@ -1,22 +1,23 @@
 package com.telerik.forum.models.dtos.userDTOs;
 
 import com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO;
+import com.telerik.forum.models.post.Post;
 import org.springframework.data.domain.Page;
 
 public class UserPostsPageDisplayDTO {
 
     public String username;
 
-    public int userId;
+    public int id;
 
-    public Page<PostDisplayDTO> posts;
+    public Page<Post> posts;
 
     public UserPostsPageDisplayDTO() {
     }
 
-    public UserPostsPageDisplayDTO(String username, int userId, Page<PostDisplayDTO> posts) {
+    public UserPostsPageDisplayDTO(String username, int id, Page<Post> posts) {
         this.username = username;
-        this.userId = userId;
+        this.id = id;
         this.posts = posts;
     }
 
@@ -28,19 +29,19 @@ public class UserPostsPageDisplayDTO {
         this.username = username;
     }
 
-    public int getUserId() {
-        return userId;
+    public int getId() {
+        return id;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public Page<PostDisplayDTO> getPosts() {
+    public Page<Post> getPosts() {
         return posts;
     }
 
-    public void setPosts(Page<PostDisplayDTO> posts) {
+    public void setPosts(Page<Post> posts) {
         this.posts = posts;
     }
 }

@@ -82,7 +82,7 @@ public class PostMvcController {
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
-            return "ErrorView";
+            return "404";
         }
     }
 
@@ -106,7 +106,7 @@ public class PostMvcController {
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
-            return "ErrorView";
+            return "404";
         }
     }
 
@@ -163,7 +163,7 @@ public class PostMvcController {
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
-            return "ErrorView";
+            return "404";
         }
     }
 
@@ -186,7 +186,7 @@ public class PostMvcController {
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
-            return "ErrorView";
+            return "404";
         }
     }
 
@@ -236,7 +236,7 @@ public class PostMvcController {
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
-            return "ErrorView";
+            return "404";
         }
 
     }
@@ -261,7 +261,7 @@ public class PostMvcController {
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
-            return "ErrorView";
+            return "404";
         }
     }
 
@@ -300,9 +300,37 @@ public class PostMvcController {
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
+            return "404";
+        }catch(UnauthorizedOperationException e){
+            model.addAttribute("statusCode", HttpStatus.UNAUTHORIZED.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
             return "ErrorView";
         }
 
+    }
+
+    @GetMapping("/{id}/delete")
+    public String deletePost(@PathVariable int id, HttpSession session, Model model) {
+
+        User user;
+        try {
+            user = authHelper.tryGetUserMvc(session);
+        } catch (UnauthorizedOperationException e) {
+            return "redirect:/auth/login";
+        }
+
+        try{
+            postService.deletePost(id, user);
+            return "redirect:/home";
+        }catch (EntityNotFoundException e) {
+            model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "404";
+        }catch(UnauthorizedOperationException e){
+            model.addAttribute("statusCode", HttpStatus.UNAUTHORIZED.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "ErrorView";
+        }
     }
 
 

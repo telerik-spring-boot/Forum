@@ -3,9 +3,18 @@
 <head>
 	<meta charset="UTF-8">
 	<title th:text="${post.title}">Post Title</title>
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
 	<link href="../../static/css/styles.css" rel="stylesheet" th:href="@{/css/styles.css}"/>
+	<!-- Bootstrap CSS -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+	<!-- Bootstrap JS and dependencies -->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.min.js"></script>
+
 	<script crossorigin="anonymous" src="https://kit.fontawesome.com/a076d05399.js"></script>
 	<style>
         body {
@@ -89,9 +98,33 @@
 		</div>
 		<div class="h7-container">
 			<a href="#" th:if="${userIsCreator && !userIsBlocked}" th:href="@{__${requestURI}__/update}">Update</a>
-			<a href="#" th:if="${(userIsCreator || userIsAdmin) && !userIsBlocked}" th:href="@{__${requestURI}__/delete}">Delete</a>
+			<a href="#" th:if="${(userIsCreator || userIsAdmin) && !userIsBlocked}" class="text-danger"
+			   data-bs-toggle="modal" data-bs-target="#deleteModal"
+			   th:data-href="@{/posts/{id}/delete(id=${post.id})}">Delete</a>
 		</div>
 	</div>
+
+
+	<!-- Delete Modal -->
+	<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<h5 class="modal-title" id="deleteModalLabel">Are you sure you want to delete this post?</h5>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+					<a href="#" id="confirmDelete" class="btn btn-danger" th:href="@{/posts/{id}/delete(id=${post.id})}">Delete</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
 
 
 
@@ -217,5 +250,25 @@
         });
     });
 </script>
+
+<script>
+	// Initialize modal manually if needed
+	var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+
+	$('#deleteModal').on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget);  // This is the button that opened the modal
+		var deleteUrl = button.attr('th:data-href');  // Get the delete URL from the button's data-href attribute
+		var modal = $(this);
+		modal.find('#confirmDelete').attr('href', deleteUrl);  // Set the href for the "Delete" button inside the modal
+	});
+
+	// You can also manually show the modal with this:
+	 //deleteModal.show();
+</script>
+
+
+
+
+
 </body>
 </html>

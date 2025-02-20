@@ -72,7 +72,7 @@
 					aria-labelledby="navbarDropdown"
 					class="dropdown-menu dropdown-menu-end"
 			>
-				<li><a class="dropdown-item" href="#!" th:href="@{/users/{id}(id=${userId})}"
+				<li><a class="dropdown-item" href="#!" th:href="@{/users/{id}/overview(id=${userId})}"
 				       th:if="${isAuthenticated}">
 					<i class="fas fa-user fa-fw me-1"></i>
 					<span th:text="#{view-profile.label}">View Profile</span>
@@ -276,10 +276,15 @@
 										<li><input class="dropdown-item rounded-pill filter-option" href="#"
 										           placeholder="Maximum likes" th:field="*{maxLikes}">
 										</li>
+
+										<li><input class="dropdown-item rounded-pill filter-option" href="#"
+										           placeholder="Content" th:field="*{content}">
+										</li>
 									</ul>
 								</div>
 
-								<button class="btn btn-dark rounded-pill d-none ms-2 fontsize08" id="applyFilterBtn"
+								<button class="btn btn-outline-primary rounded-pill d-none ms-2 fontsize08"
+								        id="applyFilterBtn"
 								        type="submit">Apply
 								</button>
 							</form>
@@ -298,7 +303,8 @@
 										                            href="#"
 										                            th:href="@{/users/{id}(id=${comment.user.id})}"
 										                            th:text="${comment.user.username}"> Name </a>  <span
-												class="text-muted" th:text="'commented ' + ${comment.createdAt}"> commented + date </span> </span>
+												class="text-muted"
+												th:text="'commented ' + ${#temporals.format(comment.getCreatedAt(), 'yyyy-MM-dd HH:mm')}"> commented + date </span> </span>
 										<span class="ps-4 text-start text-content"
 										      th:utext="${comment.content}">
 											-- comment content -- Lorem ipsum dolor sit amet, consectetur adipisicing

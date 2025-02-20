@@ -4,6 +4,7 @@ package com.telerik.forum.controllers.mvc;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.helpers.AuthenticationHelper;
 import com.telerik.forum.helpers.UserMapper;
+import com.telerik.forum.models.dtos.FilterDTO;
 import com.telerik.forum.models.dtos.userDTOs.UserCommentsDisplayDTO;
 import com.telerik.forum.models.dtos.userDTOs.UserCommentsPageDisplayDTO;
 import com.telerik.forum.models.dtos.userDTOs.UserOverviewPageDisplayDTO;
@@ -39,13 +40,7 @@ public class UserMvcController {
 
     @GetMapping("/{id}/posts")
     public String showUserPosts(HttpSession session,
-                                @RequestParam(required = false) String title,
-                                @RequestParam(required = false) String content,
-                                @RequestParam(required = false) String tags,
-                                @RequestParam(required = false) Long minLikes,
-                                @RequestParam(required = false) Long maxLikes,
-                                @RequestParam(required = false) String sortBy,
-                                @RequestParam(required = false) String sortOrder,
+                                @ModelAttribute("filterOptions") FilterDTO filterDto,
                                 @PathVariable int id,
                                 @PageableDefault(size = 10, page = 0) Pageable pageable,
                                 Model model,
@@ -55,17 +50,16 @@ public class UserMvcController {
 
             String[] tagArray = null;
 
-            if (tags != null) {
-                tagArray = tags.split(",");
+            if (filterDto.getTags() != null) {
+                tagArray = filterDto.getTags().split(",");
             }
 
 
-            FilterPostOptions options = new FilterPostOptions(null, title, content, tagArray, minLikes, maxLikes, sortBy, sortOrder);
+            FilterPostOptions options = new FilterPostOptions(null, filterDto.getTitle(), filterDto.getContent(), tagArray, filterDto.getMinLikes(), filterDto.getMaxLikes(), filterDto.getSortBy(), filterDto.getSortOrder());
 
             UserPostsPageDisplayDTO showUser = userService.getByIdWithPosts(id, options, user, pageable);
 
             model.addAttribute("user", showUser);
-            model.addAttribute("postOptions", options);
             model.addAttribute("currentURI", request.getRequestURI());
 
             return "user";
@@ -77,9 +71,7 @@ public class UserMvcController {
 
     @GetMapping("/{id}/overview")
     public String showUserOverview(HttpSession session,
-                                   @RequestParam(required = false) String content,
-                                   @RequestParam(required = false) String sortBy,
-                                   @RequestParam(required = false) String sortOrder,
+                                   @ModelAttribute("filterOptions") FilterDTO filterDto,
                                    @PathVariable int id,
                                    @PageableDefault(size = 10, page = 0) Pageable pageable,
                                    Model model,
@@ -87,11 +79,10 @@ public class UserMvcController {
         try {
             User user = authenticationHelper.tryGetUserMvc(session);
 
-            FilterPostOptions postOptions = new FilterPostOptions(null, null, content, null, null, null, sortBy, sortOrder);
+            FilterPostOptions postOptions = new FilterPostOptions(null, null, filterDto.getContent(), null, null, null, filterDto.getSortBy(), filterDto.getSortOrder());
             UserOverviewPageDisplayDTO showUser = userService.getByIdWithCommentsAndPosts(id, postOptions, postOptions, user, pageable);
 
             model.addAttribute("user", showUser);
-            model.addAttribute("filterOptions", postOptions);
             model.addAttribute("currentURI", request.getRequestURI());
 
             return "user";
@@ -103,9 +94,7 @@ public class UserMvcController {
 
     @GetMapping("/{id}/comments")
     public String getUserComments(HttpSession session,
-                                  @RequestParam(required = false) String commentContent,
-                                  @RequestParam(required = false) String sortBy,
-                                  @RequestParam(required = false) String sortOrder,
+                                  @ModelAttribute("filterOptions") FilterDTO filterDto,
                                   @PathVariable int id,
                                   Model model,
                                   HttpServletRequest request) {
@@ -113,11 +102,11 @@ public class UserMvcController {
         try {
             User user = authenticationHelper.tryGetUserMvc(session);
 
-            FilterPostOptions commentOptions = new FilterPostOptions(null, null, commentContent, null, null, null, sortBy, sortOrder);
+            FilterPostOptions commentOptions = new FilterPostOptions(null, null, filterDto.getContent(), null, null, null, filterDto.getSortBy(), filterDto.getSortOrder());
+
             User userEntity = userService.getByIdWithComments(id, commentOptions, user);
 
             model.addAttribute("user", new UserCommentsPageDisplayDTO(userEntity.getId(), userEntity.getComments(), userEntity.getUsername()));
-            model.addAttribute("filterOptions", commentOptions);
             model.addAttribute("currentURI", request.getRequestURI());
 
             return "user";

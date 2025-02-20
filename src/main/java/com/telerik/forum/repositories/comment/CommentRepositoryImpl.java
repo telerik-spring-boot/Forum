@@ -62,7 +62,7 @@ public class CommentRepositoryImpl implements CommentRepository {
             predicates.add(criteriaBuilder.equal(root.get("user").get("id"), id));
 
             options.getContent().ifPresent(content -> {
-                predicates.add(criteriaBuilder.like(root.get("commentContent"), "%" + content + "%"));
+                predicates.add(criteriaBuilder.like(root.get("content"), "%" + content + "%"));
             });
 
             criteriaQuery.where(predicates.toArray(new Predicate[0]));

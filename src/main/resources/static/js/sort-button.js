@@ -20,8 +20,16 @@ document.addEventListener("DOMContentLoaded", function () {
     sortOptions.forEach(option => {
         option.addEventListener("click", function (event) {
             event.preventDefault();
+            var sortOrderInput = document.getElementById("sortOrderInput");
             sortByInput.value = this.id.replace("sort", "");
-            
+
+            console.log(sortByInput.value);
+            if (sortByInput.value === "createdAt" || sortByInput.value === "likes") {
+                sortOrderInput.value = "desc";
+            } else {
+                sortOrderInput.value = "asc";
+            }
+
             if (option.classList.contains('active')) {
                 sortByInput.value = "";
                 option.classList.remove('active');

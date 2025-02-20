@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
     public UserPostsPageDisplayDTO getByIdWithPosts(int id, FilterPostOptions options, User userRequest, Pageable pageable) {
         authorizationBlocked(userRequest);
 
-        User user = getUserValidationAndSortingValidation(id, options);
+        User user = getUserValidationAndSortingValidation(id, options, true);
 
         Page<Post> postsPaged = filterByLikes(postRepository.getPostsWithCommentsByUserId(id, options, pageable), options);
 
@@ -91,7 +91,7 @@ public class UserServiceImpl implements UserService {
     public User getByIdWithComments(int id, FilterCommentOptions options, User userRequest) {
         authorizationBlocked(userRequest);
 
-        User user = getUserValidationAndSortingValidation(id, options);
+        User user = getUserValidationAndSortingValidation(id, options, false);
 
         List<Comment> comments = commentRepository.getByUserId(id, options);
 
@@ -274,10 +274,12 @@ public class UserServiceImpl implements UserService {
         return posts;
     }
 
-    private <T extends Sortable> User getUserValidationAndSortingValidation(int id, T options) {
+    private <T extends Sortable> User getUserValidationAndSortingValidation(int id, T options, boolean isPost) {
         User user = userRepository.getById(id);
 
-        options.getSortBy().ifPresent(SortingHelper::validateSortByFieldComment);
+        if (isPost) {
+            options.getSortBy().ifPresent(SortingHelper::validateSortByFieldPost);
+        } else options.getSortBy().ifPresent(SortingHelper::validateSortByFieldComment);
 
         options.getSortOrder().ifPresent(SortingHelper::validateSortOrderField);
 

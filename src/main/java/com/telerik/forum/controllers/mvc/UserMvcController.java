@@ -102,7 +102,9 @@ public class UserMvcController {
         try {
             User user = authenticationHelper.tryGetUserMvc(session);
 
-            FilterPostOptions commentOptions = new FilterPostOptions(null, null, filterDto.getContent(), null, null, null, filterDto.getSortBy(), filterDto.getSortOrder());
+
+            FilterPostOptions commentOptions = new FilterPostOptions(null, null, filterDto.getContent(), null, null, null,
+                    filterDto.getSortBy(), filterDto.getSortOrder());
 
             User userEntity = userService.getByIdWithComments(id, commentOptions, user);
 

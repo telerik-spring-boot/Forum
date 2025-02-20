@@ -208,9 +208,9 @@
 								     th:src="@{/img/profile-icon-png-893.png}">
 								<div class="mt-4 ms-2 d-inline align-items-center">
 									<span class="fs-3 username-part"
-									      th:text="#{user.username.label}">Username</span> <br>
+									      th:text="${user.username}">Username</span> <br>
 									<span class="text-muted username-part"
-									      th:text="#{user.username.label}">Username</span>
+									      th:text="${user.username}">Username</span>
 								</div>
 							</div>
 
@@ -239,23 +239,24 @@
 							<form action="#" class="px-3 my-1 d-flex" th:action="@{__${currentURI}__}"
 							      th:object="${filterOptions}">
 								<input id="sortByInput" th:field="*{sortBy}" type="hidden"/>
+								<input id="sortOrderInput" th:field="*{sortOrder}" type="hidden"/>
 								<div class="dropdown">
 									<button class="btn btn-dark rounded-pill dropdown-toggle fontsize08"
 									        data-bs-toggle="dropdown">
 										<span th:text="#{sort.label}"></span>
 									</button>
 									<ul class="dropdown-menu">
-										<li class="post-sort-option d-none sort-option"><a class="dropdown-item"
-										                                                   href="#"
-										                                                   id="sorttitle"
-										                                                   th:classappend="${!currentURI.endsWith('/posts') ? 'd-none' : ''} + ' ' + ${filterOptions.getSortBy() == 'title'? 'active' : ''}"
-										                                                   th:text="#{title.label}">Title</a>
+										<li class="post-sort-option"><a class="dropdown-item sort-option"
+										                                href="#"
+										                                id="sorttitle"
+										                                th:classappend="${!currentURI.endsWith('/posts') ? 'd-none' : ''} + ' ' + ${filterOptions.getSortBy() == 'title'? 'active' : ''}"
+										                                th:text="#{title.label}">Title</a>
 										</li>
-										<li class="post-sort-option d-none sort-option"><a class="dropdown-item"
-										                                                   href="#"
-										                                                   id="sortlikes"
-										                                                   th:classappend="${!currentURI.endsWith('/posts') ? 'd-none' : ''} +' ' + ${filterOptions.getSortBy() == 'likes' ? 'active' : ''}"
-										                                                   th:text="#{likes.label}">Likes</a>
+										<li class="post-sort-option"><a class="dropdown-item sort-option"
+										                                href="#"
+										                                id="sortlikes"
+										                                th:classappend="${!currentURI.endsWith('/posts') ? 'd-none' : ''} +' ' + ${filterOptions.getSortBy() == 'likes' ? 'active' : ''}"
+										                                th:text="#{likes.label}">Likes</a>
 										</li>
 										<li><a class="dropdown-item sort-option" href="#" id="sortcontent"
 										       th:classappend="${filterOptions.getSortBy() == 'content' ? 'active' : ''}"

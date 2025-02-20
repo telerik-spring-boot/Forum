@@ -1,22 +1,24 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-	<meta charset="UTF-8">
-	<title th:text="${post.title}">Post Title</title>
-	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
-	<link href="../../static/css/styles.css" rel="stylesheet" th:href="@{/css/styles.css}"/>
-	<!-- Bootstrap CSS -->
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-	<!-- Bootstrap JS and dependencies -->
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.min.js"></script>
+    <meta charset="UTF-8">
+    <title th:text="${post.title}">Post Title</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <link href="../../static/css/styles.css" rel="stylesheet" th:href="@{/css/styles.css}"/>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-	<script crossorigin="anonymous" src="https://kit.fontawesome.com/a076d05399.js"></script>
-	<style>
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.min.js"></script>
+
+    <script crossorigin="anonymous" src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <style>
         body {
             background-color: #f8f9fa;
         }
@@ -56,16 +58,25 @@
         .comment-box {
             margin-top: 20px;
         }
-	</style>
-</head>
-<body>
+    </style>
 
-<div class="container mt-4">
-	<!-- Post Section -->
-	<div class="post-container">
-		<div class="d-flex">
-			<!-- Voting Section -->
-			<span class="vote-buttons">
+    <th:block th:insert="~{fragments/general-fragments.html :: head('Post Title')}"></th:block>
+
+</head>
+<body class="sb-nav-fixed">
+<nav th:replace="~{fragments/general-fragments.html :: topnav}"></nav>
+<div id="layoutSidenav">
+    <div th:replace="~{fragments/general-fragments.html :: sidenav}"></div>
+    <div id="layoutSidenav_content">
+        <main>
+
+
+            <div class="container mt-4 ">
+                <!-- Post Section -->
+                <div class="post-container">
+                    <div class="d-flex">
+                        <!-- Voting Section -->
+                        <span class="vote-buttons">
                 <a th:href="@{__${requestURI}__/like}">
                     <i class=""
                        th:classappend="${userReaction == 1} ? 'fa-solid fa-up-long text-success' : 'fa-solid fa-arrow-up-long text-dark'"></i>
@@ -77,98 +88,112 @@
                 </a>
             </span>
 
-			<!-- Post Content -->
-			<div>
-				<h3 class="px-4 text-start pb-2 text-content" th:text="${post.title}">Post Title</h3>
-				<p class="text-muted text-content px-4 text-start pb-2" >
-					Posted by <span class="text-content" th:text="${post.creatorUsername}">User</span> on
-					<span class="text-content" th:text="${#temporals.format(post.createdAt, 'dd-MM-yyyy HH:mm')}">Date</span>
-				</p>
-				<span class="text-content" th:text="${post.content}">Post content goes here...</span>
-				<!-- Tag List -->
-				<div class="tags-container px-4 text-start pb-2">
+                        <!-- Post Content -->
+                        <div>
+                            <h3 class="px-4 text-start pb-2 text-content" th:text="${post.title}">Post Title</h3>
+                            <p class="text-muted text-content px-4 text-start pb-2">
+                                Posted by <span class="text-content" th:text="${post.creatorUsername}">User</span> on
+                                <span class="text-content"
+                                      th:text="${#temporals.format(post.createdAt, 'dd-MM-yyyy HH:mm')}">Date</span>
+                            </p>
+                            <span class="text-content" th:text="${post.content}">Post content goes here...</span>
+                            <!-- Tag List -->
+                            <div class="tags-container px-4 text-start pb-2">
                     <span class="tag " th:each="tag : ${post.tags}">
                         <span th:text="${tag}">tag</span>
                     </span>
-				</div>
+                            </div>
 
 
-			</div>
+                        </div>
 
-		</div>
-		<div class="h7-container">
-			<a href="#" th:if="${userIsCreator && !userIsBlocked}" th:href="@{__${requestURI}__/update}"
-			   class="btn btn-primary rounded-pill">Update</a>
-			<a href="#" th:if="${(userIsCreator || userIsAdmin) && !userIsBlocked}"
-			   data-bs-toggle="modal" data-bs-target="#deleteModal"
-			   th:data-href="@{/posts/{id}/delete(id=${post.id})}"
-			   class="btn btn-danger rounded-pill">Delete</a>
-		</div>
-	</div>
+                    </div>
+                    <div class="h7-container">
+                        <a href="#" th:if="${userIsCreator && !userIsBlocked}" th:href="@{__${requestURI}__/update}"
+                           class="btn btn-primary rounded-pill">Update</a>
+                        <a href="#" th:if="${(userIsCreator || userIsAdmin) && !userIsBlocked}"
+                           data-bs-toggle="modal" data-bs-target="#deleteModal"
+                           th:data-href="@{/posts/{id}/delete(id=${post.id})}"
+                           class="btn btn-danger rounded-pill">Delete</a>
+                    </div>
+                </div>
 
 
-	<!-- Delete Modal -->
-	<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					<h5 class="modal-title" id="deleteModalLabel">Are you sure you want to delete this post?</h5>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-					<a href="#" id="confirmDelete" class="btn btn-danger" th:href="@{/posts/{id}/delete(id=${post.id})}">Delete</a>
-				</div>
-			</div>
-		</div>
-	</div>
+                <!-- Delete Modal -->
+                <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <h5 class="modal-title" id="deleteModalLabel">Are you sure you want to delete this
+                                    post?</h5>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <a href="#" id="confirmDelete" class="btn btn-danger"
+                                   th:href="@{/posts/{id}/delete(id=${post.id})}">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-	<div class="container mt-4">
+                <div class="container mt-4">
 
-		<!-- Comment Section -->
-		<h5>Comments</h5>
+                    <!-- Comment Section -->
+                    <h5>Comments</h5>
 
-		<div class="comment-box p-3 bg-light border rounded mb-2" th:classappend="${iterStat.index > 3} ? 'd-none extra-comment' : ''"
-			 th:each="comment, iterStat : ${post.comments}">
-			<p class="text-muted mb-1">
-				<strong th:text="${comment.creatorUsername}">Username</strong>
-				<span th:text="${#temporals.format(comment.createdAt, 'dd-MM-yyyy HH:mm')}">Date</span>
-			</p>
+                    <div class="comment-box p-3 bg-light border rounded mb-2"
+                         th:classappend="${iterStat.index > 3} ? 'd-none extra-comment' : ''"
+                         th:each="comment, iterStat : ${post.comments}">
+                        <p class="text-muted mb-1">
+                            <strong th:text="${comment.creatorUsername}">Username</strong>
+                            <span th:text="${#temporals.format(comment.createdAt, 'dd-MM-yyyy HH:mm')}">Date</span>
+                        </p>
 
-			<!-- Comment content with Show More logic -->
-			<p class="comment-text" style="white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word; margin-bottom: 0;"
-			   th:text="${comment.commentContent}">
-				Comment text...
-			</p>
-			<!-- Show More button -->
-			<button class="btn btn-link show-more-btn" style="display: none;">Show More</button>
-		</div>
+                        <!-- Comment content with Show More logic -->
+                        <p class="comment-text"
+                           style="white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word; margin-bottom: 0;"
+                           th:text="${comment.commentContent}">
+                            Comment text...
+                        </p>
+                        <!-- Show More button -->
+                        <button class="btn btn-link show-more-btn" style="display: none;">Show More</button>
+                    </div>
 
-		<!-- Show More Comments Button (Down Arrow) -->
-		<div class="text-center">
-			<button class="btn btn-link" id="show-more-comments" style="display: none;">
-				<i class="fa fa-arrow-down"></i> Show More Comments
-			</button>
-		</div>
+                    <!-- Show More Comments Button (Down Arrow) -->
+                    <div class="text-center">
+                        <button class="btn btn-link" id="show-more-comments" style="display: none;">
+                            <i class="fa fa-arrow-down"></i> Show More Comments
+                        </button>
+                    </div>
 
-		<!-- Move the comment form BELOW the comments -->
-		<div class="mt-4">
-			<h6>Add a Comment</h6>
-			<form action="#" method="post" th:action="@{__${requestURI}__}" th:object="${commentCreateDto}">
-				<div class="mb-3">
+                    <!-- Move the comment form BELOW the comments -->
+                    <div class="mt-4">
+                        <h6>Add a Comment</h6>
+                        <form action="#" method="post" th:action="@{__${requestURI}__}" th:object="${commentCreateDto}">
+                            <div class="mb-3">
             <textarea class="form-control" id="textarea" placeholder="Write your comment here..." rows="3"
-					  th:classappend="${#fields.hasErrors('content') ? 'is-invalid' : ''}"
-					  th:field="*{content}"></textarea>
-					<div class="invalid-feedback" th:errors="*{content}" th:if="${#fields.hasErrors('content')}"></div>
-				</div>
-				<button class="btn btn-primary" type="submit">Post Comment</button>
-			</form>
-		</div>
-	</div>
-</div>
+                      th:classappend="${#fields.hasErrors('content') ? 'is-invalid' : ''}"
+                      th:field="*{content}"></textarea>
+                                <div class="invalid-feedback" th:errors="*{content}"
+                                     th:if="${#fields.hasErrors('content')}"></div>
+                            </div>
+                            <button class="btn btn-primary" type="submit">Post Comment</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
 
+        </main>
+        <footer th:replace="~{fragments/general-fragments.html :: footer}"></footer>
+
+
+    </div>
+</div>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         // Function to check if the comment exceeds 2 lines
@@ -232,20 +257,20 @@
 </script>
 
 <script>
-	// Initialize modal manually if needed
-	var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    // Initialize modal manually if needed
+    var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
 
-	$('#deleteModal').on('show.bs.modal', function (event) {
-		var button = $(event.relatedTarget);  // This is the button that opened the modal
-		var deleteUrl = button.attr('th:data-href');  // Get the delete URL from the button's data-href attribute
-		var modal = $(this);
-		modal.find('#confirmDelete').attr('href', deleteUrl);  // Set the href for the "Delete" button inside the modal
-	});
+    $('#deleteModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);  // This is the button that opened the modal
+        var deleteUrl = button.attr('th:data-href');  // Get the delete URL from the button's data-href attribute
+        var modal = $(this);
+        modal.find('#confirmDelete').attr('href', deleteUrl);  // Set the href for the "Delete" button inside the modal
+    });
 
 </script>
 
 
-
+<th:block th:insert="~{fragments/general-fragments.html :: scripts}"></th:block>
 
 
 </body>

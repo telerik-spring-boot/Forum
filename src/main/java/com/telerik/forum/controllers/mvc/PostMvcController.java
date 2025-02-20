@@ -279,7 +279,7 @@ public class PostMvcController {
         }
 
         if (bindingResult.hasErrors()) {
-            return "create-post";
+            return "update-post";
         }
 
         try {

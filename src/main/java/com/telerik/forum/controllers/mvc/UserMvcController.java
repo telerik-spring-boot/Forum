@@ -29,12 +29,10 @@ public class UserMvcController {
 
     private final UserService userService;
     private final AuthenticationHelper authenticationHelper;
-    private final UserMapper userMapper;
 
-    public UserMvcController(UserService userService, AuthenticationHelper authenticationHelper, UserMapper userMapper) {
+    public UserMvcController(UserService userService, AuthenticationHelper authenticationHelper) {
         this.userService = userService;
         this.authenticationHelper = authenticationHelper;
-        this.userMapper = userMapper;
     }
 
 

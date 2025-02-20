@@ -71,21 +71,24 @@ public class UserServiceImpl implements UserService {
 
         Page<Post> postsPaged = filterByLikes(postRepository.getPostsWithCommentsByUserId(id, options, pageable), options);
 
+        return new UserPostsPageDisplayDTO(user.getUsername(), user.getId(),
+                injectReaction(postsPaged, userRequest.getId()));
+
+
+    }
+
+    private Page<PostDisplayDTO> injectReaction(Page<Post> postsPaged, int userId) {
         Page<PostDisplayDTO> posts = postsPaged.map(postMapper::postToPostDisplayDTO);
 
         for (int i = 0; i < postsPaged.getContent().size(); i++) {
             posts.getContent().get(i)
                     .setReaction(postsPaged.getContent().get(i).getLikes().stream()
-                            .filter(like -> like.getUser().getId() == userRequest.getId())
+                            .filter(like -> like.getUser().getId() == userId)
                             .map(Like::getReaction).findFirst().orElse(0));
         }
 
-        return new UserPostsPageDisplayDTO(user.getUsername(), user.getId(),
-                posts);
-
-
+        return posts;
     }
-
 
     @Override
     public User getByIdWithComments(int id, FilterCommentOptions options, User userRequest) {
@@ -133,7 +136,9 @@ public class UserServiceImpl implements UserService {
         Page<Post> posts = postRepository.getPostsWithCommentsByUserId(id, postOptions, pageable);
         List<Comment> comments = commentRepository.getByUserId(id, commentOptions);
 
-        posts.forEach(post -> combinedList.add(new PostCommentWrapper(postMapper.postToPostDisplayDTO(post))));
+        Page<PostDisplayDTO> postDisplayDTOS = injectReaction(posts, userRequest.getId());
+        postDisplayDTOS.forEach(post -> combinedList.add(new PostCommentWrapper(post)));
+
         comments.forEach(comment -> combinedList.add(new PostCommentWrapper(comment)));
 
 

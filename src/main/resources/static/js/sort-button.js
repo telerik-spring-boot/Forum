@@ -50,26 +50,4 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-var buttonUp1 = document.getElementById('buttonUp1');
-var buttonUp2 = document.getElementById('buttonUp2');
-if (buttonUp1 && buttonUp2) {
-    var buttonUp1PrevColor = window.getComputedStyle(buttonUp1).color;
-    var buttonUp2PrevColor = window.getComputedStyle(buttonUp2).color;
-
-
-    buttonUp1.addEventListener('click', function () {
-        buttonUp1.classList.add('active');
-        buttonUp1.style.color = 'green'
-        buttonUp2.classList.remove('active');
-        buttonUp2.style.color = buttonUp2PrevColor;
-    });
-
-    buttonUp2.addEventListener('click', function () {
-        buttonUp2.classList.add('active');
-        buttonUp2.style.color = 'red'
-        buttonUp1.classList.remove('active');
-        buttonUp1.style.color = buttonUp1PrevColor;
-
-    });
-}
 

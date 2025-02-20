@@ -304,7 +304,7 @@ public class PostMvcController {
         }catch(UnauthorizedOperationException e){
             model.addAttribute("statusCode", HttpStatus.UNAUTHORIZED.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
-            return "ErrorView";
+            return "401";
         }
 
     }
@@ -329,7 +329,7 @@ public class PostMvcController {
         }catch(UnauthorizedOperationException e){
             model.addAttribute("statusCode", HttpStatus.UNAUTHORIZED.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
-            return "ErrorView";
+            return "401";
         }
     }
 

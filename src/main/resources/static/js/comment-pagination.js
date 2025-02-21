@@ -1,4 +1,3 @@
-// pagination.js
 document.addEventListener("DOMContentLoaded", function () {
     const commentsPerPage = 5;
     const comments = document.querySelectorAll("#comments-container .comment-box");
@@ -6,6 +5,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const paginationControls = document.getElementById("pagination-controls");
 
     function showPage(pageNumber) {
+        // Ensure pageNumber is within valid bounds
+        if (pageNumber < 0 || pageNumber >= totalPages) return;
+
         // Hide all comments
         comments.forEach(comment => comment.style.display = "none");
 
@@ -26,9 +28,11 @@ document.addEventListener("DOMContentLoaded", function () {
         // Create "Previous" button
         const prevButton = document.createElement("li");
         prevButton.classList.add("page-item");
-        prevButton.classList.toggle("disabled", currentPage === 0);
+        prevButton.classList.toggle("disabled", currentPage === 0); // Disable on first page
         prevButton.innerHTML = `<a class="page-link" href="#">Previous</a>`;
-        prevButton.addEventListener("click", () => showPage(currentPage - 1));
+        prevButton.addEventListener("click", () => {
+            if (currentPage > 0) showPage(currentPage - 1); // Only show if not on the first page
+        });
         paginationControls.appendChild(prevButton);
 
         // Create a button for the first page
@@ -74,9 +78,11 @@ document.addEventListener("DOMContentLoaded", function () {
         // Create "Next" button
         const nextButton = document.createElement("li");
         nextButton.classList.add("page-item");
-        nextButton.classList.toggle("disabled", currentPage === totalPages - 1);
+        nextButton.classList.toggle("disabled", currentPage === totalPages - 1); // Disable on last page
         nextButton.innerHTML = `<a class="page-link" href="#">Next</a>`;
-        nextButton.addEventListener("click", () => showPage(currentPage + 1));
+        nextButton.addEventListener("click", () => {
+            if (currentPage < totalPages - 1) showPage(currentPage + 1); // Only show if not on the last page
+        });
         paginationControls.appendChild(nextButton);
     }
 

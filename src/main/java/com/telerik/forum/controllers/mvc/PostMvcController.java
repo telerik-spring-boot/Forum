@@ -117,11 +117,12 @@ public class PostMvcController {
         PostDisplayDTO postToDisplay = postMapper.postToPostDisplayDTO(post);
         model.addAttribute("post", postToDisplay);
 
-        if (post.getUser().equals(user)) {
-            model.addAttribute("userIsCreator",true);
-        }else{
-            model.addAttribute("userIsCreator",false);
-        }
+//        if (post.getUser().equals(user)) {
+//            model.addAttribute("userIsCreator",true);
+//        }else{
+//            model.addAttribute("userIsCreator",false);
+//        }
+        model.addAttribute("sessionUserId", user.getId());
 
         if(user.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN")))
         {

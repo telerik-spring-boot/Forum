@@ -15,17 +15,29 @@
 						<div class="card shadow-lg border-0 rounded-lg">
 							<div class="card-header"><h3 class="text-center font-weight-light my-4"
 							                             th:text="#{user.settings.label}">User Settings</h3></div>
-							<div class="card-body text-center">
+							<div class="card-body">
 
-								<img alt="Profile Picture"
-								     class="rounded-circle border mb-3 profile-picture"
-								     th:src="@{/img/profile-icon-png-893.png}">
+								<form action="#" id="deleteUser" method="post"
+								      onsubmit="return confirm('Are you sure you want to delete this user?');"
+								      th:action="@{/users/{id}(id=${userId})}">
+									<input name="_method" type="hidden" value="delete"/>
+									<input name="fromAdmin" type="hidden" value="false">
+									<div class="d-flex justify-content-end">
+										<button class="btn btn-outline-danger rounded-pill text-end" type="submit"><i
+												class="fas fa-trash"></i></button>
+									</div>
+								</form>
 
-								<form action="#" id="updateForm" method="post"
+								<form action="#" class="text-center" id="updateForm" method="post"
 								      th:action="@{__${requestURI}__}" th:object="${userUpdate}">
 									<input name="_method" type="hidden" value="put"/>
 									<input name="username" th:value="${userUpdate.username}" type="hidden"/>
-									<div class="form-floating mb-3">
+
+
+									<img alt="Profile Picture"
+									     class="rounded-circle border mb-3 profile-picture ms-auto"
+									     th:src="@{/img/profile-icon-png-893.png}">
+									<div class="form-floating mb-3 mt-4">
 										<input class="form-control" disabled id="username"
 										       placeholder="Username"
 										       type="text"

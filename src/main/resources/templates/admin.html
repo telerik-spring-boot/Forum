@@ -125,8 +125,8 @@
 													</form>
 												</li>
 												<li>
-													<form class="d-inline" method="post"
-													      th:action="@{/users/{id}(id=${user.id})}">
+													<form class="d-inline" method="get"
+													      th:action="@{/users/{id}/settings(id=${user.id})}">
 														<input name="_method" type="hidden" value="put"/>
 														<button class="dropdown-item"
 														        type="submit"><span
@@ -135,9 +135,10 @@
 													</form>
 												</li>
 												<li>
-													<form class="d-inline" method="post"
-													      th:action="@{/users/{id}(id=${user.id})}">
+													<form class="d-inline" method="get"
+													      th:action="@{/users/{id}/delete(id=${user.id})}">
 														<input name="_method" type="hidden" value="delete"/>
+														<input name="fromAdmin" type="hidden" value="true">
 														<button class="dropdown-item"
 														        type="submit"><span
 																th:text="#{delete.label}">Delete</span>
@@ -151,6 +152,23 @@
 							</tr>
 							</tbody>
 						</table>
+					</div>
+				</div>
+			</div>
+			<div aria-hidden="true" aria-labelledby="successModalLabel" class="modal fade" id="successModal"
+			     tabindex="-1">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="successModalLabel">Success</h5>
+							<button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+						</div>
+						<div class="modal-body">
+							<span th:if="${successfulDeletion}" th:text="#{user.delete.success}"> </span>
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -177,6 +195,11 @@
 ></script>
 <script src="../static/js/datatables-simple-demo.js"
         th:src="@{/js/datatables-simple-demo.js}"></script>
+
+<script th:if="${successfulDeletion}" type="text/javascript">
+    var modal = new bootstrap.Modal(document.getElementById('successModalLabel'));
+    modal.show();
+</script>
 
 <th:block th:replace="~{fragments/general-fragments.html :: scripts}"></th:block>
 </body>

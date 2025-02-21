@@ -150,6 +150,7 @@ public class UserMvcController {
             }
 
             model.addAttribute("userUpdate", userUpdate);
+            model.addAttribute("userId", user.getId());
             model.addAttribute("requestURI", request.getRequestURI());
             model.addAttribute("token", jwtUtil.generateToken(userUpdate.getUsername()));
 
@@ -189,6 +190,23 @@ public class UserMvcController {
         } catch (DuplicateEntityException e) {
             bindingResult.rejectValue("email", "exist-email.error", e.getMessage());
             return "user-settings";
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public String handleDeletion(@PathVariable int id, @RequestParam boolean fromAdmin, HttpSession session, RedirectAttributes redirectAttributes) {
+
+
+        User user = authenticationHelper.tryGetUserMvc(session);
+
+        userService.delete(id, user);
+
+        redirectAttributes.addFlashAttribute("successfulDeletion", true);
+
+        if (fromAdmin) {
+            return "redirect:/admin";
+        } else {
+            return "redirect:/home";
         }
     }
 

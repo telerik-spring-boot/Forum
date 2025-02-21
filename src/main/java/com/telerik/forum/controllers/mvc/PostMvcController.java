@@ -190,7 +190,7 @@ public class PostMvcController {
         }
     }
 
-    @GetMapping("/new")
+    @GetMapping()
     public String showNewPostForm(Model model, HttpSession session) {
 
         try {
@@ -204,7 +204,7 @@ public class PostMvcController {
         return "create-post";
     }
 
-    @PostMapping("/new")
+    @PostMapping()
     public String createPost(@Valid @ModelAttribute("postCreateDTO") PostCreateDTO postCreateDTO,
                              BindingResult bindingResult,
                              @Valid @ModelAttribute("tagCreateDTO") TagCreateAndDeleteMvcDTO tagCreateDTO,

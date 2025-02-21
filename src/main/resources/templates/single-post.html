@@ -1,77 +1,77 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<head>
+<!--<head>-->
 
-    <meta charset="UTF-8">
-    <title th:text="${post.title}">Post Title</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
-    <link href="../../static/css/styles.css" rel="stylesheet" th:href="@{/css/styles.css}"/>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet">
+<!--    <meta charset="UTF-8">-->
+<!--    <title th:text="${post.title}">Post Title</title>-->
+<!--    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">-->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">-->
+<!--    <link href="../../static/css/styles.css" rel="stylesheet" th:href="@{/css/styles.css}"/>-->
+<!--    &lt;!&ndash; Bootstrap CSS &ndash;&gt;-->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet">-->
 
-    <!-- Bootstrap JS and dependencies -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.min.js"></script>
+<!--    &lt;!&ndash; Bootstrap JS and dependencies &ndash;&gt;-->
+<!--    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>-->
+<!--    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>-->
+<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.min.js"></script>-->
 
-    <script crossorigin="anonymous" src="https://kit.fontawesome.com/a076d05399.js"></script>
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
 
-        .post-container {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-        }
+<!--    <style>-->
+<!--        body {-->
+<!--            background-color: #f8f9fa;-->
+<!--        }-->
 
-        .comment {
-            margin-left: 40px;
-            padding: 10px;
-            border-left: 2px solid #ddd;
-            margin-top: 10px;
-        }
+<!--        .post-container {-->
+<!--            background: white;-->
+<!--            padding: 20px;-->
+<!--            border-radius: 10px;-->
+<!--            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);-->
+<!--            margin-bottom: 20px;-->
+<!--        }-->
 
-        .vote-buttons {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-right: 15px;
-        }
+<!--        .comment {-->
+<!--            margin-left: 40px;-->
+<!--            padding: 10px;-->
+<!--            border-left: 2px solid #ddd;-->
+<!--            margin-top: 10px;-->
+<!--        }-->
 
-        .vote-buttons button {
-            border: none;
-            background: none;
-            cursor: pointer;
-        }
+<!--        .vote-buttons {-->
+<!--            display: flex;-->
+<!--            flex-direction: column;-->
+<!--            align-items: center;-->
+<!--            margin-right: 15px;-->
+<!--        }-->
 
-        .vote-buttons .fa {
-            font-size: 1.5em;
-        }
+<!--        .vote-buttons button {-->
+<!--            border: none;-->
+<!--            background: none;-->
+<!--            cursor: pointer;-->
+<!--        }-->
 
-        .comment-box {
-            margin-top: 20px;
-        }
-    </style>
+<!--        .vote-buttons .fa {-->
+<!--            font-size: 1.5em;-->
+<!--        }-->
 
-    <th:block th:insert="~{fragments/general-fragments.html :: head('Post Title')}"></th:block>
+<!--        .comment-box {-->
+<!--            margin-top: 20px;-->
+<!--        }-->
+<!--    </style>-->
 
-</head>
+<head th:replace="~{fragments/general-fragments.html :: head('Post')}"></head>
+
+<!--</head>-->
 <body class="sb-nav-fixed">
 <nav th:replace="~{fragments/general-fragments.html :: topnav}"></nav>
 <div id="layoutSidenav">
     <div th:replace="~{fragments/general-fragments.html :: sidenav}"></div>
     <div id="layoutSidenav_content">
-        <main>
+        <main class="h-100 pb-3">
 
 
-            <div class="container mt-4 ">
+            <div class="container-fluid px-4">
                 <!-- Post Section -->
                 <div class="post-container">
                     <div class="d-flex">
@@ -147,8 +147,7 @@
                     <h5>Comments</h5>
 
                     <div class="comment-box p-3 bg-light border rounded mb-2"
-                         th:classappend="${iterStat.index > 3} ? 'd-none extra-comment' : ''"
-                         th:each="comment, iterStat : ${post.comments}">
+                         th:each="comment: ${post.comments}">
                         <p class="text-muted mb-1">
                             <strong th:text="${comment.creatorUsername}">Username</strong>
                             <span th:text="${#temporals.format(comment.createdAt, 'dd-MM-yyyy HH:mm')}">Date</span>
@@ -160,118 +159,110 @@
                            th:text="${comment.commentContent}">
                             Comment text...
                         </p>
-                        <!-- Show More button -->
-                        <button class="btn btn-link show-more-btn" style="display: none;">Show More</button>
+                        <!--                        &lt;!&ndash; Show More button &ndash;&gt;-->
+                        <!--                        <button class="btn btn-link show-more-btn" style="display: none;">Show More</button>-->
                     </div>
 
-                    <!-- Show More Comments Button (Down Arrow) -->
-                    <div class="text-center">
-                        <button class="btn btn-link" id="show-more-comments" style="display: none;">
-                            <i class="fa fa-arrow-down"></i> Show More Comments
-                        </button>
-                    </div>
+                    <!--                    &lt;!&ndash; Show More Comments Button (Down Arrow) &ndash;&gt;-->
+                    <!--                    <div class="text-center">-->
+                    <!--                        <button class="btn btn-link" id="show-more-comments" style="display: none;">-->
+                    <!--                            <i class="fa fa-arrow-down"></i> Show More Comments-->
+                    <!--                        </button>-->
+                    <!--                    </div>-->
 
                     <!-- Move the comment form BELOW the comments -->
-                    <div class="mt-4">
-                        <h6>Add a Comment</h6>
-                        <form action="#" method="post" th:action="@{__${requestURI}__}" th:object="${commentCreateDto}">
-                            <div class="mb-3">
-            <textarea class="form-control" id="textarea" placeholder="Write your comment here..." rows="3"
-                      th:classappend="${#fields.hasErrors('content') ? 'is-invalid' : ''}"
-                      th:field="*{content}"></textarea>
-                                <div class="invalid-feedback" th:errors="*{content}"
-                                     th:if="${#fields.hasErrors('content')}"></div>
-                            </div>
-                            <button class="btn btn-primary" type="submit">Post Comment</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
 
+                </div>
+
+            </div>
         </main>
         <footer th:replace="~{fragments/general-fragments.html :: footer}"></footer>
 
-
     </div>
+
+
+
 </div>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        // Function to check if the comment exceeds 2 lines
-        function checkCommentLength(comment) {
-            const lineHeight = parseInt(window.getComputedStyle(comment).lineHeight, 10); // Get line height of the text
-            const maxHeight = lineHeight * 2; // Allow 2 lines of text
-
-            return comment.scrollHeight > maxHeight; // Check if the text is taller than 2 lines
-        }
-
-        // Check if we have more than 4 comments, and show the "Show More Comments" button
-        const comments = document.querySelectorAll(".comment-box");
-        const showMoreButton = document.getElementById("show-more-comments");
-
-        if (comments.length > 4) {
-            showMoreButton.style.display = "block"; // Show the down arrow
-        } else {
-            showMoreButton.style.display = "none"; // Hide the down arrow if there are 4 or fewer comments
-        }
 
 
-        // Process each comment
-        comments.forEach(comment => {
-            let commentText = comment.querySelector(".comment-text");
-            let originalText = commentText.innerText.trim(); // Original comment text
-            let shortText = originalText.split("\n").slice(0, 2).join("\n"); // Shorten to two lines
 
-            // Check if the comment is longer than 2 lines
-            if (checkCommentLength(commentText)) {
-                commentText.innerText = shortText + "..."; // Show only 2 lines of text
-                let showMoreBtn = comment.querySelector(".show-more-btn");
-                showMoreBtn.style.display = "inline"; // Show the "Show More" button
+<!--<script>-->
+<!--    document.addEventListener("DOMContentLoaded", function () {-->
+<!--        // Function to check if the comment exceeds 2 lines-->
+<!--        function checkCommentLength(comment) {-->
+<!--            const lineHeight = parseInt(window.getComputedStyle(comment).lineHeight, 10); // Get line height of the text-->
+<!--            const maxHeight = lineHeight * 2; // Allow 2 lines of text-->
 
-                // Toggle the full text on button click
-                showMoreBtn.addEventListener("click", function () {
-                    if (commentText.innerText === shortText + "...") {
-                        commentText.innerText = originalText; // Show the full comment
-                        showMoreBtn.innerText = "Show Less"; // Change button text to "Show Less"
-                    } else {
-                        commentText.innerText = shortText + "..."; // Show only 2 lines again
-                        showMoreBtn.innerText = "Show More"; // Change button text to "Show More"
-                    }
-                });
-            } else {
-                // Hide the "Show More" button if the comment doesn't exceed 2 lines
-                let showMoreBtn = comment.querySelector(".show-more-btn");
-                if (showMoreBtn) {
-                    showMoreBtn.style.display = "none";
-                }
-            }
-        });
+<!--            return comment.scrollHeight > maxHeight; // Check if the text is taller than 2 lines-->
+<!--        }-->
 
-        // Show More Comments functionality (Down Arrow)
-        showMoreButton.addEventListener("click", function () {
-            document.querySelectorAll(".extra-comment").forEach(comment => {
-                comment.classList.remove("d-none");
-            });
-            this.style.display = "none"; // Hide the button after clicking
-        });
-    });
-</script>
+<!--        // Check if we have more than 4 comments, and show the "Show More Comments" button-->
+<!--        const comments = document.querySelectorAll(".comment-box");-->
+<!--        const showMoreButton = document.getElementById("show-more-comments");-->
 
-<script>
-    // Initialize modal manually if needed
-    var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
-
-    $('#deleteModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget);  // This is the button that opened the modal
-        var deleteUrl = button.attr('th:data-href');  // Get the delete URL from the button's data-href attribute
-        var modal = $(this);
-        modal.find('#confirmDelete').attr('href', deleteUrl);  // Set the href for the "Delete" button inside the modal
-    });
-
-</script>
+<!--        if (comments.length > 4) {-->
+<!--            showMoreButton.style.display = "block"; // Show the down arrow-->
+<!--        } else {-->
+<!--            showMoreButton.style.display = "none"; // Hide the down arrow if there are 4 or fewer comments-->
+<!--        }-->
 
 
-<th:block th:insert="~{fragments/general-fragments.html :: scripts}"></th:block>
+<!--        // Process each comment-->
+<!--        comments.forEach(comment => {-->
+<!--            let commentText = comment.querySelector(".comment-text");-->
+<!--            let originalText = commentText.innerText.trim(); // Original comment text-->
+<!--            let shortText = originalText.split("\n").slice(0, 2).join("\n"); // Shorten to two lines-->
 
+<!--            // Check if the comment is longer than 2 lines-->
+<!--            if (checkCommentLength(commentText)) {-->
+<!--                commentText.innerText = shortText + "..."; // Show only 2 lines of text-->
+<!--                let showMoreBtn = comment.querySelector(".show-more-btn");-->
+<!--                showMoreBtn.style.display = "inline"; // Show the "Show More" button-->
+
+<!--                // Toggle the full text on button click-->
+<!--                showMoreBtn.addEventListener("click", function () {-->
+<!--                    if (commentText.innerText === shortText + "...") {-->
+<!--                        commentText.innerText = originalText; // Show the full comment-->
+<!--                        showMoreBtn.innerText = "Show Less"; // Change button text to "Show Less"-->
+<!--                    } else {-->
+<!--                        commentText.innerText = shortText + "..."; // Show only 2 lines again-->
+<!--                        showMoreBtn.innerText = "Show More"; // Change button text to "Show More"-->
+<!--                    }-->
+<!--                });-->
+<!--            } else {-->
+<!--                // Hide the "Show More" button if the comment doesn't exceed 2 lines-->
+<!--                let showMoreBtn = comment.querySelector(".show-more-btn");-->
+<!--                if (showMoreBtn) {-->
+<!--                    showMoreBtn.style.display = "none";-->
+<!--                }-->
+<!--            }-->
+<!--        });-->
+
+<!--        // Show More Comments functionality (Down Arrow)-->
+<!--        showMoreButton.addEventListener("click", function () {-->
+<!--            document.querySelectorAll(".extra-comment").forEach(comment => {-->
+<!--                comment.classList.remove("d-none");-->
+<!--            });-->
+<!--            this.style.display = "none"; // Hide the button after clicking-->
+<!--        });-->
+<!--    });-->
+<!--</script>-->
+
+<!--<script>-->
+<!--    // Initialize modal manually if needed-->
+<!--    // var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));-->
+
+<!--    $('#deleteModal').on('show.bs.modal', function (event) {-->
+<!--        var button = $(event.relatedTarget);  // This is the button that opened the modal-->
+<!--        var deleteUrl = button.attr('th:data-href');  // Get the delete URL from the button's data-href attribute-->
+<!--        var modal = $(this);-->
+<!--        modal.find('#confirmDelete').attr('href', deleteUrl);  // Set the href for the "Delete" button inside the modal-->
+<!--    });-->
+
+<!--</script>-->
+
+
+<th:block th:replace="~{fragments/general-fragments.html :: scripts}"></th:block>
 
 </body>
 </html>

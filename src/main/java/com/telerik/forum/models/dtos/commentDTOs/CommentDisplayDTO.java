@@ -1,6 +1,7 @@
 package com.telerik.forum.models.dtos.commentDTOs;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.time.LocalDateTime;
 
@@ -11,16 +12,28 @@ public class CommentDisplayDTO {
 
     private String commentContent;
 
+    @JsonIgnore
+    public int creatorId;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm '['dd-MM-yyyy']'")
     public LocalDateTime createdAt;
 
     public CommentDisplayDTO() {
     }
 
-    public CommentDisplayDTO(String creatorUsername, String commentContent, LocalDateTime createdAt) {
+    public CommentDisplayDTO(String creatorUsername, String commentContent, int creatorId, LocalDateTime createdAt) {
         this.creatorUsername = creatorUsername;
         this.commentContent = commentContent;
+        this.creatorId = creatorId;
         this.createdAt = createdAt;
+    }
+
+    public int getCreatorId() {
+        return creatorId;
+    }
+
+    public void setCreatorId(int creatorId) {
+        this.creatorId = creatorId;
     }
 
     public String getCreatorUsername() {

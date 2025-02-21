@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Component
@@ -74,6 +75,9 @@ public class PostMapper {
         for (Comment comment : post.getComments()) {
             commentDTOS.add(commentToCommentDisplayDTO(comment));
         }
+
+        commentDTOS.sort(Comparator.comparing(CommentDisplayDTO::getCreatedAt));
+
         postDTO.setComments(commentDTOS);
 
         return postDTO;
@@ -86,6 +90,7 @@ public class PostMapper {
         commentDTO.setCommentContent(comment.getContent());
         commentDTO.setCreatorUsername(comment.getUser().getUsername());
         commentDTO.setCreatedAt(comment.getCreatedAt());
+        commentDTO.setCreatorId(comment.getUser().getId());
 
         return commentDTO;
     }

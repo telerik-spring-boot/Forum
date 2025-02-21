@@ -70,7 +70,7 @@ public class PostMvcController {
         if (bindingResult.hasErrors()) {
             extracted(postId, model, user);
 //            return "single-post-updated";
-            return "single-page-updated-thin";
+            return "single-post";
         }
 
         try {
@@ -105,7 +105,7 @@ public class PostMvcController {
             model.addAttribute("userId", user.getId());
 
             //return "single-post-updated";
-            return "single-page-updated-thin";
+            return "single-post";
 
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());

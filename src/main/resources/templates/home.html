@@ -33,7 +33,7 @@
 
     <ul class="navbar-nav d-flex w-100 align-items-center justify-content-start">
         <li class="nav-item px-3 me-auto">
-            <a class="nav-link d-flex align-items-center" href="search.html" th:href="@{/search}">
+            <a class="nav-link d-flex align-items-center" href="home.html" th:href="@{/home}">
                 <img alt="Logo" class="me-2" id="logo" src="../static/favicon.ico"
                      th:src="@{/favicon.ico}"/>
                 <span class="pt-1" th:text="#{roamify.label}"> Roamify  </span></a
@@ -120,28 +120,28 @@
 
                     <div class="nav mt-3">
                         <div class="sb-sidenav-menu-heading"><span th:text="#{core.label}"> Core </span></div>
-                        <a class="nav-link btn btn-dark" href="search.html" th:href="@{/search}">
+                        <a class="nav-link btn btn-dark" href="home.html" th:href="@{/home}">
                             <div class="sb-nav-link-icon">
                                 <i class="fas fa-home"></i>
                             </div>
                             <span th:text="#{home.label}">Home</span>
                         </a>
 
-                        <a class="nav-link btn btn-dark" href="search.html" th:href="@{/search/trending}">
+                        <a class="nav-link btn btn-dark" href="home.html" th:href="@{/home/trending}">
                             <div class="sb-nav-link-icon">
                                 <i class="fas fa-arrow-trend-up"></i>
                             </div>
                             <span th:text="#{trending.label}"> Trending </span>
                         </a>
 
-                        <a class="nav-link btn btn-dark" href="search.html" th:href="@{/search/users}">
+                        <a class="nav-link btn btn-dark" href="home.html" th:href="@{/home/users}">
                             <div class="sb-nav-link-icon">
                                 <i class="fas fa-user-friends"></i>
                             </div>
                             <span th:text="#{browse.label}"> Browse </span>
                         </a>
 
-                        <a class="nav-link btn btn-dark" href="search.html" th:href="@{/search/latest}">
+                        <a class="nav-link btn btn-dark" href="home.html" th:href="@{/home/latest}">
                             <div class="sb-nav-link-icon">
                                 <i class="fas fa-clock-rotate-left"></i>
                             </div>

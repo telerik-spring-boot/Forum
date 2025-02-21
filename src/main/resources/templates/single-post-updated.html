@@ -51,6 +51,8 @@
                                    th:data-href="@{/posts/{id}/delete(id=${post.id})}"
                                    class="btn btn-danger btn-sm rounded-pill">Delete</a>
                             </div>
+
+
                         </div>
 
 
@@ -76,6 +78,29 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="d-flex gap-3 pt-2">
+                            <div class="d-flex align-items-center border border-1 border-dark  rounded-pill"
+                                 id="buttonGroup1">
+                                <a class="btn btn-outline-dark border-0 rounded-circle w-30 voteUp"
+                                   th:href="@{/posts/{id}/like(id=${post.id})}">
+                                    <i class="fas fa-arrow-up"
+                                       id="buttonUp1"
+                                       th:classappend="${userReaction == 1} ? 'text-success' : ''"></i>
+                                </a>
+                                <span class="w-40 px-1 text-black fontsize08"
+                                      th:text="${post.likes}">152</span>
+
+                                <a class="btn btn-outline-dark border-0 rounded-circle w-30 voteDown"
+                                   id="buttonDown1"
+                                   th:href="@{/posts/{id}/dislike(id=${post.id})}">
+                                    <i class="fas fa-arrow-down justify-content-center"
+                                       th:classappend="${userReaction == -1} ? 'text-danger' : ''"> </i>
+                                </a>
+                            </div>
+
+                        </div>
+
 
 
 

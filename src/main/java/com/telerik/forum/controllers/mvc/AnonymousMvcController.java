@@ -96,7 +96,7 @@ public class AnonymousMvcController {
             user.setLastLogin(LocalDateTime.now());
             userService.update(user, user);
 
-            return "redirect:/search";
+            return "redirect:/home";
 
         } catch (UnauthorizedOperationException e) {
             bindingResult.rejectValue("username", "error.login", e.getMessage());
@@ -108,7 +108,7 @@ public class AnonymousMvcController {
     @GetMapping("/auth/logout")
     public String handleLogout(HttpSession session) {
         session.invalidate();
-        return "redirect:/search";
+        return "redirect:/home";
     }
 
     @GetMapping("/auth/register")
@@ -249,7 +249,7 @@ public class AnonymousMvcController {
             model.addAttribute("userId", userService.getByUsername((String) session.getAttribute("currentUser")).getId());
         }
 
-        
+
         FilterPostOptions filterPostOptions = new FilterPostOptions(null,
                 searchTerm, null, null, null, null, null, null);
         List<Post> foundPosts = postService.getAllPostsWithFilters(filterPostOptions);

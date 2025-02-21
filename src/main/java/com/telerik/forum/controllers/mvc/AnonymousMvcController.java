@@ -60,7 +60,7 @@ public class AnonymousMvcController {
         this.postMapper = postMapper;
     }
 
-    @ModelAttribute("requestURI")
+    @ModelAttribute("currentURI")
     public String requestURI(final HttpServletRequest request) {
         return request.getRequestURI();
     }
@@ -271,6 +271,7 @@ public class AnonymousMvcController {
 
         model.addAttribute("commentCreateDto", new CommentCreateDTO());
 
+        //return "home-updated";
         return "home";
     }
 

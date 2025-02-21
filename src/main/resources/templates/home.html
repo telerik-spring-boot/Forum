@@ -275,7 +275,7 @@
 									     id="buttonGroup1">
 										<a class="btn btn-outline-dark border-0 rounded-circle w-30 voteUp"
 										   id="buttonUp1"
-										   th:href="@{/posts/{id}/like(id=${post.id}, url=${requestURI})}">
+										   th:href="@{/posts/{id}/like(id=${post.id}, url=${currentURI})}">
 											<i class="fas fa-arrow-up"></i>
 										</a>
 										<span class="w-40 px-1 text-black " style="font-size:0.75rem;"
@@ -283,7 +283,7 @@
 
 										<a class="btn btn-outline-dark border-0 rounded-circle w-30 voteDown"
 										   id="buttonUp2"
-										   th:href="@{/posts/{id}/dislike(id=${post.id}, url=${requestURI})}">
+										   th:href="@{/posts/{id}/dislike(id=${post.id}, url=${currentURI})}">
 											<i class="fas fa-arrow-down justify-content-center"> </i>
 										</a>
 									</div>
@@ -333,19 +333,15 @@
 												<div class="mt-4">
 													<h6>Add a Comment</h6>
 													<form action="#" method="post"
-													      th:action="@{/posts/{id}(id=${post.id}, url=${requestURI})}"
+													      th:action="@{/posts/{id}(id=${post.id}, url=${currentURI})}"
 													      th:object="${commentCreateDto}">
 
 														<div class="mb-3">
                                 <textarea class="form-control" maxlength="200" minlength="1"
                                           placeholder="Write your comment here..."
                                           required
-                                          rows="3" th:classappend="${#fields.hasErrors('content') ? 'is-invalid' : ''}" th:field="*{content}">
+                                          rows="3" th:field="*{content}">
                                 </textarea>
-															<!-- Error Message -->
-															<div class="invalid-feedback" th:errors="*{content}"
-															     th:if="${#fields.hasErrors('content')}"></div>
-														</div>
 
 														<!-- Move the button to the footer -->
 														<div class="modal-footer">

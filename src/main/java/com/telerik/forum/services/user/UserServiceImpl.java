@@ -156,28 +156,31 @@ public class UserServiceImpl implements UserService {
 
 
         if (postOptions.getSortBy().isPresent()) {
-            switch (postOptions.getSortBy().toString()) {
+            System.out.println("Sorted by: " + postOptions.getSortBy().get());
+            switch (postOptions.getSortBy().get()) {
                 case "content":
                     combinedList.sort((a, b) -> {
                         if (a.getPost() != null) {
                             if (b.getPost() != null) {
-                                return b.getPost().getContent().compareTo(a.getPost().getContent());
+                                return a.getPost().getContent().compareTo(b.getPost().getContent());
                             } else
-                                return b.getComment().getContent().compareTo(a.getPost().getContent());
+                                return a.getPost().getContent().compareTo(b.getComment().getContent());
                         } else {
                             if (b.getPost() != null) {
-                                return b.getPost().getContent().compareTo(a.getComment().getContent());
+                                return a.getComment().getContent().compareTo(b.getPost().getContent());
                             } else
-                                return b.getComment().getContent().compareTo(a.getComment().getContent());
+                                return a.getComment().getContent().compareTo(b.getComment().getContent());
 
                         }
                     });
                     break;
                 case "createdAt":
-                    combinedList.sort(Comparator.comparing(PostCommentWrapper::getCreatedAt));
+                    combinedList.sort(Comparator.comparing(PostCommentWrapper::getCreatedAt).reversed());
                     break;
             }
-        } else combinedList.sort(Comparator.comparing(PostCommentWrapper::getCreatedAt));
+        } else combinedList.sort(Comparator.comparing(PostCommentWrapper::getCreatedAt).reversed());
+
+
 
         user.setEntities(combinedList);
         user.setUsername(getById(id, userRequest).getUsername());

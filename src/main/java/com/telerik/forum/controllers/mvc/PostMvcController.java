@@ -69,7 +69,8 @@ public class PostMvcController {
 
         if (bindingResult.hasErrors()) {
             extracted(postId, model, user);
-            return "single-post-updated";
+//            return "single-post-updated";
+            return "single-page-updated-thin";
         }
 
         try {
@@ -103,8 +104,9 @@ public class PostMvcController {
             model.addAttribute("commentCreateDto", new CommentCreateDTO());
             model.addAttribute("userId", user.getId());
 
-            return "single-post-updated";
-            //return "single-post";
+            //return "single-post-updated";
+            return "single-page-updated-thin";
+
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
@@ -117,11 +119,12 @@ public class PostMvcController {
         PostDisplayDTO postToDisplay = postMapper.postToPostDisplayDTO(post);
         model.addAttribute("post", postToDisplay);
 
-        if (post.getUser().equals(user)) {
-            model.addAttribute("userIsCreator",true);
-        }else{
-            model.addAttribute("userIsCreator",false);
-        }
+//        if (post.getUser().equals(user)) {
+//            model.addAttribute("userIsCreator",true);
+//        }else{
+//            model.addAttribute("userIsCreator",false);
+//        }
+        model.addAttribute("sessionUserId", user.getId());
 
         if(user.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN")))
         {

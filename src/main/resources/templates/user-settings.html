@@ -20,8 +20,8 @@
 								<form action="#" id="deleteUser" method="post"
 								      onsubmit="return confirm('Are you sure you want to delete this user?');"
 								      th:action="@{/users/{id}(id=${userUpdate.id})}">
-									<input name="_method" type="hidden" value="delete"/>
-									<input name="fromAdmin" type="hidden" value="false">
+									<input name="_method" th:value="delete" type="hidden"/>
+									<input name="fromAdmin" th:value="${userUpdate.id != userId}" type="hidden">
 									<div class="d-flex justify-content-end">
 										<button class="btn btn-outline-danger rounded-pill text-end" type="submit"><i
 												class="fas fa-trash"></i></button>
@@ -30,7 +30,7 @@
 
 								<form action="#" class="text-center" id="updateForm" method="post"
 								      th:action="@{__${requestURI}__}" th:object="${userUpdate}">
-									<input name="_method" type="hidden" value="put"/>
+									<input name="_method" th:value="put" type="hidden"/>
 									<input name="username" th:value="${userUpdate.username}" type="hidden"/>
 
 

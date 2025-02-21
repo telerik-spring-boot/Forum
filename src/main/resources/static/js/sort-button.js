@@ -49,13 +49,30 @@ document.addEventListener("DOMContentLoaded", function () {
     updateApplyButtonVisibility();
 });
 
+document.addEventListener('show.bs.modal', function (event) {
+    // 'event.target' refers to the modal that is being shown
+    var myModal = document.querySelector('.modal');
+    myModal.classList.add('no-redirect');
+});
+
 document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".clickable-entity").forEach(button => {
         button.addEventListener("click", function () {
-            window.location.href = this.getAttribute('redirect-link');
+
+            var isModalActive = document.querySelector('.modal.show');
+            var myModal = document.querySelector('.modal');
+
+            if (isModalActive) {
+                return;
+            }
+
+            if (myModal.classList.contains('no-redirect')) {
+                myModal.classList.remove('no-redirect');
+            } else window.location.href = this.getAttribute('redirect-link');
         });
     });
 });
+
 
 
 

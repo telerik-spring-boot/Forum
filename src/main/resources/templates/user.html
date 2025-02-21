@@ -198,9 +198,51 @@
 											</a>
 										</div>
 
-										<div class="btn btn-outline-dark rounded-pill d-flex align-items-center gap-1">
+										<div class="btn btn-outline-dark rounded-pill d-flex align-items-center gap-1"
+										     data-bs-toggle="modal"
+										     onclick="event.stopPropagation(); event.preventDefault();"
+										     th:data-bs-target="'#commentModal_' + ${post.id}">
 											<i class="fas fa-comment"> </i>
 											<span class="ps-1 fontsize08" th:text="${post.comments.size()}"></span>
+										</div>
+									</div>
+									<!--Comment Modal-->
+									<div aria-hidden="true" class="modal fade" tabindex="-1"
+									     th:id="'commentModal_' + ${post.id}">
+										<div class="modal-dialog">
+											<div class="modal-content">
+												<div class="modal-header">
+													<button aria-label="Close" class="btn-close" data-bs-dismiss="modal"
+													        type="button"></button>
+												</div>
+												<div class="modal-body">
+													<h5 class="modal-title" th:text="${post.title}">Post
+														Title</h5>
+													<div class="mt-4">
+														<h6>Add a Comment</h6>
+														<form action="#" method="post"
+														      th:action="@{/posts/{id}(id=${post.id}, url=${currentURI})}"
+														      th:object="${comment}">
+
+															<div class="mb-3">
+																<textarea class="form-control" maxlength="200"
+																          minlength="1"
+																          placeholder="Write your comment here..."
+																          required
+																          rows="3"
+																          th:field="*{content}">
+																</textarea>
+															</div>
+															<div class="modal-footer">
+																<button class="btn btn-primary"
+																        type="submit">Post
+																	Comment
+																</button>
+															</div>
+														</form>
+													</div>
+												</div>
+											</div>
 										</div>
 									</div>
 								</div>
@@ -253,14 +295,55 @@
 											</a>
 										</div>
 
-										<div class="btn btn-outline-dark rounded-pill d-flex align-items-center gap-1">
+										<div class="btn btn-outline-dark rounded-pill d-flex align-items-center gap-1"
+										     data-bs-toggle="modal"
+										     onclick="event.stopPropagation(); event.preventDefault();"
+										     th:data-bs-target="'#commentModal_' + ${entity.post.id}">
 											<i class="fas fa-comment"> </i>
 											<span class="ps-1 fontsize08"
 											      th:text="${entity.post.comments.size()}"></span>
 										</div>
 									</div>
-								</div>
+									<!--Comment Modal-->
+									<div aria-hidden="true" class="modal fade" tabindex="-1"
+									     th:id="'commentModal_' + ${entity.post.id}">
+										<div class="modal-dialog">
+											<div class="modal-content">
+												<div class="modal-header">
+													<button aria-label="Close" class="btn-close" data-bs-dismiss="modal"
+													        type="button"></button>
+												</div>
+												<div class="modal-body">
+													<h5 class="modal-title" th:text="${entity.post.title}">Post
+														Title</h5>
+													<div class="mt-4">
+														<h6>Add a Comment</h6>
+														<form action="#" method="post"
+														      th:action="@{/posts/{id}(id=${entity.post.id}, url=${currentURI})}"
+														      th:object="${comment}">
 
+															<div class="mb-3">
+																<textarea class="form-control" maxlength="200"
+																          minlength="1"
+																          placeholder="Write your comment here..."
+																          required
+																          rows="3"
+																          th:field="*{content}">
+																</textarea>
+															</div>
+															<div class="modal-footer">
+																<button class="btn btn-primary"
+																        type="submit">Post
+																	Comment
+																</button>
+															</div>
+														</form>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
 								<div class="btn btn-light w-100 h-100 d-flex flex-column align-items-start clickable-entity"
 								     th:attr="redirect-link='/posts/' + ${entity.comment.post.id}"
 								     th:if="${entity.comment != null}">
@@ -272,7 +355,7 @@
 										post </a>
 									<span class="ps-2 pb-2"> <a class="username-link fw-bold text-content"
 									                            href="#"
-									                            th:href="@{/users/{id}(id=${entity.comment.user.id})}"
+									                            th:href="@{/users/{id}/overview(id=${entity.comment.user.id})}"
 									                            th:text="${entity.comment.user.username}"> Name </a>  <span
 											class="text-muted"
 											th:text="'commented ' + ${#temporals.format(entity.getCreatedAt(), 'yyyy-MM-dd HH:mm')}"> commented + date </span> </span>

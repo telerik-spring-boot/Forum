@@ -7,6 +7,7 @@ import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.helpers.AuthenticationHelper;
 import com.telerik.forum.helpers.UserMapper;
 import com.telerik.forum.models.dtos.FilterDTO;
+import com.telerik.forum.models.dtos.commentDTOs.CommentCreateDTO;
 import com.telerik.forum.models.dtos.userDTOs.*;
 import com.telerik.forum.models.filters.FilterCommentOptions;
 import com.telerik.forum.models.filters.FilterPostOptions;
@@ -71,6 +72,7 @@ public class UserMvcController {
 
             model.addAttribute("user", showUser);
             model.addAttribute("userId", user.getId());
+            model.addAttribute("comment", new CommentCreateDTO());
             model.addAttribute("currentURI", request.getRequestURI());
 
             return "user";
@@ -95,6 +97,7 @@ public class UserMvcController {
 
             model.addAttribute("user", showUser);
             model.addAttribute("userId", user.getId());
+            model.addAttribute("comment", new CommentCreateDTO());
             model.addAttribute("currentURI", request.getRequestURI());
 
             return "user";

@@ -8,7 +8,6 @@ import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.helpers.AuthenticationHelper;
 import com.telerik.forum.helpers.PostMapper;
 import com.telerik.forum.helpers.UserMapper;
-import com.telerik.forum.models.dtos.PaginationDTO;
 import com.telerik.forum.models.dtos.commentDTOs.CommentCreateDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO;
 import com.telerik.forum.models.dtos.userDTOs.UserCreateMvcDTO;
@@ -16,7 +15,6 @@ import com.telerik.forum.models.dtos.userDTOs.UserLoginDTO;
 import com.telerik.forum.models.dtos.userDTOs.UserPasswordUpdateDTO;
 import com.telerik.forum.models.dtos.userDTOs.UserRetrieveDTO;
 import com.telerik.forum.models.filters.FilterPostOptions;
-import com.telerik.forum.models.filters.FilterUserOptions;
 import com.telerik.forum.models.post.Post;
 import com.telerik.forum.models.user.User;
 import com.telerik.forum.services.admin.AdminService;
@@ -25,7 +23,6 @@ import com.telerik.forum.services.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -36,10 +33,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Stream;
 
 @Controller
@@ -249,7 +243,7 @@ public class AnonymousMvcController {
 
     }
 
-    @GetMapping("/search")
+    @GetMapping("/home")
     public String showPostSearchPage(@ModelAttribute("searchTerm") String searchTerm, HttpSession session, Model model) {
         if (session.getAttribute("currentUser") != null) {
             model.addAttribute("userId", userService.getByUsername((String) session.getAttribute("currentUser")).getId());
@@ -277,8 +271,7 @@ public class AnonymousMvcController {
 
         model.addAttribute("commentCreateDto", new CommentCreateDTO());
 
-//        return "search";
-        return "search-updated";
+        return "home";
     }
 
 //    @GetMapping("/search/users")

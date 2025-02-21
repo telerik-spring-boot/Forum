@@ -206,7 +206,7 @@ public class UserMvcController {
         if (fromAdmin) {
             return "redirect:/admin";
         } else {
-            return "redirect:/home";
+            return "redirect:/auth/logout";
         }
     }
 

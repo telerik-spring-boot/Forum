@@ -46,19 +46,19 @@ public class UserMapper {
     public User dtoToUser(int id, UserUpdateDTO dto, User userRequest) {
         User user = userService.getById(id, userRequest);
 
-        if(dto.getEmailAddress() != null) {
+        if (dto.getEmailAddress() != null) {
             user.setEmailAddress(dto.getEmailAddress());
         }
 
-        if(dto.getFirstName() != null) {
+        if (dto.getFirstName() != null) {
             user.setFirstName(dto.getFirstName());
         }
 
-        if(dto.getLastName() != null) {
+        if (dto.getLastName() != null) {
             user.setLastName(dto.getLastName());
         }
 
-        if(dto.getPassword() != null) {
+        if (dto.getPassword() != null) {
             user.setPassword(new BCryptPasswordEncoder().encode(dto.getPassword()));
         }
 
@@ -97,8 +97,8 @@ public class UserMapper {
         userPostsDisplayDTO.setLastName(user.getLastName());
 
         List<PostDisplayDTO> posts = user.getPosts().stream()
-                        .map(postMapper::postToPostDisplayDTO)
-                                .toList();
+                .map(postMapper::postToPostDisplayDTO)
+                .toList();
         userPostsDisplayDTO.setPosts(posts);
 
         return userPostsDisplayDTO;
@@ -122,6 +122,57 @@ public class UserMapper {
         AdminDetails admin = adminService.getByUserId(userId, userRequest);
 
         admin.setPhoneNumber(adminDTO.getPhoneNumber());
+
+        return admin;
+    }
+
+    public UserUpdateMvcDTO userToUserUpdateMvcDto(User user) {
+        UserUpdateMvcDTO userUpdateMvcDTO = new UserUpdateMvcDTO();
+
+        userUpdateMvcDTO.setFirstName(user.getFirstName());
+        userUpdateMvcDTO.setLastName(user.getLastName());
+        userUpdateMvcDTO.setEmailAddress(user.getEmailAddress());
+        userUpdateMvcDTO.setUsername(user.getUsername());
+
+        return userUpdateMvcDTO;
+    }
+
+    public User userUpdateMvcDtoToUser(int id, UserUpdateMvcDTO udto, User userRequest) {
+        User user = userService.getById(id, userRequest);
+
+        if (udto.getFirstName() != null) {
+            user.setFirstName(udto.getFirstName());
+        }
+
+        if (udto.getLastName() != null) {
+            user.setLastName(udto.getLastName());
+        }
+
+        if (udto.getEmailAddress() != null) {
+            user.setEmailAddress(udto.getEmailAddress());
+        }
+
+        return user;
+    }
+
+    public AdminDetails userUpdateMvcDtoToAdmin(int id, UserUpdateMvcDTO udto, User userRequest) {
+        AdminDetails admin = adminService.getByUserId(id, userRequest);
+
+        if (udto.getFirstName() != null) {
+            admin.getUser().setFirstName(udto.getFirstName());
+        }
+
+        if (udto.getLastName() != null) {
+            admin.getUser().setLastName(udto.getLastName());
+        }
+
+        if (udto.getEmailAddress() != null) {
+            admin.getUser().setEmailAddress(udto.getEmailAddress());
+        }
+
+        if (udto.getPhoneNumber() != null) {
+            admin.setPhoneNumber(udto.getPhoneNumber());
+        }
 
         return admin;
     }

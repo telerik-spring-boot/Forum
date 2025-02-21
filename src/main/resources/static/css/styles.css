@@ -13057,5 +13057,9 @@ tr td {
     text-align: right; /* Aligns the content to the left */
 }
 
+.edit-btn {
+    width: 40%;
+}
+
 
 

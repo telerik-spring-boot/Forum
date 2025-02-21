@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/general-fragments.html :: head('Update')}"></head>
+
+<body class="bg-light sb-nav-fixed">
+<nav th:replace="~{fragments/general-fragments.html :: topnav}"></nav>
+
+<div id="layoutSidenav">
+	<div th:replace="~{fragments/general-fragments.html :: sidenav}"></div>
+	<div id="layoutSidenav_content">
+		<main class="h-100 pb-3">
+			<div class="container-fluid mt-5">
+				<div class="row justify-content-center">
+					<div class="col-8 mx-auto bg-light p-0" id="contentBox">
+						<div class="card shadow-lg border-0 rounded-lg">
+							<div class="card-header"><h3 class="text-center font-weight-light my-4"
+							                             th:text="#{user.settings.label}">User Settings</h3></div>
+							<div class="card-body text-center">
+
+								<img alt="Profile Picture"
+								     class="rounded-circle border mb-3 profile-picture"
+								     th:src="@{/img/profile-icon-png-893.png}">
+
+								<form action="#" id="updateForm" method="post"
+								      th:action="@{__${requestURI}__}" th:object="${userUpdate}">
+									<input name="_method" type="hidden" value="put"/>
+									<input name="username" th:value="${userUpdate.username}" type="hidden"/>
+									<div class="form-floating mb-3">
+										<input class="form-control" disabled id="username"
+										       placeholder="Username"
+										       type="text"
+										/>
+										<label for="username" th:text="${userUpdate.username}"> Username </label>
+									</div>
+									<div class="form-floating mb-3">
+										<input class="form-control" id="firstName" placeholder="First Name"
+										       th:classappend="${#fields.hasErrors('firstName')? 'is-invalid' : (formSubmitted != null ? 'is-valid' : '')}"
+										       th:field="*{firstName}"
+										       type="text"
+										/>
+										<label for="firstName" th:text="#{user.first-name.label}"> First Name</label>
+										<div class="invalid-feedback"
+										     th:if="${#fields.hasErrors('firstName')}"
+										     th:text="${#fields.errors('firstName')}">
+										</div>
+									</div>
+
+									<div class="form-floating mb-3">
+										<input class="form-control" id="lastName" placeholder="Last Name"
+										       th:classappend="${#fields.hasErrors('lastName')? 'is-invalid' : (formSubmitted != null ? 'is-valid' : '')}"
+										       th:field="*{lastName}"
+										       type="text"
+										/>
+										<label for="lastName" th:text="#{user.last-name.label}"> Last Name</label>
+										<div class="invalid-feedback"
+										     th:if="${#fields.hasErrors('lastName')}"
+										     th:text="${#fields.errors('lastName')}">
+										</div>
+									</div>
+
+									<div class="form-floating mb-3">
+										<input class="form-control" id="email" placeholder="Email address"
+										       th:classappend="${#fields.hasErrors('emailAddress')? 'is-invalid' : (formSubmitted != null ? 'is-valid' : '')}"
+										       th:field="*{emailAddress}"
+										       type="text"
+										/>
+										<label for="email" th:text="#{user.email-address}"> Email</label>
+										<div class="invalid-feedback"
+										     th:if="${#fields.hasErrors('emailAddress')}"
+										     th:text="${#fields.errors('emailAddress')}">
+										</div>
+									</div>
+
+									<div class="form-floating mb-3" th:if="${userUpdate.getAdmin()}">
+										<input class="form-control" id="phone" placeholder="Phone Number"
+										       th:classappend="${#fields.hasErrors('phoneNumber')? 'is-invalid' : (formSubmitted != null ? 'is-valid' : '')}"
+										       th:field="*{phoneNumber}"
+										       type="text"
+										/>
+										<label for="phone" th:text="#{phone-number.label}"> Phone Number</label>
+										<div class="invalid-feedback"
+										     th:if="${#fields.hasErrors('phoneNumber')}"
+										     th:text="${#fields.errors('phoneNumber')}">
+										</div>
+									</div>
+									<div class="form-floating mb-3 d-flex justify-content-around pt-3">
+										<a class="btn btn-primary rounded-pill edit-btn" href="password.html"
+										   th:href="@{/auth/reset-password?token={token}(token=${token})}"
+										   th:text="#{password-change-main.label}">Change password</a>
+
+										<input class="btn btn-primary rounded-pill edit-btn"
+										       th:value="#{submit.label}"
+										       type="submit"
+										       value="Submit"/></div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div aria-hidden="true" aria-labelledby="successModalLabel" class="modal fade" id="successModal"
+			     tabindex="-1">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="successModalLabel">Success</h5>
+							<button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+						</div>
+						<div class="modal-body" th:text="#{user.update.success}">
+							Your action was successful!
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+		<footer th:replace="~{fragments/general-fragments.html :: footer}"></footer>
+	</div>
+</div>
+
+
+<th:block th:replace="~{fragments/general-fragments.html :: scripts}"></th:block>
+
+<script th:if="${success}" type="text/javascript">
+    var modal = new bootstrap.Modal(document.getElementById('successModal'));
+    modal.show();
+</script>
+
+
+</body>
+</html>

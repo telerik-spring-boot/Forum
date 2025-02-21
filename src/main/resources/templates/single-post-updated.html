@@ -34,6 +34,7 @@
 
                     <div class="card-body">
 
+                        <div th:text="${post.content}" style="font-size: 24px; margin-top: 20px; "></div>
                         <div class="d-flex justify-content-between align-items-center">
                             <!-- Tag List -->
                             <div class="tags-container">
@@ -52,7 +53,7 @@
                             </div>
                         </div>
 
-                        <div th:text="${post.content}" style="font-size: 24px; margin-top: 20px; "></div>
+
 
                         <!-- Delete Modal -->
                         <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel"
@@ -83,6 +84,7 @@
                 </div>
                 <div class="comments-section mt-4">
                     <h6>Comments</h6>
+                    <div id="comments-container">
                     <div th:each="comment : ${post.comments}">
                         <div class="comment-box">
                             <p class="text-muted text-content" style="font-size: 14px;">
@@ -100,6 +102,13 @@
 
                         </div>
                     </div>
+                    </div>
+                    <!-- Pagination Controls -->
+                    <nav>
+                        <ul class="pagination" id="pagination-controls">
+                            <!-- Pagination buttons will be inserted here by JavaScript -->
+                        </ul>
+                    </nav>
                 </div>
 
                 <div class="card-body mb-4">
@@ -128,5 +137,8 @@
 
 
 <th:block th:replace="~{fragments/general-fragments.html :: scripts}"></th:block>
+<script src="../static/js/comment-pagination.js"
+th:src="@{/js/comment-pagination.js}"></script>
+
 </body>
 </html>

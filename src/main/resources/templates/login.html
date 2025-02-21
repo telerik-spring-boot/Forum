@@ -79,6 +79,7 @@
 							<span th:if="${changeSuccess}" th:text="#{change-password.success}"> </span>
 							<span th:if="${emailSuccess}" th:text="#{email-sent.success}"> </span>
 							<span th:if="${registerSuccess}" th:text="#{register.success}"> </span>
+							<span th:if="${successfulDeletion}" th:text="#{user.delete.success}"> </span>
 						</div>
 						<div class="modal-footer">
 							<button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
@@ -108,6 +109,16 @@
     var modal = new bootstrap.Modal(document.getElementById('successModal'));
     modal.show();
 </script>
+
+<script th:if="${successfulDeletion}" type="text/javascript">
+    var modal = new bootstrap.Modal(document.getElementById('successModal'));
+    modal.show();
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"
+        th:src="'https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js'"></script>
+
+<script src="../static/js/save.js" th:src="@{/js/save.js}"></script>
 
 </body>
 </html>

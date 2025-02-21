@@ -5,6 +5,8 @@ import jakarta.validation.constraints.Size;
 
 public class UserUpdateMvcDTO {
 
+    private int id;
+
     @Size(min = 4, max = 32, message = "First name must be between 4 and 32 symbols.")
     private String firstName;
 
@@ -79,5 +81,13 @@ public class UserUpdateMvcDTO {
 
     public void setAdmin(Boolean admin) {
         isAdmin = admin;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

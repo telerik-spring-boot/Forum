@@ -129,6 +129,7 @@ public class UserMapper {
     public UserUpdateMvcDTO userToUserUpdateMvcDto(User user) {
         UserUpdateMvcDTO userUpdateMvcDTO = new UserUpdateMvcDTO();
 
+        userUpdateMvcDTO.setId(user.getId());
         userUpdateMvcDTO.setFirstName(user.getFirstName());
         userUpdateMvcDTO.setLastName(user.getLastName());
         userUpdateMvcDTO.setEmailAddress(user.getEmailAddress());

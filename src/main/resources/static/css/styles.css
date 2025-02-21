@@ -13014,6 +13014,11 @@ tr td {
     height: 5rem;
 }
 
+.profile-picture {
+    height: 5rem;
+    width: 5rem;
+}
+
 .fontsize08 {
     font-size: 0.8rem;
 }
@@ -13048,7 +13053,7 @@ tr td {
 }
 
 .h7-container {
-    display: block;  /* Ensures it's on a new line */
+    display: block; /* Ensures it's on a new line */
     text-align: right; /* Aligns the content to the left */
 }
 

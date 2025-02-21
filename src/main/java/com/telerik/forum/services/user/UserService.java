@@ -16,6 +16,8 @@ public interface UserService {
 
     User getById(int id, User userRequest);
 
+    User getByIdWithRoles(int id, User userRequest);
+
     UserPostsPageDisplayDTO getByIdWithPosts(int id, FilterPostOptions options, User userRequest, Pageable pageable);
 
     User getByIdWithComments(int id, FilterCommentOptions options, User userRequest);

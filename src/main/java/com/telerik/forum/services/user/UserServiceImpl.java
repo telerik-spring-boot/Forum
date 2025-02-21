@@ -64,6 +64,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getByIdWithRoles(int id, User userRequest) {
+        authorizationBlocked(userRequest);
+
+        User user = userRepository.getByIdWithRoles(id);
+
+        if (user == null) {
+            throw new EntityNotFoundException("User", "id", id);
+        }
+
+        return user;
+    }
+
+    @Override
     public UserPostsPageDisplayDTO getByIdWithPosts(int id, FilterPostOptions options, User userRequest, Pageable pageable) {
         authorizationBlocked(userRequest);
 

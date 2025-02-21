@@ -58,6 +58,7 @@ public class UserMvcController {
             UserPostsPageDisplayDTO showUser = userService.getByIdWithPosts(id, options, user, pageable);
 
             model.addAttribute("user", showUser);
+            model.addAttribute("userId", user.getId());
             model.addAttribute("currentURI", request.getRequestURI());
 
             return "user";
@@ -81,6 +82,7 @@ public class UserMvcController {
             UserOverviewPageDisplayDTO showUser = userService.getByIdWithCommentsAndPosts(id, postOptions, postOptions, user, pageable);
 
             model.addAttribute("user", showUser);
+            model.addAttribute("userId", user.getId());
             model.addAttribute("currentURI", request.getRequestURI());
 
             return "user";
@@ -107,6 +109,7 @@ public class UserMvcController {
             User userEntity = userService.getByIdWithComments(id, commentOptions, user);
 
             model.addAttribute("user", new UserCommentsPageDisplayDTO(userEntity.getId(), userEntity.getComments(), userEntity.getUsername()));
+            model.addAttribute("userId", user.getId());
             model.addAttribute("currentURI", request.getRequestURI());
 
             return "user";

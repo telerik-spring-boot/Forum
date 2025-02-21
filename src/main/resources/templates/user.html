@@ -27,311 +27,148 @@
 	      th:href="'https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i'"/>
 
 </head>
-<body>
-<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark" id="navbar">
-	<!-- Navbar-->
-
-	<ul class="navbar-nav d-flex w-100 align-items-center justify-content-start">
-		<li class="nav-item px-3 me-auto">
-			<a class="nav-link d-flex align-items-center" href="search.html" th:href="@{/search}">
-				<img alt="Logo" class="me-2" id="logo" src="../static/favicon.ico"
-				     th:src="@{/favicon.ico}"/>
-				<span class="pt-1" th:text="#{roamify.label}"> Roamify  </span></a
-			>
-		</li>
-		<li class="nav-item" id="searchInput">
-			<form class="w-100">
-				<div class="input-group d-flex flex-nowrap">
-					<input aria-describedby="btnNavbarSearch" aria-label="Search for..."
-					       class="form-control rounded-pill"
-					       placeholder="Search..."
-					       type="text"/>
-				</div>
-			</form>
-		</li>
-
-		<li class="nav-item ms-auto ps-3">
-			<a class="btn btn-dark nav-link d-flex rounded-pill align-items-center" href="create-post.html"
-			   role="button" th:href="@{/posts}">
-				<i class="fas fa-plus"></i>
-				<span class="ms-2" id="createText" th:text="#{create.label}">Create</span>
-			</a>
-		</li>
-
-		<li class="nav-item dropdown">
-			<a
-					aria-expanded="false"
-					class="nav-link btn btn-dark rounded-circle dropdown-toggle"
-					data-bs-toggle="dropdown"
-					href="#"
-					id="navbarDropdown"
-					role="button"
-			><i class="fas fa-user fa-fw"></i
-			></a>
-			<ul
-					aria-labelledby="navbarDropdown"
-					class="dropdown-menu dropdown-menu-end"
-			>
-				<li><a class="dropdown-item" href="#!" th:href="@{/users/{id}/overview(id=${userId})}"
-				       th:if="${isAuthenticated}">
-					<i class="fas fa-user fa-fw me-1"></i>
-					<span th:text="#{view-profile.label}">View Profile</span>
-				</a></li>
-				<li>
-					<a class="dropdown-item" href="#!" th:href="@{/users/{id}/settings(id=${userId})}"
-					   th:if="${isAuthenticated}">
-						<i class="fa fa-cog fa-fw me-1"></i>
-						<span th:text="#{settings.label}">Settings</span>
-					</a>
-				<li th:if="${isAuthenticated}">
-					<hr class="dropdown-divider"/>
-				</li>
-				<li>
-					<a class="dropdown-item" href="login.html" th:href="@{/auth/logout}"
-					   th:if="${isAuthenticated}">
-						<i class="fas fa-sign-out-alt me-1"></i>
-						<span th:text="#{logout.label}">Logout</span>
-					</a>
-					<a class="dropdown-item" href="#" th:href="@{/auth/login}" th:unless="${isAuthenticated}">
-						<i class="fas fa-sign-in-alt me-1"></i>
-						<span th:text="#{login.label}">Login</span>
-					</a>
-				</li>
-			</ul>
-		</li>
-
-		<li class="nav-item pe-2">
-			<a class="nav-link btn btn-dark rounded-circle" href="#!" id="sidebarToggle" role="button">
-				<i class="fas fa-bars"></i>
-			</a>
-		</li>
-	</ul>
-</nav>
+<body class="sb-nav-fixed">
+<nav th:replace="~{fragments/general-fragments.html :: topnav}"></nav>
 
 
-<div class="layoutSidenav">
-	<div id="layoutSidenav">
-		<div id="layoutSidenav_nav">
-			<nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
-				<div class="sb-sidenav-menu">
-
-
-					<div class="nav mt-3">
-						<div class="sb-sidenav-menu-heading"><span th:text="#{core.label}"> Core </span></div>
-						<a class="nav-link btn btn-dark" href="search.html" th:href="@{/search}">
-							<div class="sb-nav-link-icon">
-								<i class="fas fa-home"></i>
-							</div>
-							<span th:text="#{home.label}">Home</span>
-						</a>
-
-						<a class="nav-link btn btn-dark" href="search.html" th:href="@{/search/trending}">
-							<div class="sb-nav-link-icon">
-								<i class="fas fa-arrow-trend-up"></i>
-							</div>
-							<span th:text="#{trending.label}"> Trending </span>
-						</a>
-
-						<a class="nav-link btn btn-dark" href="search.html" th:href="@{/search/users}">
-							<div class="sb-nav-link-icon">
-								<i class="fas fa-user-friends"></i>
-							</div>
-							<span th:text="#{browse.label}"> Browse </span>
-						</a>
-
-						<a class="nav-link btn btn-dark" href="search.html" th:href="@{/search/latest}">
-							<div class="sb-nav-link-icon">
-								<i class="fas fa-clock-rotate-left"></i>
-							</div>
-							<span th:text="#{latest.label}"> Latest </span>
-						</a>
-					</div>
-					<hr>
-					<div class="nav">
-						<a
-								aria-controls="collapseResources"
-								aria-expanded="false"
-								class="sb-sidenav-menu-heading d-flex justify-content-start nav-link collapsed btn btn-dark"
-								data-bs-target="#collapseResources"
-								data-bs-toggle="collapse"
-								href="#"
-						>
-							<span th:text="#{resources.label}">Resources</span>
-
-							<div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-up"></i></div>
-						</a>
-						<div
-								aria-labelledby="headingOne"
-								class="collapse"
-								data-bs-parent="#sidenavAccordion"
-								id="collapseResources"
-						>
-							<a class="nav-link btn btn-dark" href="about.html" th:href="@{/about}">
-								<div class="sb-nav-link-icon">
-									<i class="fas fa-users-cog"></i>
-								</div>
-								<span th:text="#{about.label}"> About</span>
-							</a>
-
-							<a class="nav-link btn btn-dark" href="help.html" th:href="@{/help}">
-								<div class="sb-nav-link-icon">
-									<i class="fas fa-question-circle"></i>
-								</div>
-								<span th:text="#{help.label}"> Help </span>
-							</a>
-
-							<a class="nav-link btn btn-dark" href="careers.html">
-								<div class="sb-nav-link-icon">
-									<i class="fas fa-briefcase"></i>
-								</div>
-								<span th:text="#{careers.label}"> Careers </span>
-							</a>
-						</div>
-					</div>
-				</div>
-				<div class="sb-sidenav-footer">
-					<span th:if="${isAuthenticated}" th:text="#{logged-in.label}">Logged in as:</span>
-					<span th:text="#{not-logged-in.label}" th:unless="${isAuthenticated}">Not logged in</span>
-					<div class="fst-italic fw-bold text-center fs-4" th:text="${session.currentUser}">Current User
-					</div>
-				</div>
-			</nav>
-		</div>
-		<div id="layoutSidenav_content">
-			<main class="h-100 pb-3">
-				<div class="container-fluid mt-5">
-					<div class="row">
-						<div class="col-8 mx-auto bg-light p-0" id="contentBox">
-							<div class="d-flex border-top border-2 px-3" id="userContainer">
-								<img class="d-block h-100 rounded-circle mt-2" id="userPicture"
-								     src="../static/img/profile-icon-png-893.png"
-								     th:src="@{/img/profile-icon-png-893.png}">
-								<div class="mt-4 ms-2 d-inline align-items-center">
+<div id="layoutSidenav">
+	<div th:replace="~{fragments/general-fragments :: sidenav}"></div>
+	<div id="layoutSidenav_content">
+		<main class="h-100 pb-3">
+			<div class="container-fluid mt-5">
+				<div class="row">
+					<div class="col-8 mx-auto bg-light p-0" id="contentBox">
+						<div class="d-flex border-top border-2 px-3" id="userContainer">
+							<img class="d-block h-100 rounded-circle mt-2" id="userPicture"
+							     src="../static/img/profile-icon-png-893.png"
+							     th:src="@{/img/profile-icon-png-893.png}">
+							<div class="mt-4 ms-2 d-inline align-items-center">
 									<span class="fs-3 username-part"
 									      th:text="${user.username}">Username</span> <br>
-									<span class="text-muted username-part"
-									      th:text="${user.username}">Username</span>
-								</div>
+								<span class="text-muted username-part"
+								      th:text="${user.username}">Username</span>
 							</div>
+						</div>
 
-							<div class="px-3 pt-4 d-flex gap-2 align-content-center pb-3">
-								<a class="btn btn-outline-dark rounded-pill fw-bold"
-								   href="#"
-								   th:classappend="${currentURI.endsWith('/overview') ? 'active' : ''}"
-								   th:href="@{/users/{id}/overview(id=${user.id})}"
-								   th:text="#{overview.label}">
-									Overview
-								</a>
-								<a class="btn btn-outline-dark rounded-pill fw-bold" href="#"
-								   th:classappend="${currentURI.endsWith('/posts') ? 'active' : ''}"
-								   th:href="@{/users/{id}/posts(id=${user.id})}"
-								   th:text="#{posts.label}">
-									Posts
-								</a>
-								<a class="btn btn-outline-dark rounded-pill fw-bold" href="#"
-								   th:classappend="${currentURI.endsWith('/comments') ? 'active' : ''}"
-								   th:href="@{/users/{id}/comments(id=${user.id})}"
-								   th:text="#{comments.label}">
-									Comments
-								</a>
-							</div>
+						<div class="px-3 pt-4 d-flex gap-2 align-content-center pb-3 ">
+							<a class="btn btn-outline-dark rounded-pill fw-bold"
+							   href="#"
+							   th:classappend="${currentURI.endsWith('/overview') ? 'active' : ''}"
+							   th:href="@{/users/{id}/overview(id=${user.id})}"
+							   th:text="#{overview.label}">
+								Overview
+							</a>
+							<a class="btn btn-outline-dark rounded-pill fw-bold" href="#"
+							   th:classappend="${currentURI.endsWith('/posts') ? 'active' : ''}"
+							   th:href="@{/users/{id}/posts(id=${user.id})}"
+							   th:text="#{posts.label}">
+								Posts
+							</a>
+							<a class="btn btn-outline-dark rounded-pill fw-bold" href="#"
+							   th:classappend="${currentURI.endsWith('/comments') ? 'active' : ''}"
+							   th:href="@{/users/{id}/comments(id=${user.id})}"
+							   th:text="#{comments.label}">
+								Comments
+							</a>
+						</div>
 
-							<form action="#" class="px-3 my-1 d-flex" th:action="@{__${currentURI}__}"
-							      th:object="${filterOptions}">
-								<input id="sortByInput" th:field="*{sortBy}" type="hidden"/>
-								<input id="sortOrderInput" th:field="*{sortOrder}" type="hidden"/>
-								<div class="dropdown">
-									<button class="btn btn-dark rounded-pill dropdown-toggle fontsize08"
-									        data-bs-toggle="dropdown">
-										<span th:text="#{sort.label}"></span>
-									</button>
-									<ul class="dropdown-menu">
-										<li class="post-sort-option"><a class="dropdown-item sort-option"
-										                                href="#"
-										                                id="sorttitle"
-										                                th:classappend="${!currentURI.endsWith('/posts') ? 'd-none' : ''} + ' ' + ${filterOptions.getSortBy() == 'title'? 'active' : ''}"
-										                                th:text="#{title.label}">Title</a>
-										</li>
-										<li class="post-sort-option"><a class="dropdown-item sort-option"
-										                                href="#"
-										                                id="sortlikes"
-										                                th:classappend="${!currentURI.endsWith('/posts') ? 'd-none' : ''} +' ' + ${filterOptions.getSortBy() == 'likes' ? 'active' : ''}"
-										                                th:text="#{likes.label}">Likes</a>
-										</li>
-										<li><a class="dropdown-item sort-option" href="#" id="sortcontent"
-										       th:classappend="${filterOptions.getSortBy() == 'content' ? 'active' : ''}"
-										       th:text="#{content.label}">Content</a>
-										</li>
-
-										<li><a class="dropdown-item sort-option" href="#" id="sortcreatedAt"
-										       th:classappend="${filterOptions.getSortBy() == 'createdAt' ? 'active' : ''}"
-										       th:text="#{most-recent.label}">Most Recent</a>
-										</li>
-									</ul>
-								</div>
-
-								<div class="ps-2 dropdown">
-									<button class="btn btn-dark rounded-pill dropdown-toggle fontsize08"
-									        data-bs-toggle="dropdown">
-										<span th:text="#{filter.label}"></span>
-									</button>
-									<ul class="dropdown-menu">
-										<li><input class="dropdown-item  filter-option" href="#"
-										           placeholder="Title name"
-										           th:classappend="${!currentURI.endsWith('/posts') ? 'd-none' : ''}"
-										           th:field="*{title}">
-										</li>
-										<li><input class="dropdown-item  filter-option" href="#"
-										           placeholder="Tags"
-										           th:classappend="${!currentURI.endsWith('/posts') ? 'd-none' : ''}"
-										           th:field="*{tags}">
-										</li>
-
-										<li><input class="dropdown-item  filter-option" href="#"
-										           placeholder="Minimum likes"
-										           th:classappend="${!currentURI.endsWith('/posts') ? 'd-none' : ''}"
-										           th:field="*{minLikes}"
-										           type="number">
-										</li>
-
-										<li><input class="dropdown-item  filter-option" href="#"
-										           placeholder="Maximum likes"
-										           th:classappend="${!currentURI.endsWith('/posts') ? 'd-none' : ''}"
-										           th:field="*{maxLikes}"
-										           type="number"
-										>
-										</li>
-
-										<li><input class="dropdown-item  filter-option" href="#"
-										           placeholder="Content" th:field="*{content}">
-										</li>
-									</ul>
-								</div>
-
-								<button class="btn btn-outline-primary rounded-pill d-none ms-2 fontsize08"
-								        id="applyFilterBtn"
-								        type="submit">Apply
+						<form action="#" class="px-3 my-1 d-flex" th:action="@{__${currentURI}__}"
+						      th:object="${filterOptions}">
+							<input id="sortByInput" th:field="*{sortBy}" type="hidden"/>
+							<input id="sortOrderInput" th:field="*{sortOrder}" type="hidden"/>
+							<div class="dropdown">
+								<button class="btn btn-dark rounded-pill dropdown-toggle fontsize08"
+								        data-bs-toggle="dropdown">
+									<span th:text="#{sort.label}"></span>
 								</button>
-							</form>
+								<ul class="dropdown-menu">
+									<li class="post-sort-option"><a class="dropdown-item sort-option"
+									                                href="#"
+									                                id="sorttitle"
+									                                th:classappend="${!currentURI.endsWith('/posts') ? 'd-none' : ''} + ' ' + ${filterOptions.getSortBy() == 'title'? 'active' : ''}"
+									                                th:text="#{title.label}">Title</a>
+									</li>
+									<li class="post-sort-option"><a class="dropdown-item sort-option"
+									                                href="#"
+									                                id="sortlikes"
+									                                th:classappend="${!currentURI.endsWith('/posts') ? 'd-none' : ''} +' ' + ${filterOptions.getSortBy() == 'likes' ? 'active' : ''}"
+									                                th:text="#{likes.label}">Likes</a>
+									</li>
+									<li><a class="dropdown-item sort-option" href="#" id="sortcontent"
+									       th:classappend="${filterOptions.getSortBy() == 'content' ? 'active' : ''}"
+									       th:text="#{content.label}">Content</a>
+									</li>
 
-							<div class="px-3 my-1" th:if="${currentURI.endsWith('comments')}">
-								<div th:each="comment : ${user.comments}">
-									<hr>
-									<div class="btn btn-light w-100 h-100 d-flex flex-column align-items-start">
-										<a class="title-link d-inline fst-italic fs-5 text-content" href="#"
-										   th:href="@{/posts/{id}(id=${comment.post.id})}"
-										   th:text="${comment.post.title}"
-										> This is the title of
-											the
-											post </a>
-										<span class="ps-2 pb-2"> <a class="username-link fw-bold text-content"
-										                            href="#"
-										                            th:href="@{/users/{id}(id=${comment.user.id})/overview}"
-										                            th:text="${comment.user.username}"> Name </a>  <span
-												class="text-muted"
-												th:text="'commented ' + ${#temporals.format(comment.getCreatedAt(), 'yyyy-MM-dd HH:mm')}"> commented + date </span> </span>
-										<span class="ps-4 text-start text-content"
-										      th:utext="${comment.content}">
+									<li><a class="dropdown-item sort-option" href="#" id="sortcreatedAt"
+									       th:classappend="${filterOptions.getSortBy() == 'createdAt' ? 'active' : ''}"
+									       th:text="#{most-recent.label}">Most Recent</a>
+									</li>
+								</ul>
+							</div>
+
+							<div class="ps-2 dropdown">
+								<button class="btn btn-dark rounded-pill dropdown-toggle fontsize08"
+								        data-bs-toggle="dropdown">
+									<span th:text="#{filter.label}"></span>
+								</button>
+								<ul class="dropdown-menu">
+									<li><input class="dropdown-item  filter-option" href="#"
+									           placeholder="Title name"
+									           th:classappend="${!currentURI.endsWith('/posts') ? 'd-none' : ''}"
+									           th:field="*{title}">
+									</li>
+									<li><input class="dropdown-item  filter-option" href="#"
+									           placeholder="Tags"
+									           th:classappend="${!currentURI.endsWith('/posts') ? 'd-none' : ''}"
+									           th:field="*{tags}">
+									</li>
+
+									<li><input class="dropdown-item  filter-option" href="#"
+									           placeholder="Minimum likes"
+									           th:classappend="${!currentURI.endsWith('/posts') ? 'd-none' : ''}"
+									           th:field="*{minLikes}"
+									           type="number">
+									</li>
+
+									<li><input class="dropdown-item  filter-option" href="#"
+									           placeholder="Maximum likes"
+									           th:classappend="${!currentURI.endsWith('/posts') ? 'd-none' : ''}"
+									           th:field="*{maxLikes}"
+									           type="number"
+									>
+									</li>
+
+									<li><input class="dropdown-item  filter-option" href="#"
+									           placeholder="Content" th:field="*{content}">
+									</li>
+								</ul>
+							</div>
+
+							<button class="btn btn-outline-primary rounded-pill d-none ms-2 fontsize08"
+							        id="applyFilterBtn"
+							        type="submit">Apply
+							</button>
+						</form>
+
+						<div class="px-3 my-1" th:if="${currentURI.endsWith('comments')}">
+							<div th:each="comment : ${user.comments}">
+								<hr>
+								<div class="btn btn-light w-100 h-100 d-flex flex-column align-items-start clickable-entity"
+								     th:attr="redirect-link='/posts/' + ${comment.post.id}">
+									<a class="title-link d-inline fst-italic fs-5 text-content" href="#"
+									   th:href="@{/posts/{id}(id=${comment.post.id})}"
+									   th:text="${comment.post.title}"
+									> This is the title of
+										the
+										post </a>
+									<span class="ps-2 pb-2"> <a class="username-link fw-bold text-content"
+									                            href="#"
+									                            th:href="@{/users/{id}/overview(id=${comment.user.id})}"
+									                            th:text="${comment.user.username}"> Name </a>  <span
+											class="text-muted"
+											th:text="'commented ' + ${#temporals.format(comment.getCreatedAt(), 'yyyy-MM-dd HH:mm')}"> commented + date </span> </span>
+									<span class="ps-4 text-start text-content"
+									      th:utext="${comment.content}">
 											-- comment content -- Lorem ipsum dolor sit amet, consectetur adipisicing
 											elit. Atque culpa eveniet fuga maiores nam numquam qui quo rem vitae
 											voluptatum. Assumenda dolor optio quae qui quibusdam? Aperiam architecto
@@ -339,128 +176,132 @@
 											incidunt modi nam nesciunt nulla pariatur recusandae repellendus rerum,
 											velit?
 										</span>
-									</div>
 								</div>
 							</div>
-							<div class="px-3 my-1" th:if="${currentURI.endsWith('posts')}">
-								<div th:each="post : ${user.posts}">
-									<hr>
-									<div class="btn btn-light w-100 h-100 d-flex flex-column align-items-start">
-										<a class="title-link d-inline fst-italic fs-5" href="#"
-										   th:href="@{/posts/{id}(id=${post.id})}"
-										   th:text="${post.title}">
-											This is the title of the
-											post </a>
-										<span class="ps-2 pb-2"> <a class="username-link fw-bold"
-										                            href="#"
-										                            th:href="@{/users/{id}/overview(id=${post.userId})}"
-										                            th:text="${post.creatorUsername}"> Name </a>
+						</div>
+						<div class="px-3 my-1" th:if="${currentURI.endsWith('posts')}">
+							<div th:each="post : ${user.posts}">
+								<hr>
+								<div class="btn btn-light w-100 h-100 d-flex flex-column align-items-start clickable-entity"
+								     th:attr="redirect-link='/posts/' + ${post.id}">
+									<a class="title-link d-inline fst-italic fs-5" href="#"
+									   th:href="@{/posts/{id}(id=${post.id})}"
+									   th:text="${post.title}">
+										This is the title of the
+										post </a>
+									<span class="ps-2 pb-2"> <a class="username-link fw-bold"
+									                            href="#"
+									                            th:href="@{/users/{id}/overview(id=${post.userId})}"
+									                            th:text="${post.creatorUsername}"> Name </a>
 											<span
 													class="text-muted"
 													th:text="'posted on ' + ${#temporals.format(post.getCreatedAt(), 'yyyy-MM-dd HH:mm')}"> posted on + date </span> </span>
-										<span class="px-4 text-start pb-2 text-content" th:text="${post.content}"> --post content-- Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque culpa eveniet fuga maiores nam numquam qui quo rem vitae voluptatum. Assumenda dolor optio quae qui quibusdam? Aperiam architecto autem ipsam iure libero neque nostrum qui ratione rerum veritatis? A eveniet incidunt modi nam nesciunt nulla pariatur recusandae repellendus rerum, velit?</span>
-										<img class="img-fluid mx-auto px-2"
-										     src="../static/img/nice-paca-credit-fotolia-1-640x640.jpg"
-										     th:src="@{/img/nice-paca-credit-fotolia-1-640x640.jpg}">
+									<span class="px-4 text-start pb-2 text-content" th:text="${post.content}"> --post content-- Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque culpa eveniet fuga maiores nam numquam qui quo rem vitae voluptatum. Assumenda dolor optio quae qui quibusdam? Aperiam architecto autem ipsam iure libero neque nostrum qui ratione rerum veritatis? A eveniet incidunt modi nam nesciunt nulla pariatur recusandae repellendus rerum, velit?</span>
+									<img class="img-fluid mx-auto px-2"
+									     src="../static/img/nice-paca-credit-fotolia-1-640x640.jpg"
+									     th:src="@{/img/nice-paca-credit-fotolia-1-640x640.jpg}">
 
 
-										<div class="d-flex gap-3 pt-2 ps-2">
-											<div class="d-flex align-items-center border border-1 border-dark  rounded-pill"
-											     id="buttonGroup1">
-												<a class="btn btn-outline-dark border-0 rounded-circle w-30 voteUp"
-												   th:href="@{/posts/{id}/like(id=${post.id}, url=${currentURI})}">
-													<i class="fas fa-arrow-up"
-													   id="buttonUp1"
-													   th:classappend="${post.reaction == 1} ? 'text-success' : ''"></i>
-												</a>
-												<span class="w-40 px-1 text-black fontsize08" th:text="${post.likes}">152</span>
+									<div class="d-flex gap-3 pt-2 ps-2">
+										<div class="d-flex align-items-center border border-1 border-dark  rounded-pill"
+										     id="buttonGroup1">
+											<a class="btn btn-outline-dark border-0 rounded-circle w-30 voteUp"
+											   th:href="@{/posts/{id}/like(id=${post.id}, url=${currentURI})}">
+												<i class="fas fa-arrow-up"
+												   id="buttonUp1"
+												   th:classappend="${post.reaction == 1} ? 'text-success' : ''"></i>
+											</a>
+											<span class="w-40 px-1 text-black fontsize08"
+											      th:text="${post.likes}">152</span>
 
-												<a class="btn btn-outline-dark border-0 rounded-circle w-30 voteDown"
-												   id="buttonDown1"
-												   th:href="@{/posts/{id}/dislike(id=${post.id}, url=${currentURI})}">
-													<i class="fas fa-arrow-down justify-content-center"
-													   th:classappend="${post.reaction == -1} ? 'text-danger' : ''"> </i>
-												</a>
-											</div>
+											<a class="btn btn-outline-dark border-0 rounded-circle w-30 voteDown"
+											   id="buttonDown1"
+											   th:href="@{/posts/{id}/dislike(id=${post.id}, url=${currentURI})}">
+												<i class="fas fa-arrow-down justify-content-center"
+												   th:classappend="${post.reaction == -1} ? 'text-danger' : ''"> </i>
+											</a>
+										</div>
 
-											<div class="btn btn-outline-dark rounded-pill d-flex align-items-center gap-1">
-												<i class="fas fa-comment"> </i>
-												<span class="ps-1 fontsize08" th:text="${post.comments.size()}"></span>
-											</div>
+										<div class="btn btn-outline-dark rounded-pill d-flex align-items-center gap-1">
+											<i class="fas fa-comment"> </i>
+											<span class="ps-1 fontsize08" th:text="${post.comments.size()}"></span>
 										</div>
 									</div>
 								</div>
 							</div>
+						</div>
 
 
-							<div class="px-3 my-1" th:if="${currentURI.endsWith('overview')}">
-								<div th:each="entity : ${user.entities}">
-									<hr>
-									<div class="btn btn-light w-100 h-100 d-flex flex-column align-items-start"
-									     th:if="${entity.post != null}">
-										<a class="title-link d-inline fst-italic fs-5" href="#"
-										   th:href="@{/posts/{id}(id=${entity.post.id})}"
-										   th:text="${entity.post.title}">
-											This is the title of the
-											post </a>
-										<span class="ps-2 pb-2"> <a class="username-link fw-bold"
-										                            href="#"
-										                            th:href="@{/users/{id}/overview(id=${entity.post.userId})}"
-										                            th:text="${entity.post.creatorUsername}"> Name </a>
+						<div class="px-3 my-1" th:if="${currentURI.endsWith('overview')}">
+							<div th:each="entity : ${user.entities}">
+								<hr>
+								<div class="btn btn-light w-100 h-100 d-flex flex-column align-items-start clickable-entity"
+								     th:attr="redirect-link='/posts/' + ${entity.post.id}"
+								     th:if="${entity.post != null}">
+									<a class="title-link d-inline fst-italic fs-5" href="#"
+									   th:href="@{/posts/{id}(id=${entity.post.id})}"
+									   th:text="${entity.post.title}">
+										This is the title of the
+										post </a>
+									<span class="ps-2 pb-2"> <a class="username-link fw-bold"
+									                            href="#"
+									                            th:href="@{/users/{id}/overview(id=${entity.post.userId})}"
+									                            th:text="${entity.post.creatorUsername}"> Name </a>
 											<span
 													class="text-muted"
 													th:text="'posted on ' + ${#temporals.format(entity.getCreatedAt(), 'yyyy-MM-dd HH:mm')}"> posted on + date </span> </span>
-										<span class="px-4 text-start pb-2 text-content"
-										      th:text="${entity.post.content}"> --post content-- Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque culpa eveniet fuga maiores nam numquam qui quo rem vitae voluptatum. Assumenda dolor optio quae qui quibusdam? Aperiam architecto autem ipsam iure libero neque nostrum qui ratione rerum veritatis? A eveniet incidunt modi nam nesciunt nulla pariatur recusandae repellendus rerum, velit?</span>
-										<img class="img-fluid mx-auto px-2"
-										     src="../static/img/nice-paca-credit-fotolia-1-640x640.jpg"
-										     th:src="@{/img/nice-paca-credit-fotolia-1-640x640.jpg}">
+									<span class="px-4 text-start pb-2 text-content"
+									      th:text="${entity.post.content}"> --post content-- Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque culpa eveniet fuga maiores nam numquam qui quo rem vitae voluptatum. Assumenda dolor optio quae qui quibusdam? Aperiam architecto autem ipsam iure libero neque nostrum qui ratione rerum veritatis? A eveniet incidunt modi nam nesciunt nulla pariatur recusandae repellendus rerum, velit?</span>
+									<img class="img-fluid mx-auto px-2"
+									     src="../static/img/nice-paca-credit-fotolia-1-640x640.jpg"
+									     th:src="@{/img/nice-paca-credit-fotolia-1-640x640.jpg}">
 
 
-										<div class="d-flex gap-3 pt-2 ps-2">
-											<div class="d-flex align-items-center border border-1 border-dark  rounded-pill"
-											     id="buttonGroup2">
-												<a class="btn btn-outline-dark border-0 rounded-circle w-30 voteUp"
-												   th:href="@{/posts/{id}/like(id=${entity.post.id}, url=${currentURI})}">
-													<i class="fas fa-arrow-up"
-													   id="buttonUp2"
-													   th:classappend="${entity.post.reaction == 1} ? 'text-success' : ''"></i>
-												</a>
-												<span class="w-40 px-1 text-black fontsize08"
-												      th:text="${entity.post.likes}">152</span>
+									<div class="d-flex gap-3 pt-2 ps-2">
+										<div class="d-flex align-items-center border border-1 border-dark  rounded-pill"
+										     id="buttonGroup2">
+											<a class="btn btn-outline-dark border-0 rounded-circle w-30 voteUp"
+											   th:href="@{/posts/{id}/like(id=${entity.post.id}, url=${currentURI})}">
+												<i class="fas fa-arrow-up"
+												   id="buttonUp2"
+												   th:classappend="${entity.post.reaction == 1} ? 'text-success' : ''"></i>
+											</a>
+											<span class="w-40 px-1 text-black fontsize08"
+											      th:text="${entity.post.likes}">152</span>
 
-												<a class="btn btn-outline-dark border-0 rounded-circle w-30 voteDown"
-												   id="buttonDown2"
-												   th:href="@{/posts/{id}/dislike(id=${entity.post.id}, url=${currentURI})}">
-													<i class="fas fa-arrow-down justify-content-center"
-													   th:classappend="${entity.post.reaction == -1} ? 'text-danger' : ''"> </i>
-												</a>
-											</div>
+											<a class="btn btn-outline-dark border-0 rounded-circle w-30 voteDown"
+											   id="buttonDown2"
+											   th:href="@{/posts/{id}/dislike(id=${entity.post.id}, url=${currentURI})}">
+												<i class="fas fa-arrow-down justify-content-center"
+												   th:classappend="${entity.post.reaction == -1} ? 'text-danger' : ''"> </i>
+											</a>
+										</div>
 
-											<div class="btn btn-outline-dark rounded-pill d-flex align-items-center gap-1">
-												<i class="fas fa-comment"> </i>
-												<span class="ps-1 fontsize08"
-												      th:text="${entity.post.comments.size()}"></span>
-											</div>
+										<div class="btn btn-outline-dark rounded-pill d-flex align-items-center gap-1">
+											<i class="fas fa-comment"> </i>
+											<span class="ps-1 fontsize08"
+											      th:text="${entity.post.comments.size()}"></span>
 										</div>
 									</div>
+								</div>
 
-									<div class="btn btn-light w-100 h-100 d-flex flex-column align-items-start"
-									     th:if="${entity.comment != null}">
-										<a class="title-link d-inline fst-italic fs-5 text-content" href="#"
-										   th:href="@{/posts/{id}(id=${entity.comment.post.id})}"
-										   th:text="${entity.comment.post.title}"
-										> This is the title of
-											the
-											post </a>
-										<span class="ps-2 pb-2"> <a class="username-link fw-bold text-content"
-										                            href="#"
-										                            th:href="@{/users/{id}(id=${entity.comment.user.id})}"
-										                            th:text="${entity.comment.user.username}"> Name </a>  <span
-												class="text-muted"
-												th:text="'commented ' + ${#temporals.format(entity.getCreatedAt(), 'yyyy-MM-dd HH:mm')}"> commented + date </span> </span>
-										<span class="ps-4 text-start text-content"
-										      th:utext="${entity.comment.content}">
+								<div class="btn btn-light w-100 h-100 d-flex flex-column align-items-start clickable-entity"
+								     th:attr="redirect-link='/posts/' + ${entity.comment.post.id}"
+								     th:if="${entity.comment != null}">
+									<a class="title-link d-inline fst-italic fs-5 text-content" href="#"
+									   th:href="@{/posts/{id}(id=${entity.comment.post.id})}"
+									   th:text="${entity.comment.post.title}"
+									> This is the title of
+										the
+										post </a>
+									<span class="ps-2 pb-2"> <a class="username-link fw-bold text-content"
+									                            href="#"
+									                            th:href="@{/users/{id}(id=${entity.comment.user.id})}"
+									                            th:text="${entity.comment.user.username}"> Name </a>  <span
+											class="text-muted"
+											th:text="'commented ' + ${#temporals.format(entity.getCreatedAt(), 'yyyy-MM-dd HH:mm')}"> commented + date </span> </span>
+									<span class="ps-4 text-start text-content"
+									      th:utext="${entity.comment.content}">
 											-- comment content -- Lorem ipsum dolor sit amet, consectetur adipisicing
 											elit. Atque culpa eveniet fuga maiores nam numquam qui quo rem vitae
 											voluptatum. Assumenda dolor optio quae qui quibusdam? Aperiam architecto
@@ -468,70 +309,20 @@
 											incidunt modi nam nesciunt nulla pariatur recusandae repellendus rerum,
 											velit?
 										</span>
-									</div>
-
 								</div>
+
 							</div>
-							<!--							<div class="px-3 my-1">-->
-							<!--								<div class="btn btn-light w-100 h-100 d-flex flex-column align-items-start">-->
-							<!--									<hr>-->
-							<!--									<a class="title-link d-inline fst-italic fs-5" href="#"> This is the title of the-->
-							<!--										post </a>-->
-							<!--									<span class="ps-2"> <a class="username-link fw-bold" href="#"> Name </a>  <span-->
-							<!--											class="text-muted"> posted on + date </span> </span>-->
-							<!--									<span class="ps-4 text-start"> &#45;&#45;post content&#45;&#45; Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque culpa eveniet fuga maiores nam numquam qui quo rem vitae voluptatum. Assumenda dolor optio quae qui quibusdam? Aperiam architecto autem ipsam iure libero neque nostrum qui ratione rerum veritatis? A eveniet incidunt modi nam nesciunt nulla pariatur recusandae repellendus rerum, velit?</span>-->
-							<!--									<img class="img-fluid mx-auto px-2"-->
-							<!--									     src="../static/img/northern-lights-finland-lapland-shutterstock_305354732_4bc3f8d6db.jpeg">-->
-
-							<!--									<div class="d-flex gap-3 pt-2 ps-2">-->
-							<!--										<div class="d-flex align-items-center border border-1 rounded-pill bg-dark">-->
-							<!--											<button class="btn btn-dark rounded-circle w-30 voteUp">-->
-							<!--												<i class="fas fa-arrow-up"></i>-->
-							<!--											</button>-->
-							<!--											<span class="w-40 px-1 text-white fontsize08">152</span>-->
-
-							<!--											<button class="btn btn-dark rounded-circle w-30 voteDown">-->
-							<!--												<i class="fas fa-arrow-down justify-content-center"> </i>-->
-							<!--											</button>-->
-							<!--										</div>-->
-
-							<!--										<div class="btn btn-dark rounded-pill d-flex align-items-center gap-1">-->
-							<!--											<i class="fas fa-comment"> </i>-->
-							<!--											<span class="ps-1 fontsize08">5</span>-->
-							<!--										</div>-->
-							<!--									</div>-->
-							<!--								</div>-->
-							<!--							</div>-->
 						</div>
 					</div>
 				</div>
-			</main>
-			<footer class="py-4 bg-light mt-auto">
-				<div class="container-fluid px-4">
-					<div
-							class="d-flex align-items-center justify-content-between small"
-					>
-						<div class="text-muted">Copyright &copy; Your Website 2023</div>
-						<div>
-							<a href="#">Privacy Policy</a>
-							&middot;
-							<a href="#">Terms &amp; Conditions</a>
-						</div>
-					</div>
-				</div>
-			</footer>
-		</div>
+			</div>
+		</main>
+		<footer th:replace="~{fragments/general-fragments.html :: footer}"></footer>
 	</div>
 </div>
 
 
-<script
-		crossorigin="anonymous"
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-		th:src="'https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js'"
-></script>
-<script src="../static/js/scripts.js"
-        th:src="@{/js/scripts.js}"></script>
+<th:block th:replace="~{fragments/general-fragments.html :: scripts}"></th:block>
 
 <script src="../static/js/sort-button.js"
         th:src="@{/js/sort-button.js}"></script>

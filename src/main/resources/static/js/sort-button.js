@@ -49,5 +49,13 @@ document.addEventListener("DOMContentLoaded", function () {
     updateApplyButtonVisibility();
 });
 
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".clickable-entity").forEach(button => {
+        button.addEventListener("click", function () {
+            window.location.href = this.getAttribute('redirect-link');
+        });
+    });
+});
+
 
 

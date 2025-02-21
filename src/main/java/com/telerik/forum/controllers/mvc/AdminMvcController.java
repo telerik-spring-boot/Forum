@@ -40,7 +40,7 @@ public class AdminMvcController {
             User user = authenticationHelper.tryGetUserMvc(session);
 
             if (!authenticationHelper.isAdmin(user)) {
-                return "access-denied";
+                throw new UnauthorizedOperationException("Resource requires authentication.");
             }
 
             List<UserDisplayMvcDTO> users = adminService.getAllUsersMvc();

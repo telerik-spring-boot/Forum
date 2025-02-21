@@ -67,6 +67,25 @@
 					</div>
 				</div>
 			</div>
+			<div aria-hidden="true" aria-labelledby="successModalLabel" class="modal fade" id="successModal"
+			     tabindex="-1">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="successModalLabel">Success</h5>
+							<button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+						</div>
+						<div class="modal-body">
+							<span th:if="${changeSuccess}" th:text="#{change-password.success}"> </span>
+							<span th:if="${emailSuccess}" th:text="#{email-sent.success}"> </span>
+							<span th:if="${registerSuccess}" th:text="#{register.success}"> </span>
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>
 		</main>
 		<footer th:replace="~{fragments/general-fragments.html :: footer}"></footer>
 	</div>
@@ -76,15 +95,19 @@
 
 
 <script th:if="${changeSuccess}" type="text/javascript">
-    alert('[[#{change-password.success}]]');
+    var modal = new bootstrap.Modal(document.getElementById('successModal'));
+    modal.show();
 </script>
 
 <script th:if="${emailSuccess}" type="text/javascript">
-    alert('[[#{email-sent.success}]]');
+    var modal = new bootstrap.Modal(document.getElementById('successModal'));
+    modal.show();
 </script>
 
 <script th:if="${registerSuccess}" type="text/javascript">
-    alert('[[#{register.success}]]');
+    var modal = new bootstrap.Modal(document.getElementById('successModal'));
+    modal.show();
 </script>
+
 </body>
 </html>

@@ -131,7 +131,7 @@
 					<span th:text="#{home.label}">Home</span>
 				</a>
 
-				<a class="nav-link btn btn-dark" href="home.html" th:href="@{/home/trending}">
+				<a class="nav-link btn btn-dark" href="home.html" th:href="@{/home?sortBy=likes&sortOrder=desc}">
 					<div class="sb-nav-link-icon">
 						<i class="fas fa-arrow-trend-up"></i>
 					</div>
@@ -145,7 +145,7 @@
 					<span th:text="#{browse.label}"> Browse </span>
 				</a>
 
-				<a class="nav-link btn btn-dark" href="home.html" th:href="@{/home/latest}">
+				<a class="nav-link btn btn-dark" href="home.html" th:href="@{/home?sortBy=createdAt&sortOrder=desc}">
 					<div class="sb-nav-link-icon">
 						<i class="fas fa-clock-rotate-left"></i>
 					</div>

@@ -6,6 +6,7 @@ import com.telerik.forum.exceptions.DuplicateEntityException;
 import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.helpers.AuthenticationHelper;
+import com.telerik.forum.helpers.FilesHelper;
 import com.telerik.forum.helpers.PostMapper;
 import com.telerik.forum.helpers.UserMapper;
 import com.telerik.forum.models.dtos.FilterDTO;

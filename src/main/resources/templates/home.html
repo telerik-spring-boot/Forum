@@ -29,7 +29,7 @@
                 Posts
               </a>
               <a class="btn btn-outline-dark rounded-pill fw-bold" href="#"
-                 th:classappend="${currentURI.contains('/users') ? 'active' : ''}"
+                 th:classappend="${currentURI.endsWith('/users') ? 'active' : ''}"
                  th:href="@{/home/users(searchTerm=${searchTerm})}"
                  th:if="${searchTerm != ''}"
                  th:style="${!isAuthenticated ? 'display: none;' : ''}"
@@ -38,7 +38,7 @@
               </a>
 
               <a class="btn btn-outline-dark rounded-pill fw-bold" href="#"
-                 th:classappend="${currentURI.contains('/users') ? 'active' : ''}"
+                 th:classappend="${currentURI.endsWith('/users') ? 'active' : ''}"
                  th:href="@{/home/users}"
                  th:unless="${searchTerm != ''}"
                  th:style="${!isAuthenticated ? 'display: none;' : ''}"
@@ -46,14 +46,14 @@
                 Users
               </a>
               <a class="btn btn-outline-dark rounded-pill fw-bold" href="#"
-                 th:classappend="${currentURI.contains('/comments') ? 'active' : ''}"
+                 th:classappend="${currentURI.endsWith('/comments') ? 'active' : ''}"
                  th:href="@{/home/comments(searchTerm=${searchTerm})}" th:if="${searchTerm != ''}"
                  th:text="#{comments.label}">
                 Comments
               </a>
 
               <a class="btn btn-outline-dark rounded-pill fw-bold" href="#"
-                 th:classappend="${currentURI.contains('/comments') ? 'active' : ''}"
+                 th:classappend="${currentURI.endsWith('/comments') ? 'active' : ''}"
                  th:href="@{/home/comments}" th:unless="${searchTerm != ''}"
                  th:text="#{comments.label}">
                 Comments
@@ -95,6 +95,27 @@
                                                   th:text="#{content.label}">Content</a>
                   </li>
 
+                  <li class="post-sort-option"><a class="dropdown-item sort-option"
+                                                  href="#"
+                                                  id="sortusername"
+                                                  th:classappend="${!currentURI.endsWith('/users') ? 'd-none' : ''} +' ' + ${filterOptions.getSortBy() == 'username' ? 'active' : ''}"
+                                                  th:text="#{username.label}">Username</a>
+                  </li>
+
+                  <li class="post-sort-option"><a class="dropdown-item sort-option"
+                                                  href="#"
+                                                  id="sortfirstName"
+                                                  th:classappend="${!currentURI.endsWith('/users') ? 'd-none' : ''} +' ' + ${filterOptions.getSortBy() == 'firstName' ? 'active' : ''}"
+                                                  th:text="#{user.first-name.label}">Username</a>
+                  </li>
+
+                  <li class="post-sort-option"><a class="dropdown-item sort-option"
+                                                  href="#"
+                                                  id="sortlastName"
+                                                  th:classappend="${!currentURI.endsWith('/users') ? 'd-none' : ''} +' ' + ${filterOptions.getSortBy() == 'lastName' ? 'active' : ''}"
+                                                  th:text="#{user.last-name.label}">Username</a>
+                  </li>
+
                 </ul>
               </div>
 
@@ -104,6 +125,24 @@
                   <span th:text="#{filter.label}"></span>
                 </button>
                 <ul class="dropdown-menu">
+
+                  <li><input class="dropdown-item  filter-option" href="#"
+                             placeholder="Username"
+                             th:classappend="${!currentURI.endsWith('/users') ? 'd-none' : ''}"
+                             th:field="*{username}">
+                  </li>
+
+                  <li><input class="dropdown-item  filter-option" href="#"
+                             placeholder="First Name"
+                             th:classappend="${!currentURI.endsWith('/users') ? 'd-none' : ''}"
+                             th:field="*{firstName}">
+                  </li>
+
+                  <li><input class="dropdown-item  filter-option" href="#"
+                             placeholder="Last Name"
+                             th:classappend="${!currentURI.endsWith('/users') ? 'd-none' : ''}"
+                             th:field="*{lastName}">
+                  </li>
 
                   <li><input class="dropdown-item  filter-option" href="#"
                              placeholder="Title"

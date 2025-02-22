@@ -14,6 +14,14 @@ public class FilterDTO {
 
     private Long maxLikes;
 
+    private String firstName;
+
+    private String lastName;
+
+    private String username;
+
+    private String emailAddress;
+
     private String sortBy;
 
     private String sortOrder;
@@ -38,6 +46,38 @@ public class FilterDTO {
         this.maxLikes = maxLikes;
         this.sortBy = sortBy;
         this.sortOrder = sortOrder;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
     }
 
     public String getCreatorUsername() {

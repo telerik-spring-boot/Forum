@@ -363,7 +363,7 @@ public class AnonymousMvcController {
     @GetMapping("/home/users")
     public String showUserSearchPage(@ModelAttribute("searchTerm") String searchTerm,
                                      @ModelAttribute("filterOptions") FilterDTO filterDto,
-                                     @PageableDefault(size = 10, page = 0) Pageable pageable,
+                                     @PageableDefault(size = Integer.MAX_VALUE, page = 0) Pageable pageable,
                                      HttpSession session, Model model) {
         User user;
         try {
@@ -371,8 +371,15 @@ public class AnonymousMvcController {
         } catch (UnauthorizedOperationException e) {
             return "redirect:/auth/login";
         }
-        FilterUserOptions filterUserOptions = new FilterUserOptions(searchTerm,
-                null, null, null, null);
+
+        String search = searchTerm;
+        if (filterDto.getUsername() != null) {
+            search = filterDto.getUsername();
+        }
+
+        FilterUserOptions filterUserOptions = new FilterUserOptions(search,
+                null, filterDto.getFirstName(),filterDto.getLastName(),
+                filterDto.getSortBy(), filterDto.getSortOrder());
         Page<User> foundUsers = adminService.getAllUsers(filterUserOptions, user, pageable);
 
         List<UserDisplayMvcDTO> totalUsersDTOs = foundUsers.stream()

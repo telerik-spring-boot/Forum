@@ -7,16 +7,24 @@ public class FilterUserOptions implements Sortable {
     private final String username;
     private final String emailAddress;
     private final String firstName;
+    private final String lastName;
     private final String sortBy;
     private final String sortOrder;
 
     public FilterUserOptions(String username, String emailAddress, String firstName, String sortBy, String sortOrder) {
+        this(username,emailAddress,firstName,null,sortBy,sortOrder);
+    }
+
+    public FilterUserOptions(String username, String emailAddress, String firstName,String lastName, String sortBy, String sortOrder) {
         this.username = username == null || username.isBlank() ? null : username;
         this.emailAddress = emailAddress == null || emailAddress.isBlank() ? null : emailAddress;
         this.firstName = firstName == null || firstName.isBlank() ? null : firstName;
+        this.lastName = lastName == null || lastName.isBlank() ? null : lastName;
         this.sortBy = sortBy == null || sortBy.isBlank() ? null : sortBy;
         this.sortOrder = sortOrder == null || sortOrder.isBlank() ? null : sortOrder;
     }
+
+
 
     public Optional<String> getUsername() {
         return Optional.ofNullable(username);
@@ -28,6 +36,10 @@ public class FilterUserOptions implements Sortable {
 
     public Optional<String> getFirstName() {
         return Optional.ofNullable(firstName);
+    }
+
+    public Optional<String> getLastName() {
+        return Optional.ofNullable(lastName);
     }
 
     public Optional<String> getSortBy() {

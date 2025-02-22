@@ -67,6 +67,10 @@ public class UserRepositoryImpl implements UserRepository {
                 predicates.add(criteriaBuilder.like(root.get("firstName"), "%" + firstName + "%"));
             });
 
+            options.getLastName().ifPresent(lastName -> {
+                predicates.add(criteriaBuilder.like(root.get("lastName"), "%" + lastName + "%"));
+            });
+
             options.getUsername().ifPresent(username -> {
                 predicates.add(criteriaBuilder.like(root.get("username"), "%" + username + "%"));
             });

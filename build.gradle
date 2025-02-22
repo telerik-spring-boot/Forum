@@ -15,6 +15,7 @@ java {
 
 repositories {
     mavenCentral()
+    maven { url "https://aws-sdk-java.s3.amazonaws.com" }
 }
 
 dependencies {
@@ -26,11 +27,11 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.3'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
+    
 
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
     implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
-
 
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 

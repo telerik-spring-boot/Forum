@@ -32,12 +32,18 @@
 
                             <div class="card-body">
                                 <div th:text="${post.content}" class="fs-4 mt-3"></div>
+                                <div class="d-flex justify-content-center">
+                                    <img class="img-fluid px-2 my-3"
+                                         src="../static/img/nice-paca-credit-fotolia-1-640x640.jpg"
+                                         th:src="@{/img/nice-paca-credit-fotolia-1-640x640.jpg}">
+                                </div>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <!-- Tag List -->
                                     <div class="tags-container">
                                         <span class="tag" th:each="tag : ${post.tags}">
-                                            <a th:href="@{/home/tags/{tagName}(tagName=${tag})}" th:text="${tag}">Tag</a>
+                                            <a th:href="@{/home?tags={tag}(tag=${tag})}" th:text="${tag}">Tag</a>
                                         </span>
+
                                     </div>
                                     <!-- Update and Delete buttons -->
                                     <div class="d-flex justify-content-end tags-container">

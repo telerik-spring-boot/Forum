@@ -3,10 +3,10 @@ package com.telerik.forum.services.post;
 import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO;
+import com.telerik.forum.models.filters.FilterPostOptions;
 import com.telerik.forum.models.post.Like;
 import com.telerik.forum.models.post.Post;
 import com.telerik.forum.models.user.User;
-import com.telerik.forum.models.filters.FilterPostOptions;
 import com.telerik.forum.repositories.post.PostRepository;
 import com.telerik.forum.repositories.utilities.SortingHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +28,7 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
 
 
+
     @Autowired
     public PostServiceImpl(PostRepository postRepository) {
         this.postRepository = postRepository;
@@ -42,6 +43,7 @@ public class PostServiceImpl implements PostService {
     public List<Post> getAllPosts() {
         return postRepository.getAllPosts();
     }
+
 
     @Override
     public Page<Post> getAllPostsWithFilters(FilterPostOptions filterOptions, Pageable pageable) {

@@ -18,18 +18,42 @@ public class CommentDisplayDTO {
     @JsonIgnore
     public int commentId;
 
+    @JsonIgnore
+    public int postId;
+
+    @JsonIgnore
+    public String postTitle;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm '['dd-MM-yyyy']'")
     public LocalDateTime createdAt;
 
     public CommentDisplayDTO() {
     }
 
-    public CommentDisplayDTO(String creatorUsername, String commentContent, int creatorId, int commentId, LocalDateTime createdAt) {
+    public CommentDisplayDTO(String creatorUsername, String commentContent, int creatorId, int commentId, int postId, String postTitle, LocalDateTime createdAt) {
         this.creatorUsername = creatorUsername;
         this.commentContent = commentContent;
         this.creatorId = creatorId;
         this.commentId = commentId;
+        this.postId = postId;
+        this.postTitle = postTitle;
         this.createdAt = createdAt;
+    }
+
+    public String getPostTitle() {
+        return postTitle;
+    }
+
+    public void setPostTitle(String postTitle) {
+        this.postTitle = postTitle;
+    }
+
+    public int getPostId() {
+        return postId;
+    }
+
+    public void setPostId(int postId) {
+        this.postId = postId;
     }
 
     public int getCommentId() {

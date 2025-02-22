@@ -92,6 +92,8 @@ public class PostMapper {
         commentDTO.setCreatedAt(comment.getCreatedAt());
         commentDTO.setCreatorId(comment.getUser().getId());
         commentDTO.setCommentId(comment.getId());
+        commentDTO.setPostId(comment.getPost().getId());
+        commentDTO.setPostTitle(comment.getPost().getTitle());
 
         return commentDTO;
     }

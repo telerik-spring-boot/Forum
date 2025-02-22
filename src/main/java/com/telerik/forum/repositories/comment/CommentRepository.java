@@ -15,6 +15,8 @@ public interface CommentRepository {
 
     List<Comment> getByUserId(int id, FilterCommentOptions options);
 
+    List<Comment> getWithFilters(FilterCommentOptions options);
+
     void create(Comment comment);
 
     void update(Comment comment);

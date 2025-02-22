@@ -1,5 +1,7 @@
 package com.telerik.forum.models.dtos.userDTOs;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class UserDisplayDTO {
 
     private String firstName;
@@ -10,6 +12,9 @@ public class UserDisplayDTO {
 
     private boolean blocked;
 
+    @JsonIgnore
+    private int userId;
+
     public UserDisplayDTO() {}
 
     public UserDisplayDTO(String firstName, String lastName, String username, boolean blocked) {
@@ -17,6 +22,14 @@ public class UserDisplayDTO {
         this.lastName = lastName;
         this.username = username;
         this.blocked = blocked;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public String getFirstName() {

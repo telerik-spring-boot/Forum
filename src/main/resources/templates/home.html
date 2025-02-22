@@ -334,7 +334,7 @@
 													<h6>Add a Comment</h6>
 													<form action="#" method="post"
 													      th:action="@{/posts/{id}(id=${post.id}, url=${currentURI})}"
-													      th:object="${commentCreateDto}">
+													      th:object="${comment}">
 
 														<div class="mb-3">
                                 <textarea class="form-control" maxlength="200" minlength="1"

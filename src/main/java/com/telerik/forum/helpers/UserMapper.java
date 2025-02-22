@@ -72,9 +72,25 @@ public class UserMapper {
         userDisplayDTO.setFirstName(user.getFirstName());
         userDisplayDTO.setLastName(user.getLastName());
         userDisplayDTO.setBlocked(user.isBlocked());
+        userDisplayDTO.setUserId(user.getId());
 
         return userDisplayDTO;
     }
+
+    public UserDisplayMvcDTO userToUserDisplayMVCDTO(User user) {
+        UserDisplayMvcDTO userDisplayDTO = new UserDisplayMvcDTO();
+
+        userDisplayDTO.setUsername(user.getUsername());
+        userDisplayDTO.setName(user.getFirstName() + " " + user.getLastName());
+        userDisplayDTO.setBlocked(user.isBlocked());
+        userDisplayDTO.setLastLogin(user.getLastLogin());
+        userDisplayDTO.setId(user.getId());
+
+        return userDisplayDTO;
+    }
+
+
+
 
     public UserCommentsDisplayDTO userToUserCommentsDisplayDTO(User user) {
         UserCommentsDisplayDTO userCommentsDisplayDTO = new UserCommentsDisplayDTO();

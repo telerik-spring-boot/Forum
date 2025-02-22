@@ -8,21 +8,28 @@ import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.helpers.AuthenticationHelper;
 import com.telerik.forum.helpers.PostMapper;
 import com.telerik.forum.helpers.UserMapper;
+import com.telerik.forum.models.dtos.FilterDTO;
 import com.telerik.forum.models.dtos.commentDTOs.CommentCreateDTO;
+import com.telerik.forum.models.dtos.commentDTOs.CommentDisplayDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO;
-import com.telerik.forum.models.dtos.userDTOs.UserCreateMvcDTO;
-import com.telerik.forum.models.dtos.userDTOs.UserLoginDTO;
-import com.telerik.forum.models.dtos.userDTOs.UserPasswordUpdateDTO;
-import com.telerik.forum.models.dtos.userDTOs.UserRetrieveDTO;
+import com.telerik.forum.models.dtos.userDTOs.*;
+import com.telerik.forum.models.filters.FilterCommentOptions;
 import com.telerik.forum.models.filters.FilterPostOptions;
+import com.telerik.forum.models.filters.FilterUserOptions;
+import com.telerik.forum.models.post.Comment;
+import com.telerik.forum.models.post.Like;
 import com.telerik.forum.models.post.Post;
 import com.telerik.forum.models.user.User;
 import com.telerik.forum.services.admin.AdminService;
+import com.telerik.forum.services.comment.CommentService;
 import com.telerik.forum.services.post.PostService;
 import com.telerik.forum.services.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -48,8 +55,10 @@ public class AnonymousMvcController {
     private final PostService postService;
     private final AdminService adminService;
     private final PostMapper postMapper;
+    private final AuthenticationHelper authHelper;
+    private final CommentService commentService;
 
-    public AnonymousMvcController(AuthenticationHelper authenticationHelper, UserService userService, UserMapper userMapper, JavaMailSender mailSender, JwtUtil jwtUtil, PostService postService, AdminService adminService, PostMapper postMapper) {
+    public AnonymousMvcController(AuthenticationHelper authenticationHelper, UserService userService, UserMapper userMapper, JavaMailSender mailSender, JwtUtil jwtUtil, PostService postService, AdminService adminService, PostMapper postMapper, AuthenticationHelper authHelper, CommentService commentService) {
         this.authenticationHelper = authenticationHelper;
         this.userService = userService;
         this.userMapper = userMapper;
@@ -58,6 +67,8 @@ public class AnonymousMvcController {
         this.postService = postService;
         this.adminService = adminService;
         this.postMapper = postMapper;
+        this.authHelper = authHelper;
+        this.commentService = commentService;
     }
 
     @ModelAttribute("currentURI")
@@ -244,51 +255,122 @@ public class AnonymousMvcController {
     }
 
     @GetMapping("/home")
-    public String showPostSearchPage(@ModelAttribute("searchTerm") String searchTerm, HttpSession session, Model model) {
+    public String showPostSearchPage(@ModelAttribute("searchTerm") String searchTerm,
+                                     @ModelAttribute("filterOptions") FilterDTO filterDto,
+                                     HttpSession session, Model model) {
+        boolean isAuthenticated = false;
         if (session.getAttribute("currentUser") != null) {
             model.addAttribute("userId", userService.getByUsername((String) session.getAttribute("currentUser")).getId());
+
+            isAuthenticated = true;
+        }
+
+
+        String[] tagArray = null;
+
+        if (filterDto.getTags() != null) {
+            tagArray = filterDto.getTags().split(",");
         }
 
 
         FilterPostOptions filterPostOptions = new FilterPostOptions(null,
-                searchTerm, null, null, null, null, null, null);
+                searchTerm, null, tagArray, filterDto.getMinLikes(), filterDto.getMaxLikes(),
+                filterDto.getSortBy(), filterDto.getSortOrder());
         List<Post> foundPosts = postService.getAllPostsWithFilters(filterPostOptions);
 
         filterPostOptions = new FilterPostOptions(null,
-                null, searchTerm, null, null, null, null, null);
+                null, searchTerm, tagArray, filterDto.getMinLikes(), filterDto.getMaxLikes(),
+                filterDto.getSortBy(), filterDto.getSortOrder());
         List<Post> foundPostsContent = postService.getAllPostsWithFilters(filterPostOptions);
 
         List<Post> totalFoundPosts = Stream.concat(foundPosts.stream(), foundPostsContent.stream())
                 .distinct()
                 .toList();
 
+
         List<PostDisplayDTO> totalPostDTOs = totalFoundPosts.stream()
                 .map(postMapper::postToPostDisplayDTO)
                 .toList();
 
+        if (isAuthenticated) {
+
+            User user = authenticationHelper.tryGetUserMvc(session);
+
+            for (int i = 0; i < totalFoundPosts.size(); i++) {
+
+                for (Like like : totalFoundPosts.get(i).getLikes()) {
+                    if (like.getUser().getId() == user.getId()) {
+                        totalPostDTOs.get(i).setReaction(like.getReaction());
+                        break;
+                    }
+                }
+            }
+        }
+
+
         model.addAttribute("foundPosts", totalPostDTOs);
         model.addAttribute("searchTerm", searchTerm);
 
-        model.addAttribute("commentCreateDto", new CommentCreateDTO());
+        model.addAttribute("comment", new CommentCreateDTO());
 
-        //return "home-updated";
-        return "home";
+
+        return "home-updated";
     }
 
-//    @GetMapping("/search/users")
-//    public String showUserSearchPage(@ModelAttribute("searchString") String searchTerm, HttpSession session, Model model) {
-//        if (session.getAttribute("currentUser") != null) {
-//            model.addAttribute("userId", userService.getByUsername((String) session.getAttribute("currentUser")).getId());
-//        }
-//        FilterUserOptions filterUserOptions = new FilterUserOptions(searchTerm,
-//                 null, null, null, null);
-//        List<User> foundUsers = adminService.getAllUsers(filterUserOptions);
-//
-//        model.addAttribute("foundUsers", foundUsers);
-//        model.addAttribute("searchTerm", searchTerm);
-//
-//        return "search";
-//    }
+
+    @GetMapping("/home/comments")
+    public String showCommentsSearchPage(@ModelAttribute("searchTerm") String searchTerm,
+                                         @ModelAttribute("filterOptions") FilterDTO filterDto,
+                                         HttpSession session, Model model) {
+
+        if (session.getAttribute("currentUser") != null) {
+            model.addAttribute("userId", userService.getByUsername((String) session.getAttribute("currentUser")).getId());
+
+        }
+
+
+        FilterCommentOptions filterCommentOptions = new FilterCommentOptions(null, searchTerm,
+                filterDto.getSortBy(), filterDto.getSortOrder());
+
+        List<Comment> foundComments = commentService.getAllComments(filterCommentOptions);
+
+        List<CommentDisplayDTO> totalCommentDTOs = foundComments.stream()
+                .map(postMapper::commentToCommentDisplayDTO)
+                .toList();
+
+        model.addAttribute("foundComments", totalCommentDTOs);
+        model.addAttribute("searchTerm", searchTerm);
+
+
+        return "home-updated";
+    }
+
+    @GetMapping("/home/users")
+    public String showUserSearchPage(@ModelAttribute("searchTerm") String searchTerm,
+                                     @ModelAttribute("filterOptions") FilterDTO filterDto,
+                                     @PageableDefault(size = 10, page = 0) Pageable pageable,
+                                     HttpSession session, Model model) {
+        User user;
+        try {
+            user = authHelper.tryGetUserMvc(session);
+        } catch (UnauthorizedOperationException e) {
+            return "redirect:/auth/login";
+        }
+        FilterUserOptions filterUserOptions = new FilterUserOptions(searchTerm,
+                null, null, null, null);
+        Page<User> foundUsers = adminService.getAllUsers(filterUserOptions, user, pageable);
+
+        List<UserDisplayMvcDTO> totalUsersDTOs = foundUsers.stream()
+                .map(userMapper::userToUserDisplayMVCDTO)
+                .toList();
+
+        model.addAttribute("foundUsers", totalUsersDTOs);
+        model.addAttribute("searchTerm", searchTerm);
+
+        model.addAttribute("userId", user.getId());
+
+        return "home-updated";
+    }
 
 
 }

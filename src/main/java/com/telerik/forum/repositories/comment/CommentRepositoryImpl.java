@@ -50,6 +50,18 @@ public class CommentRepositoryImpl implements CommentRepository {
     public List<Comment> getByUserId(int id, FilterCommentOptions options) {
 
 
+        return getCommentsWithFiltersHelper(id, options);
+
+    }
+
+    @Override
+    public List<Comment> getWithFilters(FilterCommentOptions options) {
+
+        return getCommentsWithFiltersHelper(-1, options);
+
+    }
+
+    private List<Comment> getCommentsWithFiltersHelper(int id, FilterCommentOptions options) {
         try (Session session = sessionFactory.openSession()) {
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
 
@@ -59,7 +71,10 @@ public class CommentRepositoryImpl implements CommentRepository {
 
             List<Predicate> predicates = new ArrayList<>();
 
-            predicates.add(criteriaBuilder.equal(root.get("user").get("id"), id));
+            if(id !=-1) {
+
+                predicates.add(criteriaBuilder.equal(root.get("user").get("id"), id));
+            }
 
             options.getContent().ifPresent(content -> {
                 predicates.add(criteriaBuilder.like(root.get("content"), "%" + content + "%"));
@@ -73,7 +88,6 @@ public class CommentRepositoryImpl implements CommentRepository {
 
             return query.list();
         }
-
     }
 //
 //    @Override

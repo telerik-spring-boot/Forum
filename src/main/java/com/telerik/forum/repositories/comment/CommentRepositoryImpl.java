@@ -3,10 +3,8 @@ package com.telerik.forum.repositories.comment;
 
 import com.telerik.forum.models.post.Comment;
 import com.telerik.forum.models.filters.FilterCommentOptions;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import com.telerik.forum.models.user.User;
+import jakarta.persistence.criteria.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -78,6 +76,10 @@ public class CommentRepositoryImpl implements CommentRepository {
 
             options.getContent().ifPresent(content -> {
                 predicates.add(criteriaBuilder.like(root.get("content"), "%" + content + "%"));
+            });
+
+            options.getCreatorUsername().ifPresent(username -> {
+                predicates.add(criteriaBuilder.like(root.get("user").get("username"), "%" + username + "%"));
             });
 
             criteriaQuery.where(predicates.toArray(new Predicate[0]));

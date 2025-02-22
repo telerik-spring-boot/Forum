@@ -272,21 +272,32 @@ public class AnonymousMvcController {
             tagArray = filterDto.getTags().split(",");
         }
 
+        List<Post> totalFoundPosts;
 
-        FilterPostOptions filterPostOptions = new FilterPostOptions(null,
-                searchTerm, null, tagArray, filterDto.getMinLikes(), filterDto.getMaxLikes(),
-                filterDto.getSortBy(), filterDto.getSortOrder());
-        List<Post> foundPosts = postService.getAllPostsWithFilters(filterPostOptions);
+        if (filterDto.getContent()==null && filterDto.getTitle()==null) {
 
-        filterPostOptions = new FilterPostOptions(null,
-                null, searchTerm, tagArray, filterDto.getMinLikes(), filterDto.getMaxLikes(),
-                filterDto.getSortBy(), filterDto.getSortOrder());
-        List<Post> foundPostsContent = postService.getAllPostsWithFilters(filterPostOptions);
+            FilterPostOptions filterPostOptions = new FilterPostOptions(filterDto.getCreatorUsername(),
+                    searchTerm, null, tagArray, filterDto.getMinLikes(), filterDto.getMaxLikes(),
+                    filterDto.getSortBy(), filterDto.getSortOrder());
+            List<Post> foundPosts = postService.getAllPostsWithFilters(filterPostOptions);
 
-        List<Post> totalFoundPosts = Stream.concat(foundPosts.stream(), foundPostsContent.stream())
-                .distinct()
-                .toList();
+            filterPostOptions = new FilterPostOptions(filterDto.getCreatorUsername(),
+                    null, searchTerm, tagArray, filterDto.getMinLikes(), filterDto.getMaxLikes(),
+                    filterDto.getSortBy(), filterDto.getSortOrder());
+            List<Post> foundPostsContent = postService.getAllPostsWithFilters(filterPostOptions);
 
+            totalFoundPosts = Stream.concat(foundPosts.stream(), foundPostsContent.stream())
+                    .distinct()
+                    .toList();
+
+        }
+        else{
+            FilterPostOptions filterPostOptions = new FilterPostOptions(filterDto.getCreatorUsername(),
+                    filterDto.getTitle(), filterDto.getContent(), tagArray, filterDto.getMinLikes(), filterDto.getMaxLikes(),
+                    filterDto.getSortBy(), filterDto.getSortOrder());
+            totalFoundPosts = postService.getAllPostsWithFilters(filterPostOptions);
+
+        }
 
         List<PostDisplayDTO> totalPostDTOs = totalFoundPosts.stream()
                 .map(postMapper::postToPostDisplayDTO)
@@ -314,7 +325,7 @@ public class AnonymousMvcController {
         model.addAttribute("comment", new CommentCreateDTO());
 
 
-        return "home-updated";
+        return "home";
     }
 
 
@@ -328,8 +339,12 @@ public class AnonymousMvcController {
 
         }
 
+        String search = searchTerm;
+        if (filterDto.getContent() != null) {
+            search = filterDto.getContent();
+        }
 
-        FilterCommentOptions filterCommentOptions = new FilterCommentOptions(null, searchTerm,
+        FilterCommentOptions filterCommentOptions = new FilterCommentOptions(filterDto.getCreatorUsername(), search,
                 filterDto.getSortBy(), filterDto.getSortOrder());
 
         List<Comment> foundComments = commentService.getAllComments(filterCommentOptions);
@@ -342,7 +357,7 @@ public class AnonymousMvcController {
         model.addAttribute("searchTerm", searchTerm);
 
 
-        return "home-updated";
+        return "home";
     }
 
     @GetMapping("/home/users")
@@ -369,7 +384,7 @@ public class AnonymousMvcController {
 
         model.addAttribute("userId", user.getId());
 
-        return "home-updated";
+        return "home";
     }
 
 

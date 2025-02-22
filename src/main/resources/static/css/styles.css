@@ -12786,8 +12786,10 @@ body {
 
 /* PAGER */
 .datatable-pagination a:hover {
+    cursor: pointer;
     background-color: #e9ecef;
 }
+
 
 .datatable-pagination .active a,
 .datatable-pagination .active a:focus,

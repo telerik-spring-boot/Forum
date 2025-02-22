@@ -69,11 +69,15 @@
 							</tfoot>
 							<tbody>
 							<tr th:each="user : ${users}">
-								<td th:text="${user.name}"> Name</td>
+								<td>
+									<a class="btn btn-link text-decoration-none h-100"
+									   th:href="@{/users/{id}/overview(id=${user.id})}" th:text="${user.name}"></a>
+								</td>
 								<td th:text="${user.username}"> Username</td>
 								<td th:text="${user.postCount}"> Post Count</td>
 								<td th:text="${user.commentCount}"> Comment Count</td>
-								<td th:text="${#temporals.format(user.lastLogin, 'yyyy-MM-dd HH:mm')}"> Last Login</td>
+								<td th:text="${#temporals.format(user.lastLogin, 'yyyy-MM-dd HH:mm')}"> Last Login
+								</td>
 								<td class="options">
 									<div class="container">
 										<div class="dropdown d-none" id="dropdownMenu">

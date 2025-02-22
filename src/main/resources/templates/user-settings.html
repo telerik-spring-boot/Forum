@@ -28,15 +28,40 @@
 									</div>
 								</form>
 
+								<form class="text-center" enctype="multipart/form-data" method="post"
+								      th:action="@{/uploads/{id}(id=${userUpdate.id})}">
+
+									<input accept="image/jpeg, image/png, image/gif, image/bmp, image/webp"
+									       class="d-none"
+									       id="fileInput"
+									       name="picture"
+									       onchange="this.form.submit()" type="file"/>
+
+									<img alt="Profile Picture"
+									     class="rounded-circle border mb-3 profile-picture ms-auto"
+									     onclick="document.getElementById('fileInput').click()"
+									     th:if="${profilePicture}"
+									     th:src="@{/uploads/picture{id}.jpg(id=${userUpdate.id})}"/>
+
+
+									<img alt="Profile Picture"
+									     class="rounded-circle border mb-3 profile-picture ms-auto"
+									     onclick="document.getElementById('fileInput').click()"
+									     th:src="@{/img/profile-icon-png-893.png}"
+									     th:unless="${profilePicture}"/>
+								</form>
+
 								<form action="#" class="text-center" id="updateForm" method="post"
 								      th:action="@{__${requestURI}__}" th:object="${userUpdate}">
 									<input name="_method" th:value="put" type="hidden"/>
 									<input name="username" th:value="${userUpdate.username}" type="hidden"/>
 
 
-									<img alt="Profile Picture"
-									     class="rounded-circle border mb-3 profile-picture ms-auto"
-									     th:src="@{/img/profile-icon-png-893.png}">
+									<!--									<img alt="Profile Picture"-->
+									<!--									     class="rounded-circle border mb-3 profile-picture ms-auto"-->
+									<!--									     th:src="@{/img/profile-icon-png-893.png}">-->
+
+
 									<div class="form-floating mb-3 mt-4">
 										<input class="form-control" disabled id="username"
 										       placeholder="Username"

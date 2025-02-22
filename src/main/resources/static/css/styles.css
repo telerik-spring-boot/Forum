@@ -13019,6 +13019,7 @@ tr td {
 .profile-picture {
     height: 7rem;
     width: 7rem;
+    cursor: pointer;
 }
 
 .fontsize08 {

@@ -5,6 +5,7 @@ import com.telerik.forum.configurations.jwt.JwtUtil;
 import com.telerik.forum.exceptions.DuplicateEntityException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.helpers.AuthenticationHelper;
+import com.telerik.forum.helpers.FilesHelper;
 import com.telerik.forum.helpers.UserMapper;
 import com.telerik.forum.models.dtos.FilterDTO;
 import com.telerik.forum.models.dtos.commentDTOs.CommentCreateDTO;
@@ -154,6 +155,7 @@ public class UserMvcController {
 
             model.addAttribute("userUpdate", userUpdate);
             model.addAttribute("userId", user.getId());
+            model.addAttribute("profilePicture", FilesHelper.checkIfPhotoExists(userUpdate.getId()));
             model.addAttribute("requestURI", request.getRequestURI());
             model.addAttribute("token", jwtUtil.generateToken(userUpdate.getUsername()));
 
@@ -203,6 +205,7 @@ public class UserMvcController {
         User user = authenticationHelper.tryGetUserMvc(session);
 
         userService.delete(id, user);
+        FilesHelper.deleteUserPhoto("picture" + id + ".jpg", "uploads");
 
         redirectAttributes.addFlashAttribute("successfulDeletion", true);
 

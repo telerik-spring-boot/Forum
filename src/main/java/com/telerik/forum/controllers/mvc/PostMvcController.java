@@ -310,6 +310,71 @@ public class PostMvcController {
 
     }
 
+    @GetMapping("/{postId}/comments/{commentId}")
+    public String showUpdateCommentForm(@PathVariable int postId, @PathVariable int commentId,
+                                        Model model, HttpSession session) {
+        User user;
+        try {
+            user = authHelper.tryGetUserMvc(session);
+        } catch (UnauthorizedOperationException e) {
+            return "redirect:/auth/login";
+        }
+
+        try {
+            Comment comment = commentService.getComment(commentId);
+
+            CommentCreateDTO commentCreateDTO = new CommentCreateDTO();
+            commentCreateDTO.setContent(comment.getContent());
+
+            model.addAttribute("comment", commentCreateDTO);
+
+            model.addAttribute("userId", user.getId());
+
+            return "update-comment";
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "404";
+        }
+    }
+
+    @PostMapping("/{postId}/comments/{commentId}")
+    public String updateComment(@PathVariable int postId, @PathVariable int commentId,
+                             @Valid @ModelAttribute("comment") CommentCreateDTO comment,
+                             BindingResult bindingResult,
+                             Model model, HttpSession session) {
+
+        User user;
+        try {
+            user = authHelper.tryGetUserMvc(session);
+        } catch (UnauthorizedOperationException e) {
+            return "redirect:/auth/login";
+        }
+
+        if (bindingResult.hasErrors()) {
+            return "update-comment";
+        }
+
+        try {
+            CommentCreateDTO commentCreateDTO = new CommentCreateDTO();
+            commentCreateDTO.setContent(comment.getContent());
+            Comment updatedComment = postMapper.dtoToComment(commentId,commentCreateDTO,postId);
+
+            commentService.updateComment(updatedComment, user);
+
+            return "redirect:/posts/" + postId;
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "404";
+        } catch (UnauthorizedOperationException e) {
+            model.addAttribute("statusCode", HttpStatus.UNAUTHORIZED.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "401";
+        }
+
+    }
+
     @GetMapping("/{id}/delete")
     public String deletePost(@PathVariable int id, HttpSession session, Model model) {
 

@@ -70,7 +70,7 @@
 							<tbody>
 							<tr th:each="user : ${users}">
 								<td>
-									<a class="btn btn-link text-decoration-none h-100"
+									<a class="btn btn-link text-decoration-none h-100 w-100 text-start"
 									   th:href="@{/users/{id}/overview(id=${user.id})}" th:text="${user.name}"></a>
 								</td>
 								<td th:text="${user.username}"> Username</td>

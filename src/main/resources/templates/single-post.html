@@ -48,12 +48,18 @@
                                     <!-- Update and Delete buttons -->
                                     <div class="d-flex justify-content-end tags-container">
                                         <a href="#" th:if="${sessionUserId==post.userId && !userIsBlocked}"
-                                           th:href="@{__${requestURI}__/update}" class="btn btn-primary btn-sm rounded-pill">Update</a>
+                                           th:href="@{__${requestURI}__/update}"
+                                           class="btn btn-outline-primary rounded-circle text-end">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
                                         <a href="#"
                                            th:if="${(sessionUserId==post.userId || userIsAdmin) && !userIsBlocked}"
                                            data-bs-toggle="modal" data-bs-target="#deleteModal"
                                            th:data-href="@{/posts/{id}/delete(id=${post.id})}"
-                                           class="btn btn-danger btn-sm rounded-pill">Delete</a>
+                                           class="btn btn-outline-danger rounded-pill text-end">
+                                        <i class="fas fa-trash"></i>
+                                        </a>
+
                                     </div>
                                 </div>
 

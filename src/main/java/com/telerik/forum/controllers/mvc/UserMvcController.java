@@ -74,6 +74,7 @@ public class UserMvcController {
             model.addAttribute("user", showUser);
             model.addAttribute("userId", user.getId());
             model.addAttribute("comment", new CommentCreateDTO());
+            model.addAttribute("profilePicture", FilesHelper.checkIfPhotoExists(id));
             model.addAttribute("currentURI", request.getRequestURI());
 
             return "user";
@@ -99,6 +100,8 @@ public class UserMvcController {
             model.addAttribute("user", showUser);
             model.addAttribute("userId", user.getId());
             model.addAttribute("comment", new CommentCreateDTO());
+            model.addAttribute("currentURI", request.getRequestURI());
+            model.addAttribute("profilePicture", FilesHelper.checkIfPhotoExists(id));
             model.addAttribute("currentURI", request.getRequestURI());
 
             return "user";
@@ -126,6 +129,7 @@ public class UserMvcController {
 
             model.addAttribute("user", new UserCommentsPageDisplayDTO(userEntity.getId(), userEntity.getComments(), userEntity.getUsername()));
             model.addAttribute("userId", user.getId());
+            model.addAttribute("profilePicture", FilesHelper.checkIfPhotoExists(id));
             model.addAttribute("currentURI", request.getRequestURI());
 
             return "user";

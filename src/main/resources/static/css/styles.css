@@ -13022,6 +13022,11 @@ tr td {
     cursor: pointer;
 }
 
+.user-picture {
+    height: 5rem;
+    width: 5rem;
+}
+
 .fontsize08 {
     font-size: 0.8rem;
 }

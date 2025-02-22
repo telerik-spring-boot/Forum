@@ -69,7 +69,6 @@ public class PostMvcController {
 
         if (bindingResult.hasErrors()) {
             extracted(postId, model, user);
-//            return "single-post-updated";
             return "single-post";
         }
 
@@ -121,18 +120,16 @@ public class PostMvcController {
 
         model.addAttribute("sessionUserId", user.getId());
 
-        if(user.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN")))
-        {
-            model.addAttribute("userIsAdmin",true);
-        }else{
-            model.addAttribute("userIsAdmin",false);
+        if (user.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"))) {
+            model.addAttribute("userIsAdmin", true);
+        } else {
+            model.addAttribute("userIsAdmin", false);
         }
 
-        if(user.isBlocked())
-        {
-            model.addAttribute("userIsBlocked",true);
-        }else {
-            model.addAttribute("userIsBlocked",false);
+        if (user.isBlocked()) {
+            model.addAttribute("userIsBlocked", true);
+        } else {
+            model.addAttribute("userIsBlocked", false);
         }
 
         int userReaction = 0;
@@ -192,15 +189,16 @@ public class PostMvcController {
 
     @GetMapping()
     public String showNewPostForm(Model model, HttpSession session) {
-
+        User user;
         try {
-            authHelper.tryGetUserMvc(session);
+            user = authHelper.tryGetUserMvc(session);
         } catch (UnauthorizedOperationException e) {
             return "redirect:/auth/login";
         }
 
         model.addAttribute("postCreateDTO", new PostCreateDTO());
         model.addAttribute("tagCreateDTO", new TagCreateAndDeleteMvcDTO());
+        model.addAttribute("userId", user.getId());
         return "create-post";
     }
 
@@ -243,8 +241,9 @@ public class PostMvcController {
 
     @GetMapping("/{id}/update")
     public String showUpdatePostForm(@PathVariable int id, Model model, HttpSession session) {
+        User user;
         try {
-            authHelper.tryGetUserMvc(session);
+            user = authHelper.tryGetUserMvc(session);
         } catch (UnauthorizedOperationException e) {
             return "redirect:/auth/login";
         }
@@ -256,6 +255,8 @@ public class PostMvcController {
             model.addAttribute("postUpdateDTO", postToDisplay);
 
             session.setAttribute("oldTags", postToDisplay.getTags());
+
+            model.addAttribute("userId", user.getId());
 
             return "update-post";
         } catch (EntityNotFoundException e) {
@@ -301,7 +302,7 @@ public class PostMvcController {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
             return "404";
-        }catch(UnauthorizedOperationException e){
+        } catch (UnauthorizedOperationException e) {
             model.addAttribute("statusCode", HttpStatus.UNAUTHORIZED.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
             return "401";
@@ -319,14 +320,14 @@ public class PostMvcController {
             return "redirect:/auth/login";
         }
 
-        try{
+        try {
             postService.deletePost(id, user);
             return "redirect:/home";
-        }catch (EntityNotFoundException e) {
+        } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
             return "404";
-        }catch(UnauthorizedOperationException e){
+        } catch (UnauthorizedOperationException e) {
             model.addAttribute("statusCode", HttpStatus.UNAUTHORIZED.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
             return "401";

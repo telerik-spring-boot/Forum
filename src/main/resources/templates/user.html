@@ -172,7 +172,7 @@
 								<hr>
 								<div class="btn btn-light w-100 h-100 d-flex flex-column align-items-start clickable-entity"
 								     th:attr="redirect-link='/posts/' + ${post.id}">
-									<a class="title-link d-inline fst-italic fs-5" href="#"
+									<a class="title-link d-inline fst-italic fs-5 text-content" href="#"
 									   th:href="@{/posts/{id}(id=${post.id})}"
 									   th:text="${post.title}">
 										This is the title of the
@@ -268,7 +268,7 @@
 								<div class="btn btn-light w-100 h-100 d-flex flex-column align-items-start clickable-entity"
 								     th:attr="redirect-link='/posts/' + ${entity.post.id}"
 								     th:if="${entity.post != null}">
-									<a class="title-link d-inline fst-italic fs-5" href="#"
+									<a class="title-link d-inline fst-italic fs-5 text-content" href="#"
 									   th:href="@{/posts/{id}(id=${entity.post.id})}"
 									   th:text="${entity.post.title}">
 										This is the title of the

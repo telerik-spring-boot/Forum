@@ -53,7 +53,8 @@
 										<a class="small" href="password.html" th:href="@{/auth/request-password}"
 										   th:text="#{login.forgot-password.label}">Forgot
 											Password?</a>
-										<input class="btn btn-primary" th:value="#{login.label}" type="submit"
+										<input class="btn btn-primary" id="submitLoginButton" th:value="#{login.label}"
+										       type="submit"
 										       value="Login"/>
 									</div>
 								</form>

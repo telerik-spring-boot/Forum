@@ -3,11 +3,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const rememberPasswordBtn = document.getElementById("inputRememberPassword");
     const usernameField = document.getElementById("username");
     const passwordField = document.getElementById("inputPassword");
+    const submitLoginButton = document.getElementById("submitLoginButton");
 
 
     const encryptionKey = 'some-very-hard-key-to-break';
 
-    rememberPasswordBtn.addEventListener("change", function () {
+    submitLoginButton.addEventListener("click", function () {
 
         if (rememberPasswordBtn.checked) {
             const username = usernameField.value;

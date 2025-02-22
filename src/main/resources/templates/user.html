@@ -138,8 +138,8 @@
 							</button>
 						</form>
 
-						<div class="px-3 my-1" th:if="${currentURI.endsWith('comments')}">
-							<div th:each="comment : ${user.comments}">
+						<div class="px-3 my-1 itemList" th:if="${currentURI.endsWith('comments')}">
+							<div class="item" th:each="comment : ${user.comments}">
 								<hr>
 								<div class="btn btn-light w-100 h-100 d-flex flex-column align-items-start clickable-entity"
 								     th:attr="redirect-link='/posts/' + ${comment.post.id}">
@@ -167,8 +167,8 @@
 								</div>
 							</div>
 						</div>
-						<div class="px-3 my-1" th:if="${currentURI.endsWith('posts')}">
-							<div th:each="post : ${user.posts}">
+						<div class="px-3 my-1 itemList" th:if="${currentURI.endsWith('posts')}">
+							<div class="item" th:each="post : ${user.posts}">
 								<hr>
 								<div class="btn btn-light w-100 h-100 d-flex flex-column align-items-start clickable-entity"
 								     th:attr="redirect-link='/posts/' + ${post.id}">
@@ -262,8 +262,8 @@
 						</div>
 
 
-						<div class="px-3 my-1" th:if="${currentURI.endsWith('overview')}">
-							<div th:each="entity : ${user.entities}">
+						<div class="px-3 my-1 itemList" th:if="${currentURI.endsWith('overview')}">
+							<div class="item" th:each="entity : ${user.entities}">
 								<hr>
 								<div class="btn btn-light w-100 h-100 d-flex flex-column align-items-start clickable-entity"
 								     th:attr="redirect-link='/posts/' + ${entity.post.id}"
@@ -397,6 +397,9 @@
 
 <script src="../static/js/sort-button.js"
         th:src="@{/js/sort-button.js}"></script>
+
+<script src="../static/js/infinity-scroll.js"
+        th:src="@{/js/infinity-scroll.js}"></script>
 
 
 </body>

@@ -14,14 +14,14 @@
 			<div class="container-fluid mt-5">
 				<div class="row">
 					<div class="col-8 mx-auto bg-light p-0" id="contentBox">
-						<div class="d-flex border-top border-2 px-3" id="userContainer">
+						<div class="d-flex border-top border-2 px-3 mb-2" id="userContainer">
 
 							<img alt="Profile Picture"
-							     class="d-block h-100 rounded-circle mt-2 user-picture"
+							     class="d-block h-100 rounded-circle mt-3 user-picture"
 							     onerror="onerror=null; src='/img/profile-icon-png-893.png'"
 							     th:src="@{/uploads/picture{id}.jpg(id=${user.id})}"/>
 
-							<div class="mt-4 ms-2 d-inline align-items-center">
+							<div class="mt-4 ms-3 d-inline align-items-center">
 									<span class="fs-3 username-part"
 									      th:text="${user.username}">Username</span> <br>
 								<span class="text-muted username-part"

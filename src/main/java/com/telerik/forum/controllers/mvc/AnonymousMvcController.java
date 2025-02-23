@@ -30,6 +30,7 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -181,7 +182,7 @@ public class AnonymousMvcController {
     }
 
     @PostMapping("/auth/request-password")
-    public String handlePasswordRetrieval(@Valid @ModelAttribute("user") UserRetrieveDTO userRetrieveDTO, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
+    public String handlePasswordRetrieval(@Valid @ModelAttribute("user") UserRetrieveDTO userRetrieveDTO, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes, HttpServletRequest request) {
 
         model.addAttribute("formSubmitted", true);
 
@@ -195,7 +196,8 @@ public class AnonymousMvcController {
             SimpleMailMessage mailMessage = new SimpleMailMessage();
 
             String token = jwtUtil.generateToken(user.getUsername());
-            String resetUrl = "http://localhost:8080/auth/reset-password?token=" + token;
+
+            String resetUrl = request.getScheme() + "://" + request.getServerName() + "/auth/reset-password?token=" + token;
 
             mailMessage.setTo(user.getEmailAddress());
             mailMessage.setSubject("Password retrieval");

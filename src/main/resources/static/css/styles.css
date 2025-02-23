@@ -13069,5 +13069,34 @@ tr td {
     width: 40%;
 }
 
+.back-to-top-btn {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    height: 3.5rem;
+    width: 3.5rem;
+    display: block;
+    opacity: 0;
+    padding: 10px 20px;
+    background-color: var(--bs-gray-700);
+    color: var(--bs-gray-200);
+    border: none;
+    border-radius: 1rem;
+    cursor: pointer;
+    font-size: 16px;
+    z-index: 1000;
+    transition: opacity 0.5s ease-in-out, visibility 0s 0.5s;
+}
+
+.back-to-top-btn.show {
+    opacity: 1;
+    transition: opacity 1s ease-in-out, visibility 0s 0s;
+}
+
+.back-to-top-btn:hover {
+    background-color: var(--bs-gray-600);
+
+}
+
 
 

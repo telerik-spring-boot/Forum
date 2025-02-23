@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/general-fragments.html :: head('Terms & Conditions')}"></head>
+
+<body class="bg-light sb-nav-fixed">
+<nav th:replace="~{fragments/general-fragments.html :: topnav}"></nav>
+
+<div id="layoutSidenav">
+	<div th:replace="~{fragments/general-fragments.html :: sidenav}"></div>
+	<div id="layoutSidenav_content">
+		<main class="h-100 pb-3">
+			<div class="container-fluid pt-5">
+				<div class="row justify-content-center">
+					<div class="col-10 mx-auto card shadow border-0 rounded px-0">
+						<div class="card-header">
+							<h3 class="text-center font-weight-light my-4">About Us</h3>
+						</div>
+						<div class="card-body px-5">
+							<h4 class="pt-2">1. Who We Are</h4>
+							<p class="pb-2">Welcome to Roamify! We are a platform dedicated to helping travelers share
+								their experiences, connect with like-minded adventurers, and explore the world
+								together.</p>
+
+							<h4 class="pt-2">2. Our Mission</h4>
+							<p class="pb-2">Our mission is to create a vibrant community where travelers can share
+								stories, discover new destinations, and inspire others to embark on their own
+								journeys.</p>
+
+							<h4 class="pt-2">3. What We Offer</h4>
+							<p class="pb-2">At Roamify, we provide:</p>
+							<ul class="pb-2">
+								<li>A platform to post travel experiences and tips.</li>
+								<li>Engagement features like commenting and liking posts.</li>
+								<li>Search functionality to find content based on location, tags, or users.</li>
+								<li>A supportive community of travel enthusiasts.</li>
+							</ul>
+
+							<h4 class="pt-2">4. Our Values</h4>
+							<p class="pb-2">We believe in:</p>
+							<ul class="pb-2">
+								<li>Authenticity - Encouraging real, honest travel stories.</li>
+								<li>Inclusivity - Welcoming travelers from all backgrounds.</li>
+								<li>Exploration - Inspiring curiosity and adventure.</li>
+								<li>Community - Connecting people through shared experiences.</li>
+							</ul>
+
+							<h4 class="pt-2">5. How You Can Contribute</h4>
+							<p class="pb-2">You can be part of Roamify by:</p>
+							<ul class="pb-2">
+								<li>Sharing your travel experiences through posts.</li>
+								<li>Engaging with others by commenting and liking their content.</li>
+								<li>Providing tips and recommendations to fellow travelers.</li>
+								<li>Helping us grow by inviting friends to join.</li>
+							</ul>
+
+							<h4 class="pt-2">6. Contact Us</h4>
+							<p class="pb-2">We’d love to hear from you! For any questions or feedback, reach out to us
+								at contact@roamify.com.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+		<footer th:replace="~{fragments/general-fragments.html :: footer}"></footer>
+	</div>
+</div>
+
+<th:block th:replace="~{fragments/general-fragments.html :: scripts}"></th:block>
+
+</body>
+</html>

@@ -47,7 +47,7 @@
 					       class="form-control rounded-pill"
 					       name="searchTerm"
 					       placeholder="Search..."
-						   th:value="${searchTerm}"
+					       th:value="${searchTerm}"
 					       type="text"/>/>
 				</div>
 			</form>
@@ -193,7 +193,7 @@
 						<span th:text="#{help.label}"> Help </span>
 					</a>
 
-					<a class="nav-link btn btn-dark" href="careers.html">
+					<a class="nav-link btn btn-dark" href="careers.html" th:href="@{/careers}">
 						<div class="sb-nav-link-icon">
 							<i class="fas fa-briefcase"></i>
 						</div>
@@ -218,8 +218,8 @@
 		>
 			<div class="text-muted" th:text="#{copyright.label}">Copyright &copy; Roamify 2025</div>
 			<div>
-				<a href="#" th:text="#{privacy.label}">Privacy Policy</a>
-				<a class="ms-1" href="#" th:text="#{terms.label}">Terms &amp; Conditions</a>
+				<a href="#" th:href="@{/privacy}" th:text="#{privacy.label}">Privacy Policy</a>
+				<a class="ms-1" href="#" th:href="@{terms}" th:text="#{terms.label}">Terms &amp; Conditions</a>
 			</div>
 		</div>
 	</div>

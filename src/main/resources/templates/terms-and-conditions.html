@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/general-fragments.html :: head('Terms & Conditions')}"></head>
+
+<body class="bg-light sb-nav-fixed">
+<nav th:replace="~{fragments/general-fragments.html :: topnav}"></nav>
+
+<div id="layoutSidenav">
+	<div th:replace="~{fragments/general-fragments.html :: sidenav}"></div>
+	<div id="layoutSidenav_content">
+		<main class="h-100 pb-3">
+			<div class="container-fluid pt-5">
+				<div class="row justify-content-center">
+					<div class="col-10 mx-auto card shadow border-0 rounded px-0">
+						<div class="card-header">
+							<h3 class="text-center font-weight-light my-4">Terms and Conditions</h3>
+						</div>
+						<div class="card-body px-5">
+							<p>Effective Date: 23-02-2025</p>
+
+							<h4 class="pt-2">1. Introduction</h4>
+							<p class="pb-2">Welcome to Roamify. These Terms and Conditions govern your use of our
+								website and services.
+								By accessing or using our services, you agree to comply with these terms.</p>
+
+							<h4 class="pt-2">2. Use of Our Services</h4>
+							<p>By using our services, you agree to:</p>
+							<ul class="pb-2">
+								<li>Use the website lawfully and responsibly.</li>
+								<li>Not engage in fraudulent or harmful activities.</li>
+								<li>Respect intellectual property rights.</li>
+							</ul>
+
+							<h4 class="pt-2">3. User Accounts</h4>
+							<p>When creating an account, you agree to:</p>
+							<ul class="pb-2">
+								<li>Provide accurate and complete information.</li>
+								<li>Keep your login credentials secure.</li>
+								<li>Notify us immediately of any unauthorized use of your account.</li>
+							</ul>
+
+							<h4 class="pt-2">4. Intellectual Property</h4>
+							<p class="pb-2">All content on our website, including text, images, and logos, is owned by
+								Roamify or licensed to us.
+								You may not use, reproduce, or distribute our content without permission.</p>
+
+							<h4 class="pt-2">5. Limitation of Liability</h4>
+							<p class="pb-2">We are not responsible for any indirect, incidental, or consequential
+								damages
+								resulting from your use of our website or services.</p>
+
+							<h4 class="pt-2">6. Termination</h4>
+							<p class="pb-2">We reserve the right to suspend or terminate your access to our services at
+								any time
+								for violating these Terms and Conditions.</p>
+
+							<h4 class="pt-2">7. Changes to These Terms</h4>
+							<p class="pb-2">We may update these Terms and Conditions periodically. Any changes will be
+								posted
+								on this page with an updated effective date.</p>
+
+							<h4 class="pt-2">8. Governing Law</h4>
+							<p class="pb-2">These Terms and Conditions are governed by and construed in accordance with
+								the laws
+								of your jurisdiction.</p>
+
+							<h4 class="pt-2">9. Contact Us</h4>
+							<p class="pb-2">If you have any questions about these Terms and Conditions, please contact
+								us at
+								support@roamify.com</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+		<footer th:replace="~{fragments/general-fragments.html :: footer}"></footer>
+	</div>
+</div>
+
+<th:block th:replace="~{fragments/general-fragments.html :: scripts}"></th:block>
+
+</body>
+</html>

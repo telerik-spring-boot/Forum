@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/general-fragments.html :: head('Terms & Conditions')}"></head>
+
+<body class="bg-light sb-nav-fixed">
+<nav th:replace="~{fragments/general-fragments.html :: topnav}"></nav>
+
+<div id="layoutSidenav">
+	<div th:replace="~{fragments/general-fragments.html :: sidenav}"></div>
+	<div id="layoutSidenav_content">
+		<main class="h-100 pb-3">
+			<div class="container-fluid pt-5">
+				<div class="row justify-content-center">
+					<div class="col-10 mx-auto card shadow border-0 rounded px-0">
+						<div class="card-header">
+							<h3 class="text-center font-weight-light my-4">Careers</h3>
+						</div>
+						<div class="card-body px-5">
+							<h4 class="pt-2">1. Join Our Team</h4>
+							<p class="pb-2">At Roamify, we are always looking for passionate individuals who love travel
+								and technology. If you want to be part of a dynamic and innovative team, we’d love to
+								hear from you.</p>
+
+							<h4 class="pt-2">2. Why Work With Us?</h4>
+							<p class="pb-2">We offer:</p>
+							<ul class="pb-2">
+								<li>A collaborative and inclusive work environment.</li>
+								<li>Opportunities for professional growth and learning.</li>
+								<li>Flexible working arrangements.</li>
+								<li>The chance to make an impact in the travel industry.</li>
+							</ul>
+
+							<h4 class="pt-2">3. Open Positions</h4>
+							<p class="pb-2">We are currently hiring for the following roles:</p>
+							<ul class="pb-2">
+								<li>Software Engineer (Frontend & Backend)</li>
+								<li>Product Manager</li>
+								<li>Content Writer (Travel-focused)</li>
+								<li>Marketing Specialist</li>
+								<li>Customer Support Representative</li>
+							</ul>
+
+							<h4 class="pt-2">4. How to Apply</h4>
+							<p class="pb-2">To apply, send your resume and a brief cover letter to careers@roamify.com.
+								Please include the position title in the subject line of your email.</p>
+
+							<h4 class="pt-2">5. Internship Opportunities</h4>
+							<p class="pb-2">We also offer internships for students and recent graduates. If you are
+								interested, reach out to us at internships@roamify.com.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+
+		<footer th:replace="~{fragments/general-fragments.html :: footer}"></footer>
+	</div>
+</div>
+
+<th:block th:replace="~{fragments/general-fragments.html :: scripts}"></th:block>
+
+</body>
+</html>

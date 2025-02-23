@@ -6,7 +6,6 @@ import com.telerik.forum.exceptions.DuplicateEntityException;
 import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.helpers.AuthenticationHelper;
-import com.telerik.forum.helpers.FilesHelper;
 import com.telerik.forum.helpers.PostMapper;
 import com.telerik.forum.helpers.UserMapper;
 import com.telerik.forum.models.dtos.FilterDTO;
@@ -302,7 +301,7 @@ public class AnonymousMvcController {
 
         }
 
-        if(filterDto.getSortBy() == null && filterDto.getSortOrder() == null) {
+        if (filterDto.getSortBy() == null && filterDto.getSortOrder() == null) {
             totalFoundPosts.sort(Comparator.comparing(Post::getCreatedAt).reversed());
         }
 
@@ -409,6 +408,31 @@ public class AnonymousMvcController {
         model.addAttribute("userId", user.getId());
 
         return "home";
+    }
+
+    @GetMapping("/privacy")
+    public String getPrivacyPage() {
+        return "privacy-policy";
+    }
+
+    @GetMapping("/terms")
+    public String getTermsAndConditions() {
+        return "terms-and-conditions";
+    }
+
+    @GetMapping("/help")
+    public String getHelpView() {
+        return "help";
+    }
+
+    @GetMapping("/careers")
+    public String getCareers() {
+        return "careers";
+    }
+
+    @GetMapping("/about")
+    public String getAbout() {
+        return "about";
     }
 
 

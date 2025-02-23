@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/general-fragments.html :: head('Privacy Policy')}"></head>
+
+<body class="bg-light sb-nav-fixed">
+<nav th:replace="~{fragments/general-fragments.html :: topnav}"></nav>
+
+<div id="layoutSidenav">
+	<div th:replace="~{fragments/general-fragments.html :: sidenav}"></div>
+	<div id="layoutSidenav_content">
+		<main class="h-100 pb-3">
+			<div class="container-fluid pt-5">
+				<div class="row justify-content-center">
+					<div class="col-10 mx-auto card shadow border-0 rounded px-0">
+						<div class="card-header">
+							<h3 class="text-center font-weight-light my-4">Privacy Policy</h3>
+						</div>
+						<div class="card-body px-5">
+							<p>Effective Date: 23-02-2025</p>
+
+							<h4 class="pt-2">1. Introduction</h4>
+							<p class="pb-2">Welcome to Roamify. Your privacy is important to us. This Privacy Policy
+								explains how we collect, use, disclose, and safeguard your information when you visit
+								our website.</p>
+
+
+							<h4 class="pt-2">2. Information We Collect</h4>
+							<p>We may collect information about you in various ways, including:</p>
+							<ul class="pb-2">
+								<li>Personal Data: Name, email address, phone number, and other details you provide.
+								</li>
+								<li>Automatically Collected Data: IP address, browser type, access times, and usage
+									patterns.
+								</li>
+								<li>Cookies and Tracking Technologies: Used for analytics, advertising, and website
+									performance.
+								</li>
+							</ul>
+
+							<h4 class="pt-2">3. How We Use Your Information</h4>
+							<p>We use the collected data for:</p>
+							<ul class="pb-2">
+								<li>Providing and managing our services.</li>
+								<li>Improving website functionality and user experience.</li>
+								<li>Communicating updates, promotions, and important notices.</li>
+								<li>Complying with legal obligations.</li>
+							</ul>
+
+							<h4 class="pt-2">4. Data Sharing and Disclosure</h4>
+							<p>We do not sell your personal information. However, we may share it with:</p>
+							<ul class="pb-2">
+								<li>Service providers assisting in operations (e.g., hosting, analytics).</li>
+								<li>Legal authorities when required by law.</li>
+								<li>Business transfers in case of mergers or acquisitions.</li>
+							</ul>
+
+							<h4 class="pt-2">5. Data Security</h4>
+							<p class="pb-2">We implement security measures to protect your information, but no method is
+								100% secure.
+								Please take precautions when sharing personal data online.</p>
+							<h4 class="pt-2">6. Your Rights and Choices</h4>
+							<p>You have rights regarding your personal data, including:</p>
+							<ul class="pb-2">
+								<li>Accessing, updating, or deleting your information.</li>
+								<li>Opting out of marketing communications.</li>
+								<li>Managing cookie preferences.</li>
+							</ul>
+
+							<h4 class="pt-2">7. Third-Party Links</h4>
+							<p class="pb-2">Our website may contain links to external websites. We are not responsible
+								for their
+								privacy practices and encourage you to read their policies.</p>
+
+							<h4 class="pt-2"> 8. Changes to This Policy</h4>
+							<p class="pb-2">We may update this Privacy Policy periodically. Any changes will be posted
+								on this page
+								with an updated effective date.</p>
+
+							<h4 class="pt-2">9. Contact Us</h4>
+							<p class="pb-2">If you have any questions about this Privacy Policy, please contact us at
+								support@roamify.com</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+		<footer th:replace="~{fragments/general-fragments.html :: footer}"></footer>
+	</div>
+</div>
+
+<th:block th:replace="~{fragments/general-fragments.html :: scripts}"></th:block>
+
+</body>
+</html>

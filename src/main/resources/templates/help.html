@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/general-fragments.html :: head('Terms & Conditions')}"></head>
+
+<body class="bg-light sb-nav-fixed">
+<nav th:replace="~{fragments/general-fragments.html :: topnav}"></nav>
+
+<div id="layoutSidenav">
+	<div th:replace="~{fragments/general-fragments.html :: sidenav}"></div>
+	<div id="layoutSidenav_content">
+		<main class="h-100 pb-3">
+			<div class="container-fluid pt-5">
+				<div class="row justify-content-center">
+					<div class="col-10 mx-auto card shadow border-0 rounded px-0">
+						<div class="card-header">
+							<h3 class="text-center font-weight-light my-4">Help</h3>
+						</div>
+						<div class="card-body px-5">
+							<h4 class="pt-2">1. Getting Started</h4>
+							<p class="pb-2">Welcome to Roamify! This help section provides guidance on how to use our
+								services effectively.</p>
+
+							<h4 class="pt-2">2. Creating an Account</h4>
+							<p class="pb-2">To register on Roamify:</p>
+							<ul class="pb-2">
+								<li>Click on the person icon in the top-right corner.</li>
+								<li>Select "Register" and fill in your details (First Name, Last Name, Email, Username,
+									Password).
+								</li>
+								<li>Click "Sign Up" to create your account.</li>
+							</ul>
+
+							<h4 class="pt-2">3. Managing Your Account</h4>
+							<p class="pb-2">Once registered, you can manage your account settings:</p>
+							<ul class="pb-2">
+								<li>Click on the person icon in the top-right corner.</li>
+								<li>Select "Settings" to update your details or upload a profile picture.</li>
+								<li>To delete your account, go to "Settings" and choose the option to close your
+									account.
+								</li>
+							</ul>
+
+							<h4 class="pt-2">4. Posting and Interacting</h4>
+							<p class="pb-2">Roamify allows users to share travel-related content:</p>
+							<ul class="pb-2">
+								<li>On the main page, you can view all user posts and comments.</li>
+								<li>You can comment on posts and interact with other users.</li>
+								<li>Use the search bar to find posts by tags, title, creator, or likes.</li>
+								<li>Sort posts by popularity, date, or engagement.</li>
+							</ul>
+
+							<h4 class="pt-2">5. Viewing Your Content</h4>
+							<p class="pb-2">To find your own posts and activity:</p>
+							<ul class="pb-2">
+								<li>Click on the person icon in the top-right corner.</li>
+								<li>Select "View Profile" to see your posts and interactions.</li>
+							</ul>
+
+							<h4 class="pt-2">6. Frequently Asked Questions</h4>
+							<p class="pb-2">Common queries about our platform:</p>
+							<ul class="pb-2">
+								<li><b>Can I edit my post after publishing?</b> - Yes, navigate to your post and click
+									"Edit".
+								</li>
+								<li><b>How I edit my comment after publishing?</b> - Yes, navigate to your comment and
+									click "Edit".
+								</li>
+								<li><b>Can I search users by their username? </b> - Yes, you can use the search bar by
+									typing their username.
+								</li>
+								<li><b>Can I recover a deleted account?</b> - No, once deleted, accounts cannot be
+									restored.
+								</li>
+							</ul>
+
+							<h4 class="pt-2">7. Contact Support</h4>
+							<p class="pb-2">If you need further assistance, feel free to contact our support team at
+								support@roamify.com.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+		<footer th:replace="~{fragments/general-fragments.html :: footer}"></footer>
+	</div>
+</div>
+
+<th:block th:replace="~{fragments/general-fragments.html :: scripts}"></th:block>
+
+</body>
+</html>

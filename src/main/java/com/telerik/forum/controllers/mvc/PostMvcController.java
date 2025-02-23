@@ -398,5 +398,30 @@ public class PostMvcController {
         }
     }
 
+    @GetMapping("/{postId}/comments/{commentId}/delete")
+    public String deleteComment(@PathVariable int postId, @PathVariable int commentId,
+                                HttpSession session, Model model) {
+
+        User user;
+        try {
+            user = authHelper.tryGetUserMvc(session);
+        } catch (UnauthorizedOperationException e) {
+            return "redirect:/auth/login";
+        }
+
+        try {
+            commentService.deleteComment(postId, commentId, user);
+            return "redirect:/posts/" + postId;
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "404";
+        } catch (UnauthorizedOperationException e) {
+            model.addAttribute("statusCode", HttpStatus.UNAUTHORIZED.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "401";
+        }
+    }
+
 
 }

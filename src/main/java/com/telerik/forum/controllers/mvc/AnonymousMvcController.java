@@ -41,7 +41,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Controller
@@ -275,7 +278,7 @@ public class AnonymousMvcController {
 
         List<Post> totalFoundPosts;
 
-        if (filterDto.getContent()==null && filterDto.getTitle()==null) {
+        if (filterDto.getContent() == null && filterDto.getTitle() == null) {
 
             FilterPostOptions filterPostOptions = new FilterPostOptions(filterDto.getCreatorUsername(),
                     searchTerm, null, tagArray, filterDto.getMinLikes(), filterDto.getMaxLikes(),
@@ -289,15 +292,18 @@ public class AnonymousMvcController {
 
             totalFoundPosts = Stream.concat(foundPosts.stream(), foundPostsContent.stream())
                     .distinct()
-                    .toList();
+                    .collect(Collectors.toList());
 
-        }
-        else{
+        } else {
             FilterPostOptions filterPostOptions = new FilterPostOptions(filterDto.getCreatorUsername(),
                     filterDto.getTitle(), filterDto.getContent(), tagArray, filterDto.getMinLikes(), filterDto.getMaxLikes(),
                     filterDto.getSortBy(), filterDto.getSortOrder());
             totalFoundPosts = postService.getAllPostsWithFilters(filterPostOptions);
 
+        }
+
+        if(filterDto.getSortBy() == null && filterDto.getSortOrder() == null) {
+            totalFoundPosts.sort(Comparator.comparing(Post::getCreatedAt).reversed());
         }
 
         List<PostDisplayDTO> totalPostDTOs = totalFoundPosts.stream()
@@ -350,6 +356,10 @@ public class AnonymousMvcController {
 
         List<Comment> foundComments = commentService.getAllComments(filterCommentOptions);
 
+        if (filterDto.getSortBy() == null && filterDto.getSortOrder() == null) {
+            foundComments.sort(Comparator.comparing(Comment::getCreatedAt).reversed());
+        }
+
         List<CommentDisplayDTO> totalCommentDTOs = foundComments.stream()
                 .map(postMapper::commentToCommentDisplayDTO)
                 .toList();
@@ -379,13 +389,19 @@ public class AnonymousMvcController {
         }
 
         FilterUserOptions filterUserOptions = new FilterUserOptions(search,
-                null, filterDto.getFirstName(),filterDto.getLastName(),
+                null, filterDto.getFirstName(), filterDto.getLastName(),
                 filterDto.getSortBy(), filterDto.getSortOrder());
         Page<User> foundUsers = adminService.getAllUsers(filterUserOptions, user, pageable);
+        List<User> foundUsersList = new ArrayList<>(foundUsers.getContent());
 
-        List<UserDisplayMvcDTO> totalUsersDTOs = foundUsers.stream()
+        if (filterDto.getSortBy() == null && filterDto.getSortOrder() == null) {
+            foundUsersList.sort(Comparator.comparing(User::getLastLogin).reversed());
+        }
+
+        List<UserDisplayMvcDTO> totalUsersDTOs = foundUsersList.stream()
                 .map(userMapper::userToUserDisplayMVCDTO)
                 .toList();
+
 
         model.addAttribute("foundUsers", totalUsersDTOs);
         model.addAttribute("searchTerm", searchTerm);

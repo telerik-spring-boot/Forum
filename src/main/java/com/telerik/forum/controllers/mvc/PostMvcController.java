@@ -356,9 +356,8 @@ public class PostMvcController {
         }
 
         try {
-            CommentCreateDTO commentCreateDTO = new CommentCreateDTO();
-            commentCreateDTO.setContent(comment.getContent());
-            Comment updatedComment = postMapper.dtoToComment(commentId,commentCreateDTO,postId);
+
+            Comment updatedComment = postMapper.dtoToComment(commentId,comment,postId);
 
             commentService.updateComment(updatedComment, user);
 

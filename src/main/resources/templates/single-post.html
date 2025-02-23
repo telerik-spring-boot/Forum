@@ -133,8 +133,8 @@
                         <div class="comments-list-container mt-4">
                             <div class="comments-section">
                                 <h6>Comments</h6>
-                                <div id="comments-container">
-                                    <div th:each="comment : ${post.comments}">
+                                <div id="comments-container" class="itemList">
+                                    <div class="item" th:each="comment : ${post.comments}">
                                         <div class="comment-box">
                                             <p class="text-muted text-content" style="font-size: 14px;">
                                                 <a class="text-content"
@@ -167,8 +167,9 @@
 </div>
 
 <th:block th:replace="~{fragments/general-fragments.html :: scripts}"></th:block>
-<!--<script src="../static/js/comment-pagination.js"-->
-<!--        th:src="@{/js/comment-pagination.js}"></script>-->
+<script src="../static/js/infinity-scroll.js"
+        th:src="@{/js/infinity-scroll.js}"></script>
+
 
 </body>
 </html>

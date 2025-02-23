@@ -96,6 +96,7 @@ public class AnonymousMvcController {
 
         model.addAttribute("formSubmitted", true);
 
+
         if (bindingResult.hasErrors()) {
             return "login";
         }
@@ -103,9 +104,17 @@ public class AnonymousMvcController {
         try {
             User user = authenticationHelper.verifyAuthentication(userLoginDTO.getUsername(), userLoginDTO.getPassword());
 
+
+            if (user.isBlocked()) {
+                bindingResult.rejectValue("username", "error.block");
+                bindingResult.rejectValue("password", "error.block");
+                return "login";
+            }
+
             session.setAttribute("currentUser", userLoginDTO.getUsername());
             session.setAttribute("userId", user.getId());
             session.setAttribute("isAdmin", authenticationHelper.isAdmin(user));
+
 
             user.setLastLogin(LocalDateTime.now());
             userService.update(user, user);
@@ -435,5 +444,10 @@ public class AnonymousMvcController {
         return "about";
     }
 
+
+    @GetMapping()
+    public String redirectToHome() {
+        return "redirect:/home";
+    }
 
 }

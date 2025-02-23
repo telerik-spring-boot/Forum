@@ -25,7 +25,7 @@
 										/>
 										<label for="username" th:text="#{user.username.label}"> Username</label>
 										<div class="invalid-feedback"
-										     th:if="${#fields.hasErrors('username') && !#fields.errors('username').contains('Invalid credentials.')}"
+										     th:if="${#fields.hasErrors('username') && !#fields.errors('username').contains('Invalid credentials.') && !#fields.errors('username').contains('You are blocked, please contact customer support.')}"
 										     th:text="${#fields.errors('username')}">
 										</div>
 									</div>

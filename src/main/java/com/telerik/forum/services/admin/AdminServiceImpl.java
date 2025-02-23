@@ -173,9 +173,10 @@ public class AdminServiceImpl implements AdminService {
 
     private void authorization(User userRequest) {
 
-        if (userRequest.isBlocked() || userRequest.getRoles().stream()
-                .noneMatch(role -> role.getName()
-                        .equalsIgnoreCase("admin"))) {
+        //|| userRequest.getRoles().stream()
+        //                .noneMatch(role -> role.getName()
+        //                        .equalsIgnoreCase("admin"))
+        if (userRequest.isBlocked()) {
             throw new UnauthorizedOperationException(PERMISSION_ERROR_MESSAGE);
 
         }

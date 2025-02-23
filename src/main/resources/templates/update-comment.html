@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/general-fragments.html :: head('Update Comment')}"></head>
+
+<body class="bg-light">
+<nav th:insert="~{fragments/general-fragments.html :: topnav}"></nav>
+
+<div id="layoutSidenav">
+    <div th:replace="~{fragments/general-fragments.html :: sidenav}"></div>
+    <div id="layoutSidenav_content">
+        <main class="h-100 pb-3">
+            <div class="container-fluid mt-5">
+                <div class="col-8 mx-auto bg-light p-0 rounded-4 shadow" id="contentBox">
+                    <div class="card shadow-lg border-0 rounded-lg mt-5">
+                        <div class="card-header">
+                            <h3 class="text-center font-weight-light my-4" th:text="#{comment.update.label}">
+                                Update Comment
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <form action="#" method="post" th:action="@{__${requestURI}__}" th:object="${comment}">
+
+                                <!-- Content field bound to 'postCreateDTO' -->
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <div class="form-floating mb-3 mb-md-0">
+                                            <textarea
+                                            class="form-control"
+                                            id="inputContent"
+                                            placeholder="Enter your post content"
+                                            th:classappend="${#fields.hasErrors('content') ? 'is-invalid' : (formSubmitted != null ? 'is-valid' : '')}"
+                                            th:field="*{content}"
+                                            style="height: 200px; font-size: 1.25rem;"></textarea>
+                                            <label for="inputContent" th:text="#{comment.content.label}">Post
+                                                Content</label>
+                                            <div class="invalid-feedback"
+                                                 th:if="${#fields.hasErrors('content')}"
+                                                 th:text="${#fields.errors('content')}"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="mt-4 mb-0">
+                                    <div class="d-grid">
+                                        <input class="btn btn-primary btn-block" th:value="#{comment.update.label}"
+                                               type="submit" value="Update Comment"/>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </main>
+        <!-- Ensure footer is inside layoutSidenav_content -->
+        <footer th:replace="~{fragments/general-fragments.html :: footer}"></footer>
+    </div>
+</div>
+<th:block th:replace="~{fragments/general-fragments.html :: scripts}"></th:block>
+
+</body>
+</html>

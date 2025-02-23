@@ -195,8 +195,8 @@
               </button>
             </form>
 
-            <div class="px-3 my-1" th:if="${currentURI.contains('comments')}">
-              <div th:each="comment : ${foundComments}">
+            <div class="px-3 my-1 itemList" th:if="${currentURI.endsWith('comments')}">
+              <div class="item" th:each="comment : ${foundComments}">
                 <hr>
                 <div class="btn btn-light w-100 h-100 d-flex flex-column align-items-start clickable-entity"
                      th:attr="redirect-link='/posts/' + ${comment.postId}">
@@ -224,8 +224,8 @@
                 </div>
               </div>
             </div>
-            <div class="px-3 my-1" th:if="${currentURI.endsWith('home')}">
-              <div th:each="post : ${foundPosts}">
+            <div class="px-3 my-1 itemList" th:if="${currentURI.endsWith('home')}">
+              <div class="item" th:each="post : ${foundPosts}">
                 <hr>
                 <div class="btn btn-light w-100 h-100 d-flex flex-column align-items-start clickable-entity"
                      th:attr="redirect-link='/posts/' + ${post.id}">
@@ -320,8 +320,8 @@
 
 
 
-            <div class="px-3 my-1" th:if="${currentURI.contains('users')}">
-              <div th:each="user : ${foundUsers}">
+            <div class="px-3 my-1 itemList" th:if="${currentURI.endsWith('users')}">
+              <div class="item" th:each="user : ${foundUsers}">
                 <hr>
                 <div class="btn btn-light w-100 d-flex align-items-center clickable-entity"
 
@@ -331,7 +331,7 @@
                   <img alt="Profile Picture"
                        class="rounded-circle border profile-picture me-3"
                        th:src="@{/uploads/picture{id}.jpg(id=${user.id})}"
-                       onerror="this.onerror=null; this.src='/img/profile-icon-png-893.png'"
+                       onerror="onerror=null; src='/img/profile-icon-png-893.png'"
                        style="width: 50px; height: 50px;">
 
 <div class="d-flex flex-column align-items-start justify-content-center pt-2 ">
@@ -369,6 +369,9 @@
 
 <script src="../static/js/sort-button.js"
         th:src="@{/js/sort-button.js}"></script>
+
+<script src="../static/js/infinity-scroll.js"
+        th:src="@{/js/infinity-scroll.js}"></script>
 
 
 </body>

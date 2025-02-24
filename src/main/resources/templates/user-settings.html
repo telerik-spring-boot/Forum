@@ -40,7 +40,7 @@
 									<img alt="Profile Picture"
 									     class="rounded-circle border mb-3 profile-picture ms-auto"
 									     onclick="document.getElementById('fileInput').click()"
-									     th:if="${profilePicture}"
+									     th:if="${session.profilePicture}"
 									     th:src="@{/uploads/picture{id}.jpg(id=${userUpdate.id})}"/>
 
 
@@ -48,7 +48,7 @@
 									     class="rounded-circle border mb-3 profile-picture ms-auto"
 									     onclick="document.getElementById('fileInput').click()"
 									     th:src="@{/img/profile-icon-png-893.png}"
-									     th:unless="${profilePicture}"/>
+									     th:unless="${session.profilePicture}"/>
 								</form>
 
 								<form action="#" class="text-center" id="updateForm" method="post"

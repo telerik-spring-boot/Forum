@@ -39,7 +39,7 @@ public class FileUploadController {
 
             return "redirect:" + request.getHeader("Referer");
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             model.addAttribute("message", "File upload failed: " + e.getMessage());
             return request.getHeader("Referer");
         }
@@ -48,10 +48,19 @@ public class FileUploadController {
     @ResponseBody
     @GetMapping("/{filename}")
     public Resource serveFile(@PathVariable String filename) {
-        Path filePath = Paths.get(uploadDirectory).resolve(filename);
         try {
-            return new UrlResource(filePath.toUri());
-        } catch (MalformedURLException e) {
+            Path filePath = Paths.get(uploadDirectory).resolve(filename);
+
+            File file = filePath.toFile();
+
+
+            if (file.exists() && file.isFile()) {
+                return new UrlResource(file.toURI());
+            } else {
+                return null;
+            }
+            
+        } catch (Exception e) {
             return null;
         }
     }

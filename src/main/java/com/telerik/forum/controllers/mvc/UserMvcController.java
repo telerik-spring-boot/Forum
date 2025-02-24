@@ -153,7 +153,7 @@ public class UserMvcController {
 
             model.addAttribute("userUpdate", userUpdate);
             model.addAttribute("userId", user.getId());
-            model.addAttribute("profilePicture", FilesHelper.checkIfPhotoExists(userUpdate.getId()));
+            session.setAttribute("profilePicture", FilesHelper.checkIfPhotoExists(userUpdate.getId()));
             model.addAttribute("requestURI", request.getRequestURI());
             model.addAttribute("token", jwtUtil.generateToken(userUpdate.getUsername()));
 

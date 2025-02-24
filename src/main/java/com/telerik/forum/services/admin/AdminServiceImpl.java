@@ -4,9 +4,9 @@ import com.telerik.forum.exceptions.AdminRoleManagementException;
 import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
 import com.telerik.forum.models.dtos.userDTOs.UserDisplayMvcDTO;
+import com.telerik.forum.models.filters.FilterUserOptions;
 import com.telerik.forum.models.user.AdminDetails;
 import com.telerik.forum.models.user.User;
-import com.telerik.forum.models.filters.FilterUserOptions;
 import com.telerik.forum.repositories.admin.AdminDetailsRepository;
 import com.telerik.forum.repositories.role.RoleRepository;
 import com.telerik.forum.repositories.user.UserRepository;
@@ -172,10 +172,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private void authorization(User userRequest) {
-
-        //|| userRequest.getRoles().stream()
-        //                .noneMatch(role -> role.getName()
-        //                        .equalsIgnoreCase("admin"))
+        
         if (userRequest.isBlocked()) {
             throw new UnauthorizedOperationException(PERMISSION_ERROR_MESSAGE);
 

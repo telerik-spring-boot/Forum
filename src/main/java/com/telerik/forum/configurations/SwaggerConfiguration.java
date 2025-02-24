@@ -1,6 +1,5 @@
 package com.telerik.forum.configurations;
 
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.models.*;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
@@ -12,19 +11,11 @@ import io.swagger.v3.oas.models.responses.ApiResponses;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import io.swagger.v3.oas.annotations.security.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-//@SecurityScheme(
-//
-//        name = "bearerAuth",
-//        scheme = "bearer",
-//        type = SecuritySchemeType.HTTP,
-//        bearerFormat = "JWT"
-//
-//)
+
 @Configuration
 public class SwaggerConfiguration {
 

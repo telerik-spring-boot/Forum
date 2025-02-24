@@ -181,7 +181,6 @@ public class UserServiceImpl implements UserService {
         } else combinedList.sort(Comparator.comparing(PostCommentWrapper::getCreatedAt).reversed());
 
 
-
         user.setEntities(combinedList);
         user.setUsername(getById(id, userRequest).getUsername());
         user.setId(id);
@@ -283,7 +282,6 @@ public class UserServiceImpl implements UserService {
             });
         }
         if (!postsToDelete.isEmpty()) {
-//            posts.removeAll(postsToDelete);
             List<Post> filteredPosts = posts.getContent()
                     .stream()
                     .filter(post -> !postsToDelete.contains(post)) // Remove unwanted posts

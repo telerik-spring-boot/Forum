@@ -30,7 +30,6 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -75,10 +74,6 @@ public class AnonymousMvcController {
         this.commentService = commentService;
     }
 
-    @ModelAttribute("currentURI")
-    public String requestURI(final HttpServletRequest request) {
-        return request.getRequestURI();
-    }
 
     @GetMapping("/auth/login")
     public String showLoginPage(HttpSession session, Model model) {
@@ -202,7 +197,7 @@ public class AnonymousMvcController {
             mailMessage.setTo(user.getEmailAddress());
             mailMessage.setSubject("Password retrieval");
             mailMessage.setText("Hello, " + user.getUsername() + " to reset your password, click on the link: " + resetUrl);
-            mailMessage.setFrom("norep-forum@outlook.com");
+            mailMessage.setFrom("roamify55@yahoo.com");
 
             mailSender.send(mailMessage);
 
@@ -218,6 +213,7 @@ public class AnonymousMvcController {
 
     @GetMapping("/auth/reset-password")
     public String showResetPasswordForm(@RequestParam String token, Model model) {
+
 
         try {
             jwtUtil.extractUsername(token);
@@ -271,7 +267,8 @@ public class AnonymousMvcController {
     @GetMapping("/home")
     public String showPostSearchPage(@ModelAttribute("searchTerm") String searchTerm,
                                      @ModelAttribute("filterOptions") FilterDTO filterDto,
-                                     HttpSession session, Model model) {
+                                     HttpSession session, Model model,
+                                     HttpServletRequest request) {
         boolean isAuthenticated = false;
         if (session.getAttribute("currentUser") != null) {
             model.addAttribute("userId", userService.getByUsername((String) session.getAttribute("currentUser")).getId());
@@ -338,7 +335,7 @@ public class AnonymousMvcController {
 
         model.addAttribute("foundPosts", totalPostDTOs);
         model.addAttribute("searchTerm", searchTerm);
-
+        model.addAttribute("currentURI", request.getRequestURI());
         model.addAttribute("comment", new CommentCreateDTO());
 
 
@@ -349,7 +346,8 @@ public class AnonymousMvcController {
     @GetMapping("/home/comments")
     public String showCommentsSearchPage(@ModelAttribute("searchTerm") String searchTerm,
                                          @ModelAttribute("filterOptions") FilterDTO filterDto,
-                                         HttpSession session, Model model) {
+                                         HttpSession session, Model model,
+                                         HttpServletRequest request) {
 
         if (session.getAttribute("currentUser") != null) {
             model.addAttribute("userId", userService.getByUsername((String) session.getAttribute("currentUser")).getId());
@@ -376,6 +374,7 @@ public class AnonymousMvcController {
 
         model.addAttribute("foundComments", totalCommentDTOs);
         model.addAttribute("searchTerm", searchTerm);
+        model.addAttribute("currentURI", request.getRequestURI());
 
 
         return "home";
@@ -385,7 +384,8 @@ public class AnonymousMvcController {
     public String showUserSearchPage(@ModelAttribute("searchTerm") String searchTerm,
                                      @ModelAttribute("filterOptions") FilterDTO filterDto,
                                      @PageableDefault(size = Integer.MAX_VALUE, page = 0) Pageable pageable,
-                                     HttpSession session, Model model) {
+                                     HttpSession session, Model model,
+                                     HttpServletRequest request) {
         User user;
         try {
             user = authHelper.tryGetUserMvc(session);
@@ -415,7 +415,7 @@ public class AnonymousMvcController {
 
         model.addAttribute("foundUsers", totalUsersDTOs);
         model.addAttribute("searchTerm", searchTerm);
-
+        model.addAttribute("currentURI", request.getRequestURI());
         model.addAttribute("userId", user.getId());
 
         return "home";

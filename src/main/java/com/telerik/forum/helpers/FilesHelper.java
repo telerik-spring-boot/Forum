@@ -1,7 +1,5 @@
 package com.telerik.forum.helpers;
 
-import com.telerik.forum.exceptions.UnauthorizedOperationException;
-import org.apache.coyote.BadRequestException;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;

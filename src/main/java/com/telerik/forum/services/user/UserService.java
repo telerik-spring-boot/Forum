@@ -1,15 +1,12 @@
 package com.telerik.forum.services.user;
 
 
-import com.telerik.forum.models.dtos.PostCommentWrapper;
 import com.telerik.forum.models.dtos.userDTOs.UserOverviewPageDisplayDTO;
 import com.telerik.forum.models.dtos.userDTOs.UserPostsPageDisplayDTO;
-import com.telerik.forum.models.user.User;
 import com.telerik.forum.models.filters.FilterCommentOptions;
 import com.telerik.forum.models.filters.FilterPostOptions;
+import com.telerik.forum.models.user.User;
 import org.springframework.data.domain.Pageable;
-
-import java.util.List;
 
 public interface UserService {
 

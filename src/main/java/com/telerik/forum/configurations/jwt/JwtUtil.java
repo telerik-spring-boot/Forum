@@ -2,7 +2,6 @@ package com.telerik.forum.configurations.jwt;
 
 
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
-import com.telerik.forum.models.user.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

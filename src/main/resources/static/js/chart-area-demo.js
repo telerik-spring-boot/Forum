@@ -12,7 +12,6 @@ function getLast12Months() {
         const pastDate = new Date();
         pastDate.setMonth(today.getMonth() - i);
 
-        // Format month as "MMM YYYY" (e.g., "Feb 2024")
         const formattedMonth = pastDate.toLocaleDateString("en-US", {
             month: "short",
             year: "numeric"
@@ -24,20 +23,13 @@ function getLast12Months() {
 }
 
 
-// Generate random data for demonstration
-function generateRandomData() {
-    return Array.from({length: 12}, () => Math.floor(Math.random() * 40000));
-}
-
-// Function to extract lastLogin data from table
 function extractLastLoginData() {
     const lastLoginData = [];
     const tableRows = document.querySelectorAll("table tr");
 
-    // Loop through each row and extract the lastLogin from the 5th td (index 4)
     tableRows.forEach((row, index) => {
-        if (index >= 2) { // Skip the first two rows (headers)
-            const lastLoginCell = row.children[4]; // 5th td, index 4
+        if (index >= 2) {
+            const lastLoginCell = row.children[4];
             if (lastLoginCell) {
                 const lastLogin = lastLoginCell.innerText.trim();
                 lastLoginData.push(lastLogin);
@@ -49,12 +41,11 @@ function extractLastLoginData() {
 }
 
 
-// Function to convert lastLogin string to 'MMM YYYY' format (e.g., "Feb 2024")
 function formatDateToYearMonth(dateStr) {
-    // Split the date string to get "YYYY-MM-DD"
+
     const dateParts = dateStr.split(" ")[0].split("-");
     const year = dateParts[0];
-    const month = parseInt(dateParts[1]) - 1; // JavaScript months are 0-indexed, so subtract 1
+    const month = parseInt(dateParts[1]) - 1;
 
     return new Date(year, month).toLocaleString('en-US', {
         month: 'short',
@@ -62,55 +53,52 @@ function formatDateToYearMonth(dateStr) {
     });
 }
 
-// Function to count users active for each month in the last 12 months
 function countLoginsByMonth(lastLoginData) {
+
     const counts = {};
     const last12Months = getLast12Months();
 
-    // Count logins for each month
     lastLoginData.forEach(dateStr => {
         const monthYear = formatDateToYearMonth(dateStr);
         if (last12Months.includes(monthYear)) {
             counts[monthYear] = (counts[monthYear] || 0) + 1;
         }
     });
-    // Fill in missing months with 0 logins
+
     last12Months.forEach(month => {
         if (!counts[month]) {
             counts[month] = 0;
         }
     });
 
-    // Return counts in the same order as the last12Months array
+
     return last12Months.map(month => counts[month]);
 }
 
 const postDatesArray = postDates.substring(1, postDates.length - 1).split(",").map(date => date.trim());
 
 
-// Function to count post created for each month in the last 12 months
 function countCreatedPosts(postDatesArray) {
     const counts = {};
     const last12Months = getLast12Months();
 
-    // Count logins for each month
+
     postDatesArray.forEach(dateStr => {
         const monthYear = formatDateToYearMonth(dateStr);
         if (last12Months.includes(monthYear)) {
             counts[monthYear] = (counts[monthYear] || 0) + 1;
         }
     });
-    // Fill in missing months with 0 logins
+
     last12Months.forEach(month => {
         if (!counts[month]) {
             counts[month] = 0;
         }
     });
-    // Return counts in the same order as the last12Months array
+
     return last12Months.map(month => counts[month]);
 }
 
-// Area Chart Example
 function createLineChart(elementId, label, data, backgroundColor, borderColor) {
     var ctx = document.getElementById(elementId);
     return new Chart(ctx, {

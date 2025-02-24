@@ -1,9 +1,10 @@
 package com.telerik.forum.repositories.utilities;
 
 import com.telerik.forum.exceptions.InvalidSortParameterException;
-
 import com.telerik.forum.models.filters.Sortable;
-import jakarta.persistence.criteria.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 
 
 public class SortingHelper {

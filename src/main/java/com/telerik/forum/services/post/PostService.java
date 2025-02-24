@@ -1,11 +1,9 @@
 package com.telerik.forum.services.post;
 
-import com.telerik.forum.models.dtos.commentDTOs.CommentDisplayDTO;
 import com.telerik.forum.models.dtos.postDTOs.PostDisplayDTO;
-import com.telerik.forum.models.filters.FilterCommentOptions;
+import com.telerik.forum.models.filters.FilterPostOptions;
 import com.telerik.forum.models.post.Post;
 import com.telerik.forum.models.user.User;
-import com.telerik.forum.models.filters.FilterPostOptions;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

@@ -9,27 +9,25 @@ import com.telerik.forum.helpers.FilesHelper;
 import com.telerik.forum.helpers.UserMapper;
 import com.telerik.forum.models.dtos.FilterDTO;
 import com.telerik.forum.models.dtos.commentDTOs.CommentCreateDTO;
-import com.telerik.forum.models.dtos.userDTOs.*;
-import com.telerik.forum.models.filters.FilterCommentOptions;
+import com.telerik.forum.models.dtos.userDTOs.UserCommentsPageDisplayDTO;
+import com.telerik.forum.models.dtos.userDTOs.UserOverviewPageDisplayDTO;
+import com.telerik.forum.models.dtos.userDTOs.UserPostsPageDisplayDTO;
+import com.telerik.forum.models.dtos.userDTOs.UserUpdateMvcDTO;
 import com.telerik.forum.models.filters.FilterPostOptions;
 import com.telerik.forum.models.user.AdminDetails;
 import com.telerik.forum.models.user.User;
 import com.telerik.forum.services.admin.AdminService;
 import com.telerik.forum.services.user.UserService;
-import jakarta.servlet.Filter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.time.LocalDateTime;
 
 @Controller
 @RequestMapping("/users")

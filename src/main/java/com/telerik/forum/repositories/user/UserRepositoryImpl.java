@@ -1,9 +1,9 @@
 package com.telerik.forum.repositories.user;
 
 import com.telerik.forum.models.dtos.userDTOs.UserDisplayMvcDTO;
+import com.telerik.forum.models.filters.FilterUserOptions;
 import com.telerik.forum.models.post.Post;
 import com.telerik.forum.models.user.User;
-import com.telerik.forum.models.filters.FilterUserOptions;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;

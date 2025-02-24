@@ -1,10 +1,12 @@
 package com.telerik.forum.repositories.comment;
 
 
-import com.telerik.forum.models.post.Comment;
 import com.telerik.forum.models.filters.FilterCommentOptions;
-import com.telerik.forum.models.user.User;
-import jakarta.persistence.criteria.*;
+import com.telerik.forum.models.post.Comment;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -27,14 +29,7 @@ public class CommentRepositoryImpl implements CommentRepository {
         this.sessionFactory = sessionFactory;
     }
 
-    //    @Override
-//    public List<Comment> getAll() {
-//        try (Session session = sessionFactory.openSession()) {
-//            Query<Comment> query = session.createQuery("from Comment", Comment.class);
-//            return query.list();
-//        }
-//    }
-//
+
     @Override
     public Comment getById(int id) {
         try (Session session = sessionFactory.openSession()) {
@@ -69,7 +64,7 @@ public class CommentRepositoryImpl implements CommentRepository {
 
             List<Predicate> predicates = new ArrayList<>();
 
-            if(id !=-1) {
+            if (id != -1) {
 
                 predicates.add(criteriaBuilder.equal(root.get("user").get("id"), id));
             }
@@ -91,15 +86,7 @@ public class CommentRepositoryImpl implements CommentRepository {
             return query.list();
         }
     }
-//
-//    @Override
-//    public List<Comment> getByPostId(int postId) {
-//        try (Session session = sessionFactory.openSession()) {
-//            Query<Comment> query = session.createQuery("from Comment where post.id = :postId", Comment.class);
-//            query.setParameter("postId", postId);
-//            return query.list();
-//        }
-//    }
+
 
     @Override
     public void create(Comment comment) {

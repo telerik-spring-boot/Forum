@@ -12,7 +12,10 @@ import com.telerik.forum.services.user.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -64,7 +67,7 @@ public class AdminMvcController {
             User user = authenticationHelper.tryGetUserMvc(session);
 
             if (!authenticationHelper.isAdmin(user)) {
-                return "access-denied";
+                return "401";
             }
 
             adminService.giveAdminRights(userId, "", user);
@@ -84,7 +87,7 @@ public class AdminMvcController {
             User user = authenticationHelper.tryGetUserMvc(session);
 
             if (!authenticationHelper.isAdmin(user)) {
-                return "access-denied";
+                return "401";
             }
 
             adminService.revokeAdminRights(userId, user);
@@ -105,7 +108,7 @@ public class AdminMvcController {
             User user = authenticationHelper.tryGetUserMvc(session);
 
             if (!authenticationHelper.isAdmin(user)) {
-                return "access-denied";
+                return "401";
             }
 
             User userToBlock = userService.getById(userId, user);
@@ -126,7 +129,7 @@ public class AdminMvcController {
             User user = authenticationHelper.tryGetUserMvc(session);
 
             if (!authenticationHelper.isAdmin(user)) {
-                return "access-denied";
+                return "401";
             }
 
             User userToBlock = userService.getById(userId, user);

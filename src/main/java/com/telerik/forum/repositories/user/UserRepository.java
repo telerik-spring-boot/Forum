@@ -1,8 +1,8 @@
 package com.telerik.forum.repositories.user;
 
 import com.telerik.forum.models.dtos.userDTOs.UserDisplayMvcDTO;
-import com.telerik.forum.models.user.User;
 import com.telerik.forum.models.filters.FilterUserOptions;
+import com.telerik.forum.models.user.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

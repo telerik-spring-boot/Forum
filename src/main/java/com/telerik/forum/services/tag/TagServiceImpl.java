@@ -2,11 +2,11 @@ package com.telerik.forum.services.tag;
 
 import com.telerik.forum.exceptions.EntityNotFoundException;
 import com.telerik.forum.exceptions.UnauthorizedOperationException;
-import com.telerik.forum.models.post.Tag;
 import com.telerik.forum.models.post.Post;
+import com.telerik.forum.models.post.Tag;
 import com.telerik.forum.models.user.User;
-import com.telerik.forum.repositories.tag.TagRepository;
 import com.telerik.forum.repositories.post.PostRepository;
+import com.telerik.forum.repositories.tag.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -30,6 +30,28 @@ public class TagServiceImpl implements TagService {
         this.postRepository = postRepository;
     }
 
+    private static boolean checkIfUserIsAdmin(User user) {
+        return user.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"));
+    }
+
+    private static List<String> extractTags(String tags) {
+        return Arrays.stream(tags.split(","))
+                .map(String::trim)
+                .filter(tag -> !tag.isEmpty())
+                .map(String::toLowerCase)
+                .toList();
+    }
+
+    private static void removeTagFromPostHelper(List<String> tagNamesToRemove, Post post) {
+        Set<String> tagNamesToRemoveSet = new HashSet<>(tagNamesToRemove);
+
+        Set<Tag> tagsToRemove = post.getTags().stream()
+                .filter(tag -> tagNamesToRemoveSet.contains(tag.getName()))
+                .collect(Collectors.toSet());
+
+        post.getTags().removeAll(tagsToRemove);
+    }
+
     @Override
     public void addTagToPost(int postId, String tags, User user) {
         Post post = postRepository.getPostWithTagsById(postId);
@@ -49,7 +71,6 @@ public class TagServiceImpl implements TagService {
         postRepository.update(post);
 
     }
-
 
     @Override
     public void updateTagFromPost(int postId, String oldTags, String newTags, User user) {
@@ -91,7 +112,6 @@ public class TagServiceImpl implements TagService {
         postRepository.update(post);
     }
 
-
     private void checkPermissions(Post post, User user) {
 
         boolean isAdmin = checkIfUserIsAdmin(user);
@@ -105,19 +125,6 @@ public class TagServiceImpl implements TagService {
         }
 
     }
-
-    private static boolean checkIfUserIsAdmin(User user) {
-        return user.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"));
-    }
-
-    private static List<String> extractTags(String tags) {
-        return Arrays.stream(tags.split(","))
-                .map(String::trim)
-                .filter(tag -> !tag.isEmpty())
-                .map(String::toLowerCase)
-                .toList();
-    }
-
 
     private void addTagToPostHelper(String tagToAdd, Post post) {
 
@@ -135,16 +142,6 @@ public class TagServiceImpl implements TagService {
         } else {
             post.getTags().add(tag);
         }
-    }
-
-    private static void removeTagFromPostHelper(List<String> tagNamesToRemove, Post post) {
-        Set<String> tagNamesToRemoveSet = new HashSet<>(tagNamesToRemove);
-
-        Set<Tag> tagsToRemove = post.getTags().stream()
-                .filter(tag -> tagNamesToRemoveSet.contains(tag.getName()))
-                .collect(Collectors.toSet());
-
-        post.getTags().removeAll(tagsToRemove);
     }
 
     public void deleteOrphanedTags() {
